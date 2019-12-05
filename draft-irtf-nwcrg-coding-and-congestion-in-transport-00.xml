@@ -109,20 +109,20 @@
         <!-- ######################################################-->
         <!-- New section -->
         <!-- ######################################################-->
-        <section anchor="sec:notations" title="Separate signalling channels">
-		<t><xref target="fig:sep-channel"></xref> presents the notations that will be used in this document and introduce the separated signalling channels. Congestion Control (CC) channel carries data packets (from the server to the client) and a potential information signaling the packets that have been received (from the client to the server). Forward Erasure Correction (FEC) channel carries coded packets (from the server to the client) and a potiential information signaling the packets that have been repaired (from the client to the server).</t>
-		<figure anchor="fig:sep-channel" title="Notations">
+        <section anchor="sec:notations" title="Separate channels">
+		<t><xref target="fig:sep-channel"></xref> presents the notations that will be used in this document and introduce the Congestion Control (CC) and Forward Erasure Correction (FEC) channels. Congestion Control channel carries data packets (from the server to the client) and a potential information signaling the packets that have been received (from the client to the server). Forward Erasure Correction channel carries coded packets (from the server to the client) and a potiential information signaling the packets that have been repaired (from the client to the server). It is worth pointing out that there are cases where these channels are not separated.</t>
+		<figure anchor="fig:sep-channel" title="Notations and separate channels">
 		<artwork>
  Client                          Server
 
 +------+                        +------+
-|      | -- { data packets -----|      |
+|      | -- { data packet  -----|      |
 |  CC  |                        |  CC  | 
 |      | -- received packet } --|      |
 +------+                        +------+
 
 +------+                        +------+
-|      | -- { coded packets ----|      |
+|      | -- { coded packet  ----|      |
 | FEC  |                        | FEC  |
 |      | -- repaired packet } --|      |
 +------+                        +------+

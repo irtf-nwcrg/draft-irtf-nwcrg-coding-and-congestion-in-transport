@@ -68,17 +68,17 @@ Internet-Draft            Coding and congestion            December 2019
 Table of Contents
 
    1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
-   2.  Separate signalling channels  . . . . . . . . . . . . . . . .   3
+   2.  Separate channels . . . . . . . . . . . . . . . . . . . . . .   3
    3.  Base solution description . . . . . . . . . . . . . . . . . .   3
-   4.  Sender-side coding solutions  . . . . . . . . . . . . . . . .   3
+   4.  Server-side coding solutions  . . . . . . . . . . . . . . . .   4
      4.1.  Coded packets without considering CWND progression  . . .   4
      4.2.  Coded packets driven by CWND progression  . . . . . . . .   4
-   5.  Sender-side reaction to recovered packet signals  . . . . . .   4
-     5.1.  The sender congestion control considers recovered packet
+   5.  Server-side reaction to recovered packet signals  . . . . . .   4
+     5.1.  The server congestion control considers recovered packet
            signals as congestion-implied packet losses . . . . . . .   5
-     5.2.  The sender adapts its window reduction to recovered
+     5.2.  The server adapts its window reduction to recovered
            packet signals  . . . . . . . . . . . . . . . . . . . . .   5
-     5.3.  The sender ignores recovered packet signals . . . . . . .   5
+     5.3.  The server ignores recovered packet signals . . . . . . .   5
    6.  Summary . . . . . . . . . . . . . . . . . . . . . . . . . . .   6
    7.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   6
    8.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   6
@@ -89,12 +89,12 @@ Table of Contents
 1.  Introduction
 
    There are cases where deploying coding improves the quality of the
-   transmission.  As example, the sender may hardly detect tail losses
+   transmission.  As example, the server may hardly detect tail losses
    that impact may impact the application layer.  Another example may be
    the networks where non-congestion losses are persistent and prevent
-   the sender from exploiting the link capacity.  [RFC5681] defines TCP
+   the server from exploiting the link capacity.  [RFC5681] defines TCP
    as a loss-based congestion control and coding mechanisms can hide
-   congestion signals to the sender.  This memo discusses simple best
+   congestion signals to the server.  This memo discusses simple best
    practices on how coding and congestion control mechanisms could
    coexist.
 
@@ -114,41 +114,47 @@ Kuhn, et al.              Expires June 7, 2020                  [Page 2]
 Internet-Draft            Coding and congestion            December 2019
 
 
-2.  Separate signalling channels
+2.  Separate channels
 
-   Figure Figure 1 presents the notations that will be used in this
-   document and introduce the separated signalling channels.
+   Figure 1 presents the notations that will be used in this document
+   and introduce the Congestion Control (CC) and Forward Erasure
+   Correction (FEC) channels.  Congestion Control channel carries data
+   packets (from the server to the client) and a potential information
+   signaling the packets that have been received (from the client to the
+   server).  Forward Erasure Correction channel carries coded packets
+   (from the server to the client) and a potiential information
+   signaling the packets that have been repaired (from the client to the
+   server).  It is worth pointing out that there are cases where these
+   channels are not separated.
 
     Client                          Server
 
    +------+                        +------+
-   |      | -- { data packets -----|      |
+   |      | -- { data packet  -----|      |
    |  CC  |                        |  CC  |
    |      | -- received packet } --|      |
    +------+                        +------+
 
    +------+                        +------+
-   |      | -- { coded packets ----|      |
+   |      | -- { coded packet  ----|      |
    | FEC  |                        | FEC  |
    |      | -- repaired packet } --|      |
    +------+                        +------+
 
-                            Figure 1: Notations
-
-   .
+                 Figure 1: Notations and separate channels
 
 3.  Base solution description
 
    The base solution can be described as follows:
 
-   o  The receiver MUST indicate to the sender that one or multiple
+   o  The client MUST indicate to the server that one or multiple
       packets have been recovered using a coding scheme.  Such "repaired
       packet signal" could be based on existing signals (even if the
       existing signal was not designed for that purpose, such as ECN) or
       on new type of signals (such as a RECOVERED frame in QUIC).
 
-   o  The sender MUST be able to detect the "recovered packet signal".
-      The base solution does not describe how the sender reacts to such
+   o  The server MUST be able to detect the "recovered packet signal".
+      The base solution does not describe how the server reacts to such
       signal.
 
    The proposed solution applies for coding in the transport layer.  The
@@ -157,18 +163,17 @@ Internet-Draft            Coding and congestion            December 2019
    applies for the interaction between coding under the transport layer
    (i.e. not end-to-end), such as coding for tunnels.
 
-4.  Sender-side coding solutions
-
-   This section presents solutions for a sender to add application
-   coding.
-
-
 
 
 Kuhn, et al.              Expires June 7, 2020                  [Page 3]
 
 Internet-Draft            Coding and congestion            December 2019
 
+
+4.  Server-side coding solutions
+
+   This section presents solutions for a server to add application
+   coding.
 
 4.1.  Coded packets without considering CWND progression
 
@@ -206,7 +211,7 @@ Internet-Draft            Coding and congestion            December 2019
    The main drawback is the decrease of goodput if coded packets are
    sent but are not used at the client side.
 
-5.  Sender-side reaction to recovered packet signals
+5.  Server-side reaction to recovered packet signals
 
    Delay-based congestion controls ignore packets that have been
    repaired with coding.  There is no need to define best current
@@ -216,20 +221,15 @@ Internet-Draft            Coding and congestion            December 2019
 
 
 
-
-
-
-
-
 Kuhn, et al.              Expires June 7, 2020                  [Page 4]
 
 Internet-Draft            Coding and congestion            December 2019
 
 
-5.1.  The sender congestion control considers recovered packet signals
+5.1.  The server congestion control considers recovered packet signals
       as congestion-implied packet losses
 
-   In this solution, the sender reacts to recovered packet signals as to
+   In this solution, the server reacts to recovered packet signals as to
    congestion-implied packet losses.  That being said, this does not
    necessarily means that the packets have actually been lost.  The
    server may have other means to identify that the packet was just out-
@@ -242,12 +242,12 @@ Internet-Draft            Coding and congestion            December 2019
 
    The drawback of this solution is that, if there is a high non-
    congestion loss rate, the congestion control throughput may decrease
-   drastically.  Reporting this amount of loss to a sender may reduce
+   drastically.  Reporting this amount of loss to a server may reduce
    the application goodput when there is no actual congestion.
 
-5.2.  The sender adapts its window reduction to recovered packet signals
+5.2.  The server adapts its window reduction to recovered packet signals
 
-   In this solution, the sender does not reduce the congestion window
+   In this solution, the server does not reduce the congestion window
    with the same amount when the "recovered packet signal" is received,
    i.e. when a packet has been lost but recovered.  Example of this
    solution could be based on [RFC8511] or considering that recovering
@@ -261,7 +261,7 @@ Internet-Draft            Coding and congestion            December 2019
    interaction with AQM mechanisms [RFC7567].  Moreover there may be
    fairness issues since AIMD convergence may not be guaranteed.
 
-5.3.  The sender ignores recovered packet signals
+5.3.  The server ignores recovered packet signals
 
    This is the case for delay-based congestion controls.  The
    interaction between delay-based congestion controls and the delay
@@ -294,7 +294,7 @@ Internet-Draft            Coding and congestion            December 2019
    pattern.
 
    +-----------------------+--------------------------------+
-   | Sender-side reaction  | Sender-side coding solutions   |
+   | Server-side reaction  | Server-side coding solutions   |
    | to recovered packet   |                                |
    | signals               |                                |
    |                       +---------------+----------------+
