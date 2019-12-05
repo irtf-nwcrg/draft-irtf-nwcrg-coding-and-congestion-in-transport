@@ -89,13 +89,14 @@
         <!-- ######################################################--> 
 
     <abstract>
-    	<t>This document discusses the interaction between congestion control and coding mechanism at the transport layer. The scope of the document is end-to-end communications. Examples of interest for the proposed solution is to better deal with tail losses or with networks with non-congestion losses. Coding for tunnels is out-of-the scope of the document.</t>
+    	<t>This document is the product of the Coding for Efficient Network Communications Research Group (NWCRG). This document discusses the interaction between congestion control and coding mechanism at the transport layer. The scope of the document is end-to-end communications. Examples of interest for the proposed solution is to better deal with tail losses or with networks with non-congestion losses. Coding for tunnels is out-of-the scope of the document.</t>
     </abstract>
   </front>
 
   <middle>
 
 	<section anchor="sec:introduction" title="Introduction">
+		<t>This document is the product of and represents the collaborative work and consensus of the Coding for Efficient Network Communications Research Group (NWCRG); it is not an IETF product and is not a standard.</t>
 		<t>There are cases where deploying coding improves the quality of the transmission. As example, the server may hardly detect tail losses that impact may impact the application layer. Another example may be the networks where non-congestion losses are persistent and prevent the server from exploiting the link capacity. <xref target="RFC5681"/> defines TCP as a loss-based congestion control and coding mechanisms can hide congestion signals to the server. This memo discusses simple best practices on how coding and congestion control mechanisms could coexist.</t> 
 		<t>The proposed recommendations apply for coding at the transport or application layer and coding for tunnels is out-of-the scope of the document.</t>
 	</section>
@@ -133,11 +134,25 @@
         <!-- ######################################################-->
         <!-- New section -->
         <!-- ######################################################-->
+        <section anchor="sec:scope" title="Scope">
+		<t>This section describes the scope of the document.</t>
+		<section anchor="sec:scope:appli" title="Type of application">
+			<t>The document focuses on reliable transmissions.</t>
+		</section>
+		<section anchor="sec:scope:e2e" title="End-to-end">
+			<t>The document focuses on end-to-end coding, i.e. in cases where coding is added at the server and client end points. The discussions should then consider fairness with non-coding solutions.</t>
+		</section>
+	</section> 
+
+        <!-- ######################################################-->
+        <!-- New section -->
+        <!-- ######################################################-->
         <section anchor="sec:bcp" title="Base solution description">
-		<t>The base solution can be described as follows:<list style="symbols">
-			<t>The client MUST indicate to the server that one or multiple packets have been recovered using a coding scheme. Such "repaired packet signal" could be based on existing signals (even if the existing signal was not designed for that purpose, such as ECN) or on new type of signals (such as a RECOVERED frame in QUIC).</t>
-			<t>The server MUST be able to detect the "recovered packet signal". The base solution does not describe how the server reacts to such signal.</t></list></t> 
-		<t>The proposed solution applies for coding in the transport layer. The proposed approach is inline with the one in <xref target="I-D.swett-nwcrg-coding-for-quic"/>. The proposed solution does not applies for the interaction between coding under the transport layer (i.e. not end-to-end), such as coding for tunnels.</t>
+		<t>The solution can be described as follows:<list style="symbols">
+			<t>The client MUST indicate to the server that one or multiple packets have been repaired using a coding scheme. The "repaired packet" signal does not guarantee that the packet actually needed to be repaired, since it could have been delayed but not lost.</t>
+			<t>The server MUST be able to detect the "repaired packet" signal. The base solution does not describe how the server reacts to such signal.</t></list></t> 
+		<t>The rationale behind this solution is the following: the server has more information on the congestion status and the application characteristics. Moreover, congestion control should not be splitted between multiple entities otherwise non-optimized decisions may be taken.</t>
+		<t>The proposed solution applies for coding in the transport and application layers. The proposed approach is inline with the one in <xref target="I-D.swett-nwcrg-coding-for-quic"/>. The proposed solution does not applies for the interaction between coding under the transport layer (i.e. not end-to-end), such as coding for tunnels.</t>
 	</section>
 
 	<!-- ######################################################-->
@@ -162,23 +177,23 @@
 	<!-- ######################################################-->
         <!-- New section -->
         <!-- ######################################################-->
-	<section anchor="bcp-base-sol-impro" title="Server-side reaction to recovered packet signals">
+	<section anchor="bcp-base-sol-impro" title="Server-side reaction to repaired packet signals">
 		<t>Delay-based congestion controls ignore packets that have been repaired with coding. There is no need to define best current pratices in this case. However, more discussions are required for congestion controls that use loss as congestion signals (potentially among other congestion detection mechanism).</t>
 
-		<section anchor="bcp-base-sol-impro-loss" title="The server congestion control considers recovered packet signals as congestion-implied packet losses">
-			<t>In this solution, the server reacts to recovered packet signals as to congestion-implied packet losses. That being said, this does not necessarily means that the packets have actually been lost. The server may have other means to identify that the packet was just out-of-ordered and ignore the recovered packet signals.</t>
-			<t>The advantages of the solution are (1) that coding mechanisms do not hide congestion signals, such as packets voluntary dropped by a AQM <xref target="RFC7567"/> and (2) packets may be recovered faster than with traditionnal retransmission mechanisms.</t>
+		<section anchor="bcp-base-sol-impro-loss" title="The server congestion control considers repaired packet signals as congestion-implied packet losses">
+			<t>In this solution, the server reacts to repaired packet signals as to congestion-implied packet losses. That being said, this does not necessarily means that the packets have actually been lost. The server may have other means to identify that the packet was just out-of-ordered and ignore the repaired packet signals.</t>
+			<t>The advantages of the solution are (1) that coding mechanisms do not hide congestion signals, such as packets voluntary dropped by a AQM <xref target="RFC7567"/> and (2) packets may be repaired faster than with traditionnal retransmission mechanisms.</t>
 			<t>The drawback of this solution is that, if there is a high non-congestion loss rate, the congestion control throughput may decrease drastically. Reporting this amount of loss to a server may reduce the application goodput when there is no actual congestion.</t>
 		</section>
 		
-		<section anchor="bcp-base-sol-impro-adapt-reduction" title="The server adapts its window reduction to recovered packet signals">
-			<t>In this solution, the server does not reduce the congestion window with the same amount when the "recovered packet signal" is received, i.e. when a packet has been lost but recovered. Example of this solution could be based on <xref target="RFC8511"/> or considering that recovering an isolated packet is not an actual sign of congestion.</t>
+		<section anchor="bcp-base-sol-impro-adapt-reduction" title="The server adapts its window reduction to repaired packet signals">
+			<t>In this solution, the server does not reduce the congestion window with the same amount when the "repaired packet" signal is received, i.e. when a packet has been lost but repaired. Example of this solution could be based on <xref target="RFC8511"/> or considering that recovering an isolated packet is not an actual sign of congestion.</t>
 			<t>The advantage of the solution is that in cases where there is no actual congestion, coding could help in improving the transmission without ignoring congestion signals.</t>
 			<t>The main drawback is the precised design of the solution and its interaction with AQM mechanisms <xref target="RFC7567"/>. Moreover there may be fairness issues since AIMD convergence may not be guaranteed.</t>
 		</section>
 		
-		<section anchor="bcp-base-sol-impro-ignore" title="The server ignores recovered packet signals">
-			<t>This is the case for delay-based congestion controls. The interaction between delay-based congestion controls and the delay induced by a coding mechanisms is an open research activity. That being said, a potential approach would be that loss-based congestion control ignores the "recovered packet signal".</t>
+		<section anchor="bcp-base-sol-impro-ignore" title="The server ignores repaired packet signals">
+			<t>This is the case for delay-based congestion controls. The interaction between delay-based congestion controls and the delay induced by a coding mechanisms is an open research activity. That being said, a potential approach would be that loss-based congestion control ignores the "repaired packet" signal.</t>
 			<t>The advantage of this solution is that coding would provided substantial benefits in cases where there are transmission losses.</t>
 			<t>However, this solution hides potential congestion losses, making it unfair to other congestion controls.</t>
 		</section>
@@ -200,7 +215,7 @@
         <artwork>
 +-----------------------+--------------------------------+
 | Server-side reaction  | Server-side coding solutions   |
-| to recovered packet   |                                |
+| to repaired packet    |                                |
 | signals               |                                |
 |                       +---------------+----------------+
 |                       | Coding adding | Coding without |
