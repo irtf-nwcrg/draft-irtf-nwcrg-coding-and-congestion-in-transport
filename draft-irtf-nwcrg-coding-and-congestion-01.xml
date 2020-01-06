@@ -55,7 +55,7 @@
       </address>
     </author>
 	  
-    <date year="2019" />
+    <date year="2020" />
 
     <!-- If the month and year are both specified and are the current ones, xml2rfc will fill 
          in the current day for you. If only the current year is specified, xml2rfc will fill 
@@ -96,8 +96,8 @@
   <middle>
 
 	<section anchor="sec:introduction" title="Introduction">
-		<t>This document is the product of and represents the collaborative work and consensus of the Coding for Efficient Network Communications Research Group (NWCRG); it is not an IETF product and is not a standard.</t>
-		<t>There are cases where deploying coding improves the quality of the transmission. As example, the server may hardly detect tail losses that impact may impact the application layer. Another example may be the networks where non-congestion losses are persistent and prevent the server from exploiting the link capacity. <xref target="RFC5681"/> defines TCP as a loss-based congestion control and coding mechanisms can hide congestion signals to the server. This memo discusses simple best practices on how coding and congestion control mechanisms could coexist.</t> 
+		<t>This document represents the collaborative work and consensus of the Coding for Efficient Network Communications Research Group (NWCRG); it is not an IETF product and is not a standard.</t>
+		<t>There are cases where deploying coding improves the quality of the transmission. As example, the server may hardly detect tail losses that impact may impact the application layer. Another example may be the networks where non-congestion losses are persistent and prevent the server from exploiting the link capacity. <xref target="RFC5681"/> defines TCP as a loss-based congestion control and coding mechanisms can hide congestion signals to the server. This memo discusses simple best practices on how coding and congestion control mechanisms could coexist. One objective is to help the research community consider congestion control aspects when proposing coding solutions.</t> 
 		<t>The proposed recommendations apply for coding at the transport or application layer and coding for tunnels is out-of-the scope of the document.</t>
 	</section>
 
@@ -118,7 +118,7 @@
 
 +------+                        +------+
 |      | -- { data packet  -----|      |
-|  CC  |                        |  CC  | 
+|  CC  |                        |  CC  |
 |      | -- received packet } --|      |
 +------+                        +------+
 

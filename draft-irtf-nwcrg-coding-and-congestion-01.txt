@@ -5,12 +5,12 @@
 NWCRG                                                       N. Kuhn, Ed.
 Internet-Draft                                                      CNES
 Intended status: Informational                                 E. Lochin
-Expires: June 7, 2020                                       ISAE-SUPAERO
+Expires: July 9, 2020                                       ISAE-SUPAERO
                                                                F. Michel
                                                                UCLouvain
                                                                 M. Welzl
                                                       University of Oslo
-                                                        December 5, 2019
+                                                         January 6, 2020
 
 
                Coding and congestion control in transport
@@ -41,11 +41,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on June 7, 2020.
+   This Internet-Draft will expire on July 9, 2020.
 
 Copyright Notice
 
-   Copyright (c) 2019 IETF Trust and the persons identified as the
+   Copyright (c) 2020 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -53,9 +53,9 @@ Copyright Notice
 
 
 
-Kuhn, et al.              Expires June 7, 2020                  [Page 1]
+Kuhn, et al.              Expires July 9, 2020                  [Page 1]
 
-Internet-Draft            Coding and congestion            December 2019
+Internet-Draft            Coding and congestion             January 2020
 
 
    (https://trustee.ietf.org/license-info) in effect on the date of
@@ -92,10 +92,9 @@ Table of Contents
 
 1.  Introduction
 
-   This document is the product of and represents the collaborative work
-   and consensus of the Coding for Efficient Network Communications
-   Research Group (NWCRG); it is not an IETF product and is not a
-   standard.
+   This document represents the collaborative work and consensus of the
+   Coding for Efficient Network Communications Research Group (NWCRG);
+   it is not an IETF product and is not a standard.
 
    There are cases where deploying coding improves the quality of the
    transmission.  As example, the server may hardly detect tail losses
@@ -105,13 +104,14 @@ Table of Contents
    as a loss-based congestion control and coding mechanisms can hide
    congestion signals to the server.  This memo discusses simple best
    practices on how coding and congestion control mechanisms could
-   coexist.
+   coexist.  One objective is to help the research community consider
+   congestion control aspects when proposing coding solutions.
 
 
 
-Kuhn, et al.              Expires June 7, 2020                  [Page 2]
+Kuhn, et al.              Expires July 9, 2020                  [Page 2]
 
-Internet-Draft            Coding and congestion            December 2019
+Internet-Draft            Coding and congestion             January 2020
 
 
    The proposed recommendations apply for coding at the transport or
@@ -165,9 +165,9 @@ Internet-Draft            Coding and congestion            December 2019
 
 
 
-Kuhn, et al.              Expires June 7, 2020                  [Page 3]
+Kuhn, et al.              Expires July 9, 2020                  [Page 3]
 
-Internet-Draft            Coding and congestion            December 2019
+Internet-Draft            Coding and congestion             January 2020
 
 
 4.  Base solution description
@@ -221,9 +221,9 @@ Internet-Draft            Coding and congestion            December 2019
 
 
 
-Kuhn, et al.              Expires June 7, 2020                  [Page 4]
+Kuhn, et al.              Expires July 9, 2020                  [Page 4]
 
-Internet-Draft            Coding and congestion            December 2019
+Internet-Draft            Coding and congestion             January 2020
 
 
 5.2.  Coded packets driven by CWND progression
@@ -277,9 +277,9 @@ Internet-Draft            Coding and congestion            December 2019
 
 
 
-Kuhn, et al.              Expires June 7, 2020                  [Page 5]
+Kuhn, et al.              Expires July 9, 2020                  [Page 5]
 
-Internet-Draft            Coding and congestion            December 2019
+Internet-Draft            Coding and congestion             January 2020
 
 
 6.2.  The server adapts its window reduction to repaired packet signals
@@ -333,9 +333,9 @@ Internet-Draft            Coding and congestion            December 2019
 
 
 
-Kuhn, et al.              Expires June 7, 2020                  [Page 6]
+Kuhn, et al.              Expires July 9, 2020                  [Page 6]
 
-Internet-Draft            Coding and congestion            December 2019
+Internet-Draft            Coding and congestion             January 2020
 
 
    +-----------------------+--------------------------------+
@@ -389,9 +389,9 @@ Internet-Draft            Coding and congestion            December 2019
 
 
 
-Kuhn, et al.              Expires June 7, 2020                  [Page 7]
+Kuhn, et al.              Expires July 9, 2020                  [Page 7]
 
-Internet-Draft            Coding and congestion            December 2019
+Internet-Draft            Coding and congestion             January 2020
 
 
    [I-D.swett-nwcrg-coding-for-quic]
@@ -445,4 +445,4 @@ Authors' Addresses
 
 
 
-Kuhn, et al.              Expires June 7, 2020                  [Page 8]
+Kuhn, et al.              Expires July 9, 2020                  [Page 8]
