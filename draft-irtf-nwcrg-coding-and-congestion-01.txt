@@ -5,12 +5,12 @@
 NWCRG                                                       N. Kuhn, Ed.
 Internet-Draft                                                      CNES
 Intended status: Informational                                 E. Lochin
-Expires: July 9, 2020                                       ISAE-SUPAERO
+Expires: July 10, 2020                                      ISAE-SUPAERO
                                                                F. Michel
                                                                UCLouvain
                                                                 M. Welzl
                                                       University of Oslo
-                                                         January 6, 2020
+                                                         January 7, 2020
 
 
                Coding and congestion control in transport
@@ -19,12 +19,17 @@ Expires: July 9, 2020                                       ISAE-SUPAERO
 Abstract
 
    This document is the product of the Coding for Efficient Network
-   Communications Research Group (NWCRG).  This document discusses the
-   interaction between congestion control and coding mechanism at the
-   transport layer.  The scope of the document is end-to-end
-   communications.  Examples of interest for the proposed solution is to
-   better deal with tail losses or with networks with non-congestion
-   losses.  Coding for tunnels is out-of-the scope of the document.
+   Communications Research Group (NWCRG).  The scope of the document is
+   end-to-end communications: coding for tunnels is out-of-the scope of
+   the document.
+
+   Coding is a reliability mechanism that is distinct and separated from
+   the loss detection of congestion controls.  Using coding can be a
+   useful way to better deal with tail losses or with networks with non-
+   congestion losses.  However, coding mechanisms could hide congestion
+   signals to the server.  This memo proposes a discussion on how coding
+   and congestion signals could interact and proposes best current
+   practice.
 
 Status of This Memo
 
@@ -41,7 +46,17 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on July 9, 2020.
+   This Internet-Draft will expire on July 10, 2020.
+
+
+
+
+
+
+Kuhn, et al.              Expires July 10, 2020                 [Page 1]
+
+Internet-Draft            Coding and congestion             January 2020
+
 
 Copyright Notice
 
@@ -50,14 +65,6 @@ Copyright Notice
 
    This document is subject to BCP 78 and the IETF Trust's Legal
    Provisions Relating to IETF Documents
-
-
-
-Kuhn, et al.              Expires July 9, 2020                  [Page 1]
-
-Internet-Draft            Coding and congestion             January 2020
-
-
    (https://trustee.ietf.org/license-info) in effect on the date of
    publication of this document.  Please review these documents
    carefully, as they describe your rights and restrictions with respect
@@ -70,24 +77,24 @@ Table of Contents
 
    1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
    2.  Separate channels . . . . . . . . . . . . . . . . . . . . . .   3
-   3.  Scope . . . . . . . . . . . . . . . . . . . . . . . . . . . .   3
-     3.1.  Type of application . . . . . . . . . . . . . . . . . . .   3
-     3.2.  End-to-end  . . . . . . . . . . . . . . . . . . . . . . .   3
+   3.  Scope . . . . . . . . . . . . . . . . . . . . . . . . . . . .   4
+     3.1.  Type of application . . . . . . . . . . . . . . . . . . .   4
+     3.2.  End-to-end  . . . . . . . . . . . . . . . . . . . . . . .   4
    4.  Base solution description . . . . . . . . . . . . . . . . . .   4
    5.  Server-side coding solutions  . . . . . . . . . . . . . . . .   4
-     5.1.  Coded packets without considering CWND progression  . . .   4
+     5.1.  Coded packets without considering CWND progression  . . .   5
      5.2.  Coded packets driven by CWND progression  . . . . . . . .   5
    6.  Server-side reaction to repaired packet signals . . . . . . .   5
      6.1.  The server congestion control considers repaired packet
-           signals as congestion-implied packet losses . . . . . . .   5
+           signals as congestion-implied packet losses . . . . . . .   6
      6.2.  The server adapts its window reduction to repaired packet
            signals . . . . . . . . . . . . . . . . . . . . . . . . .   6
      6.3.  The server ignores repaired packet signals  . . . . . . .   6
-   7.  Summary . . . . . . . . . . . . . . . . . . . . . . . . . . .   6
+   7.  Summary . . . . . . . . . . . . . . . . . . . . . . . . . . .   7
    8.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   7
    9.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   7
-   10. Security Considerations . . . . . . . . . . . . . . . . . . .   7
-   11. Informative References  . . . . . . . . . . . . . . . . . . .   7
+   10. Security Considerations . . . . . . . . . . . . . . . . . . .   8
+   11. Informative References  . . . . . . . . . . . . . . . . . . .   8
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   8
 
 1.  Introduction
@@ -99,20 +106,24 @@ Table of Contents
    There are cases where deploying coding improves the quality of the
    transmission.  As example, the server may hardly detect tail losses
    that impact may impact the application layer.  Another example may be
-   the networks where non-congestion losses are persistent and prevent
-   the server from exploiting the link capacity.  [RFC5681] defines TCP
-   as a loss-based congestion control and coding mechanisms can hide
-   congestion signals to the server.  This memo discusses simple best
-   practices on how coding and congestion control mechanisms could
-   coexist.  One objective is to help the research community consider
-   congestion control aspects when proposing coding solutions.
 
 
 
-Kuhn, et al.              Expires July 9, 2020                  [Page 2]
+Kuhn, et al.              Expires July 10, 2020                 [Page 2]
 
 Internet-Draft            Coding and congestion             January 2020
 
+
+   the networks where non-congestion losses are persistent and prevent
+   the server from exploiting the link capacity.  [RFC5681] defines TCP
+   as a loss-based congestion control and coding mechanisms can hide
+   congestion signals to the server.
+
+   Coding is a reliability mechanism that is distinct and separated from
+   the loss detection of congestion controls.  This memo discusses
+   simple best practices on how coding and congestion control mechanisms
+   could coexist.  One objective is to help the research community
+   consider congestion control aspects when proposing coding solutions.
 
    The proposed recommendations apply for coding at the transport or
    application layer and coding for tunnels is out-of-the scope of the
@@ -147,6 +158,18 @@ Internet-Draft            Coding and congestion             January 2020
 
                  Figure 1: Notations and separate channels
 
+
+
+
+
+
+
+
+Kuhn, et al.              Expires July 10, 2020                 [Page 3]
+
+Internet-Draft            Coding and congestion             January 2020
+
+
 3.  Scope
 
    This section describes the scope of the document.
@@ -161,15 +184,6 @@ Internet-Draft            Coding and congestion             January 2020
    is added at the server and client end points.  The discussions should
    then consider fairness with non-coding solutions.
 
-
-
-
-
-Kuhn, et al.              Expires July 9, 2020                  [Page 3]
-
-Internet-Draft            Coding and congestion             January 2020
-
-
 4.  Base solution description
 
    The solution can be described as follows:
@@ -180,8 +194,8 @@ Internet-Draft            Coding and congestion             January 2020
       to be repaired, since it could have been delayed but not lost.
 
    o  The server MUST be able to detect the "repaired packet" signal.
-      The base solution does not describe how the server reacts to such
-      signal.
+      The base solution does not describe how the congestion control
+      reacts to such signal.
 
    The rationale behind this solution is the following: the server has
    more information on the congestion status and the application
@@ -199,6 +213,18 @@ Internet-Draft            Coding and congestion             January 2020
 
    This section presents solutions for a server to add application
    coding.
+
+
+
+
+
+
+
+
+Kuhn, et al.              Expires July 10, 2020                 [Page 4]
+
+Internet-Draft            Coding and congestion             January 2020
+
 
 5.1.  Coded packets without considering CWND progression
 
@@ -218,13 +244,6 @@ Internet-Draft            Coding and congestion             January 2020
    The drawback of such solution is that it may result in coding
    solutions being unfair towards non-coding solutions.  This solutions
    may result in adding congestion in congested networks.
-
-
-
-Kuhn, et al.              Expires July 9, 2020                  [Page 4]
-
-Internet-Draft            Coding and congestion             January 2020
-
 
 5.2.  Coded packets driven by CWND progression
 
@@ -251,6 +270,18 @@ Internet-Draft            Coding and congestion             January 2020
    congestion controls that use loss as congestion signals (potentially
    among other congestion detection mechanism).
 
+
+
+
+
+
+
+
+Kuhn, et al.              Expires July 10, 2020                 [Page 5]
+
+Internet-Draft            Coding and congestion             January 2020
+
+
 6.1.  The server congestion control considers repaired packet signals as
       congestion-implied packet losses
 
@@ -269,18 +300,6 @@ Internet-Draft            Coding and congestion             January 2020
    congestion loss rate, the congestion control throughput may decrease
    drastically.  Reporting this amount of loss to a server may reduce
    the application goodput when there is no actual congestion.
-
-
-
-
-
-
-
-
-Kuhn, et al.              Expires July 9, 2020                  [Page 5]
-
-Internet-Draft            Coding and congestion             January 2020
-
 
 6.2.  The server adapts its window reduction to repaired packet signals
 
@@ -312,6 +331,13 @@ Internet-Draft            Coding and congestion             January 2020
    However, this solution hides potential congestion losses, making it
    unfair to other congestion controls.
 
+
+
+Kuhn, et al.              Expires July 10, 2020                 [Page 6]
+
+Internet-Draft            Coding and congestion             January 2020
+
+
 7.  Summary
 
    This section provides a summary on the content in previous sections.
@@ -322,21 +348,6 @@ Internet-Draft            Coding and congestion             January 2020
    more original packets to transmit.  Moreover, the values indicated in
    this Figure consider a channel that does not exhibit a high loss
    pattern.
-
-
-
-
-
-
-
-
-
-
-
-Kuhn, et al.              Expires July 9, 2020                  [Page 6]
-
-Internet-Draft            Coding and congestion             January 2020
-
 
    +-----------------------+--------------------------------+
    | Server-side reaction  | Server-side coding solutions   |
@@ -371,6 +382,18 @@ Internet-Draft            Coding and congestion             January 2020
 
    This memo includes no request to IANA.
 
+
+
+
+
+
+
+
+Kuhn, et al.              Expires July 10, 2020                 [Page 7]
+
+Internet-Draft            Coding and congestion             January 2020
+
+
 10.  Security Considerations
 
    There is no security considerations required for this document.
@@ -384,15 +407,6 @@ Internet-Draft            Coding and congestion             January 2020
               Islam, S., Welzl, M., and S. Gjessing, "Coupled congestion
               control for RTP media", draft-ietf-rmcat-coupled-cc-09
               (work in progress), August 2019.
-
-
-
-
-
-Kuhn, et al.              Expires July 9, 2020                  [Page 7]
-
-Internet-Draft            Coding and congestion             January 2020
-
 
    [I-D.swett-nwcrg-coding-for-quic]
               Swett, I., Montpetit, M., Roca, V., and F. Michel, "Coding
@@ -425,6 +439,17 @@ Authors' Addresses
    Email: nicolas.kuhn@cnes.fr
 
 
+
+
+
+
+
+
+Kuhn, et al.              Expires July 10, 2020                 [Page 8]
+
+Internet-Draft            Coding and congestion             January 2020
+
+
    Emmanuel Lochin
    ISAE-SUPAERO
 
@@ -445,4 +470,35 @@ Authors' Addresses
 
 
 
-Kuhn, et al.              Expires July 9, 2020                  [Page 8]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Kuhn, et al.              Expires July 10, 2020                 [Page 9]

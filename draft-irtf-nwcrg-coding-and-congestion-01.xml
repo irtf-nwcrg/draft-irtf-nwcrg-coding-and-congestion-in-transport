@@ -89,7 +89,8 @@
         <!-- ######################################################--> 
 
     <abstract>
-    	<t>This document is the product of the Coding for Efficient Network Communications Research Group (NWCRG). This document discusses the interaction between congestion control and coding mechanism at the transport layer. The scope of the document is end-to-end communications. Examples of interest for the proposed solution is to better deal with tail losses or with networks with non-congestion losses. Coding for tunnels is out-of-the scope of the document.</t>
+	    <t>This document is the product of the Coding for Efficient Network Communications Research Group (NWCRG). The scope of the document is end-to-end communications: coding for tunnels is out-of-the scope of the document.</t>
+	    <t>Coding is a reliability mechanism that is distinct and separated from the loss detection of congestion controls. Using coding can be a useful way to better deal with tail losses or with networks with non-congestion losses. However, coding mechanisms could hide congestion signals to the server. This memo proposes a discussion on how coding and congestion signals could interact and proposes best current practice.</t>
     </abstract>
   </front>
 
@@ -97,7 +98,8 @@
 
 	<section anchor="sec:introduction" title="Introduction">
 		<t>This document represents the collaborative work and consensus of the Coding for Efficient Network Communications Research Group (NWCRG); it is not an IETF product and is not a standard.</t>
-		<t>There are cases where deploying coding improves the quality of the transmission. As example, the server may hardly detect tail losses that impact may impact the application layer. Another example may be the networks where non-congestion losses are persistent and prevent the server from exploiting the link capacity. <xref target="RFC5681"/> defines TCP as a loss-based congestion control and coding mechanisms can hide congestion signals to the server. This memo discusses simple best practices on how coding and congestion control mechanisms could coexist. One objective is to help the research community consider congestion control aspects when proposing coding solutions.</t> 
+		<t>There are cases where deploying coding improves the quality of the transmission. As example, the server may hardly detect tail losses that impact may impact the application layer. Another example may be the networks where non-congestion losses are persistent and prevent the server from exploiting the link capacity. <xref target="RFC5681"/> defines TCP as a loss-based congestion control and coding mechanisms can hide congestion signals to the server.</t>
+		<t>Coding is a reliability mechanism that is distinct and separated from the loss detection of congestion controls. This memo discusses simple best practices on how coding and congestion control mechanisms could coexist. One objective is to help the research community consider congestion control aspects when proposing coding solutions.</t> 
 		<t>The proposed recommendations apply for coding at the transport or application layer and coding for tunnels is out-of-the scope of the document.</t>
 	</section>
 
@@ -150,7 +152,7 @@
         <section anchor="sec:bcp" title="Base solution description">
 		<t>The solution can be described as follows:<list style="symbols">
 			<t>The client MUST indicate to the server that one or multiple packets have been repaired using a coding scheme. The "repaired packet" signal does not guarantee that the packet actually needed to be repaired, since it could have been delayed but not lost.</t>
-			<t>The server MUST be able to detect the "repaired packet" signal. The base solution does not describe how the server reacts to such signal.</t></list></t> 
+			<t>The server MUST be able to detect the "repaired packet" signal. The base solution does not describe how the congestion control reacts to such signal.</t></list></t> 
 		<t>The rationale behind this solution is the following: the server has more information on the congestion status and the application characteristics. Moreover, congestion control should not be splitted between multiple entities otherwise non-optimized decisions may be taken.</t>
 		<t>The proposed solution applies for coding in the transport and application layers. The proposed approach is inline with the one in <xref target="I-D.swett-nwcrg-coding-for-quic"/>. The proposed solution does not applies for the interaction between coding under the transport layer (i.e. not end-to-end), such as coding for tunnels.</t>
 	</section>
