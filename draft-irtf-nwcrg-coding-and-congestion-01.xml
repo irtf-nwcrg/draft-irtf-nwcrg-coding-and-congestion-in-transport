@@ -90,7 +90,7 @@
 
     <abstract>
 	    <t>This document is the product of the Coding for Efficient Network Communications Research Group (NWCRG). The scope of the document is end-to-end communications: coding for tunnels is out-of-the scope of the document.</t>
-	    <t>Coding is a reliability mechanism that is distinct and separated from the loss detection of congestion controls. Using coding can be a useful way to better deal with tail losses or with networks with non-congestion losses. However, coding mechanisms could hide congestion signals to the server. This memo proposes a discussion on how coding and congestion signals could interact and proposes best current practice.</t>
+	    <t>Coding is a reliability mechanism that is distinct and separated from the loss detection of congestion controls. Using coding can be a useful way to better deal with tail losses or with networks with non-congestion losses. However, coding mechanisms could hide congestion signals to the server. This memo proposes a discussion on how coding and congestion signals could interact and proposes best current practice. [test from Michael: can I push?]</t>
     </abstract>
   </front>
 
