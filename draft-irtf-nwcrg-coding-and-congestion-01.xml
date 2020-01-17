@@ -151,7 +151,7 @@
   ^                   |           |              ^
   | information       | coded     |              | network
   | about repaired    | data      |              | measurements
-  | blocks            ------------               |
+  | ratio             -------------              |
         </artwork>
         </figure>
 
