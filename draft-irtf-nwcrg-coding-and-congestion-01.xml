@@ -89,7 +89,7 @@
         <!-- ######################################################-->
 
     <abstract>
-        <t>Coding is a reliability mechanism that is distinct and separated from the loss detection of congestion controls. Using coding can be a useful way to better deal with tail losses or with networks with non-congestion losses. However, coding mechanisms should not hide congestion signals. This memo offers a discussion of how coding and congestion control interact.</t>
+        <t>Coding is a reliability mechanism that is distinct and separated from the loss detection of congestion controls. Using coding can be a useful way to better deal with tail losses or with networks with non-congestion losses. However, coding mechanisms should not hide congestion signals. This memo offers a discussion of how coding and congestion control can interact.</t>
         <t>This document is the product of the Coding for Efficient Network Communications Research Group (NWCRG). The scope of the document is end-to-end communications: coding for tunnels is out-of-the scope of the document.</t>
     </abstract>
   </front>
@@ -99,7 +99,7 @@
     <section anchor="sec:introduction" title="Introduction">
 	<t>There are cases where deploying coding improves the quality of the transmission. As an example, it may take time for the server to detect tail losses and this would impact the experience of applications using short flows. Another example are networks where non-congestion losses are persistent and prevent a sender from exploiting the link capacity.</t>
 	<t>Coding is a reliability mechanism that is distinct and separated from the loss detection of congestion controls. <xref target="RFC5681"/> defines TCP as a loss-based congestion control; because coding repairs such losses, blindly applying it may easily lead to an implementation that also hides a congestion signal to the sender. It is important to ensure that such information hiding does not occur.</t>
-        <t>This memo discusses simple best practices on how coding and congestion control mechanisms could coexist. One objective is to help the research community consider congestion control aspects when proposing coding solutions.</t>
+        <t>This memo discusses how coding and congestion control mechanisms can coexist. One objective is to help the research community consider congestion control aspects when proposing coding solutions.</t>
         <t>This document represents the collaborative work and consensus of the Coding for Efficient Network Communications Research Group (NWCRG); it is not an IETF product and is not a standard. The proposed recommendations apply for coding at the transport or application layer. Coding for tunnels is out of scope for the document.</t>
     </section>
 
