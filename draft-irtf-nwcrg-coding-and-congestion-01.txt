@@ -5,12 +5,12 @@
 NWCRG                                                            N. Kuhn
 Internet-Draft                                                      CNES
 Intended status: Informational                                 E. Lochin
-Expires: July 22, 2020                                      ISAE-SUPAERO
+Expires: July 23, 2020                                      ISAE-SUPAERO
                                                                F. Michel
                                                                UCLouvain
                                                                 M. Welzl
                                                       University of Oslo
-                                                        January 19, 2020
+                                                        January 20, 2020
 
 
                Coding and congestion control in transport
@@ -23,7 +23,7 @@ Abstract
    useful way to better deal with tail losses or with networks with non-
    congestion losses.  However, coding mechanisms should not hide
    congestion signals.  This memo offers a discussion of how coding and
-   congestion control interact.
+   congestion control can coexist.
 
    This document is the product of the Coding for Efficient Network
    Communications Research Group (NWCRG).  The scope of the document is
@@ -45,7 +45,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on July 22, 2020.
+   This Internet-Draft will expire on July 23, 2020.
 
 
 
@@ -53,7 +53,7 @@ Status of This Memo
 
 
 
-Kuhn, et al.              Expires July 22, 2020                 [Page 1]
+Kuhn, et al.              Expires July 23, 2020                 [Page 1]
 
 Internet-Draft            Coding and congestion             January 2020
 
@@ -87,8 +87,8 @@ Table of Contents
    7.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   7
    8.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   7
    9.  Security Considerations . . . . . . . . . . . . . . . . . . .   7
-   10. Informative References  . . . . . . . . . . . . . . . . . . .   7
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   7
+   10. Informative References  . . . . . . . . . . . . . . . . . . .   8
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   8
 
 1.  Introduction
 
@@ -109,15 +109,14 @@ Table of Contents
 
 
 
-Kuhn, et al.              Expires July 22, 2020                 [Page 2]
+Kuhn, et al.              Expires July 23, 2020                 [Page 2]
 
 Internet-Draft            Coding and congestion             January 2020
 
 
-   This memo discusses simple best practices on how coding and
-   congestion control mechanisms could coexist.  One objective is to
-   help the research community consider congestion control aspects when
-   proposing coding solutions.
+   This memo offers a discussion of how coding and congestion control
+   can coexist.  One objective is to help the research community
+   consider congestion control aspects when proposing coding solutions.
 
    This document represents the collaborative work and consensus of the
    Coding for Efficient Network Communications Research Group (NWCRG);
@@ -130,7 +129,7 @@ Internet-Draft            Coding and congestion             January 2020
    Figure 1 presents the notations that will be used in this document
    and introduce the Congestion Control (CC) and Forward Erasure
    Correction (FEC) channels.  The Congestion Control channel carries
-   data packets (from a server to a client) and a potential information
+   data packets (from a server to a client) and potential information
    signaling the packets that have been received (from the client to the
    server).  The Forward Erasure Correction channel carries coded
    packets (from the server to the client) and a potiential information
@@ -165,31 +164,34 @@ Internet-Draft            Coding and congestion             January 2020
 
 
 
-Kuhn, et al.              Expires July 22, 2020                 [Page 3]
+
+Kuhn, et al.              Expires July 23, 2020                 [Page 3]
 
 Internet-Draft            Coding and congestion             January 2020
 
 
-                 |                  --------                  ^
-                 | data             |      | data,            | sending
-                 |                  |      | requirements     | rate (or
-                 v                  |      v                  | window)
-  +-----------------------------+   |    +-------------------------+
-  |             FEC             | <----> |           CC            |
-  +-----------------------------+   |    +-------------------------+
-    ^                   |           |              ^
-    | information       | coded     |              | network
-    | about repaired    | data      |              | measurements
-    | ratio             -------------              |
+       |                 ^                 |               ^
+       | data            | coded           | data,        | sending
+       |                 | data            |requirements  | rate (or
+       v                 |                 v              | window)
+   +-----------------------------+        +-------------------------+
+   |             FEC             | <----> |           CC            |
+   +-----------------------------+        +-------------------------+
+     ^                                           ^
+     | information                               | network
+     | about repaired                            | measurements
+     | ratio
 
-                        Figure 2: Separate entities
+                 Figure 2: Separate entities (server side)
 
-   As Figure 2 shows, the inputs to FEC (data to work upon, and
-   signaling from the receiver about losses and/or repaired blocks) are
-   distinct from the inputs to CC.  The latter calculates a sending rate
-   or window from network measurements, and it takes the data to send as
-   input, sometimes along with application requirements such as upper/
-   lower rate bounds, periods of quiescence, or a priority.
+   Figure 2 shows a example where FEC is on top of the CC, but
+   interactions between the FEC and CC are possible.  In this example,
+   the inputs to FEC (data to work upon, and signaling from the receiver
+   about losses and/or repaired blocks) are distinct from the inputs to
+   CC.  The latter calculates a sending rate or window from network
+   measurements, and it takes the data to send as input, sometimes along
+   with application requirements such as upper/lower rate bounds,
+   periods of quiescence, or a priority.
 
    It is not clear that the ACK signals feeding into a congestion
    control algorithm are useful to FEC in their raw form, and vice versa
@@ -197,12 +199,7 @@ Internet-Draft            Coding and congestion             January 2020
    algorithm.  However, there can be meaningful other interactions
    (indicated by the horizontal double arrow) between the two entities,
    usually as a result of their operation rather than by relaying their
-   own raw inputs.  For example, the network measurements carried out by
-   CC can yield a longer-term statistical measure such as a loss ratio
-   which is useful input for a FEC coding scheme.  Similarly, unequal
-   error protection using fountain codes can be used to assign different
-   priorities to blocks of data, and these priorities can be honored by
-   a CC mechanism.
+   own raw inputs.
 
 3.  Scope
 
@@ -221,7 +218,10 @@ Internet-Draft            Coding and congestion             January 2020
 
 
 
-Kuhn, et al.              Expires July 22, 2020                 [Page 4]
+
+
+
+Kuhn, et al.              Expires July 23, 2020                 [Page 4]
 
 Internet-Draft            Coding and congestion             January 2020
 
@@ -240,21 +240,29 @@ Internet-Draft            Coding and congestion             January 2020
 
    Figure 3 illustrates the FEC above the transport case.
 
-                 |                  --------                  ^
-                 | data             |      | data,            | sending
-                 |                  |      | requirements     | rate (or
-                 v                  |      v                  | window)
-  +-----------------------------+   |    +--------------------------+
-  |             FEC             |        | Transport (including CC) |
-  +-----------------------------+   |    +--------------------------+
-    ^                   |           |              ^
-    | information       | coded     |              | network
-    | about repaired    | data      |              | measurements
-    | ratio             -------------              |
+                  |
+                  | data
+                  v
+   +------------------------------------+
+   |             FEC                    |
+   +------------------------------------+
+     ^                   |         ^
+     | information       | coded   | sending rate
+     | about repaired    | data    | (or window)
+     | ratio             v         |
+                      +-----------------+
+                      | Transport       | coded data
+                      | (including CC)  | ===>
+                      +-----------------+
+                         ^
+                         | network
+                         | measurements
 
-                     Figure 3: FEC above the transport
+              Figure 3: FEC above the transport (server side)
 
-   The coded packets are sent within what the congestion window allows.
+   Figure 3 presents an architecture where FEC is on top of the
+   transport.  The coded packets are sent within what the congestion
+   window allows.
 
    TODO : ADD MORE TEXT
 
@@ -269,28 +277,20 @@ Internet-Draft            Coding and congestion             January 2020
 
 
 
-
-
-
-
-
-
-
-
-Kuhn, et al.              Expires July 22, 2020                 [Page 5]
+Kuhn, et al.              Expires July 23, 2020                 [Page 5]
 
 Internet-Draft            Coding and congestion             January 2020
 
 
-                          |
-                          | data, requirements
-                          |
-                          v
+                     |
+                     | data, requirements
+                     |
+                     v
            +---------------------+
            | Transport           |
            | +-----+  +-----+    | coded data
-           | | FEC |  | CC  |    |
-           | +-----+  +-----+    | ----->
+           | | FEC |  | CC  |    | ===>
+           | +-----+  +-----+    |
            |                     |
            +---------------------+
                    ^          ^
@@ -299,8 +299,9 @@ Internet-Draft            Coding and congestion             January 2020
            about          measurements
            repaired ratio
 
-                      Figure 4: FEC in the transport
+               Figure 4: FEC in the transport (server side)
 
+   Figure 4 presents an architecture where FEC is within the transport.
    The coded packets are sent within what the congestion window allows,
    such as in [CTCP].  Examples of the solution would be sending coded
    packets when there is no more data to transmit or preferably send
@@ -312,37 +313,63 @@ Internet-Draft            Coding and congestion             January 2020
 
    Figure 5 illustrates the FEC below the transport case.
 
-                  |                  --------                  ^
-                  | data             |      | data            | coded
-                  | requirements     |      |                 | data
-                  v                  |      v                 |
-   +-----------------------------+   |    +-------------------------+
-   | Transport (including CC)    |        |           FEC           |
-   +-----------------------------+   |    +-------------------------+
-     ^                   |           |              ^
-     | network           |           |              | information
-     | measurements      |           |              | about repair
-     |                   -------------              | ratio
-
-                     Figure 5: FEC below the transport
-
-   The coded packets are sent on top of what is allowed by the
-   congestion control.  Examples of the solution could be adding a given
-   percentage of the congestion window as supplementary packets or
-   sending a given amount of coded packets at a given rate.  The
 
 
 
-Kuhn, et al.              Expires July 22, 2020                 [Page 6]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Kuhn, et al.              Expires July 23, 2020                 [Page 6]
 
 Internet-Draft            Coding and congestion             January 2020
 
 
+      | data            | sending rate
+      | requirements    | (or window)
+      v                 v
+   +------------------------------------+
+   |     Transport (including CC)       |
+   +------------------------------------+
+     ^                   |
+     | network           | data
+     | measurements      |
+                         v
+                      +-----------------+
+                      |      FEC        | coded data
+                      |                 | ===>
+                      +-----------------+
+                         ^
+                         | information
+                         | about repaired
+                         | ratio
+
+
+              Figure 5: FEC below the transport (server side)
+
+   Figure 5 presents an architecture where FEC is below the transport.
+   The coded packets are sent on top of what is allowed by the
+   congestion control.  Examples of the solution could be adding a given
+   percentage of the congestion window as supplementary packets or
+   sending a given amount of coded packets at a given rate.  The
    redundancy flow can be decorrelated from the congestion control that
-   manages source packets: a secondary congestion control can be
-   introduced, such as in coupled congestion control for RTP media
-   [I-D.ietf-rmcat-coupled-cc].  An example would be to exploit a lower
-   than best-effort congestion control [RFC6297].
+   manages source packets: a secondary congestion control could be
+   introduced underneath the FEC layer, such as in coupled congestion
+   control for RTP media [I-D.ietf-rmcat-coupled-cc].  An example would
+   be to exploit a lower than best-effort congestion control [RFC6297].
 
 7.  Acknowledgements
 
@@ -357,6 +384,15 @@ Internet-Draft            Coding and congestion             January 2020
 9.  Security Considerations
 
    There is no security considerations required for this document.
+
+
+
+
+
+Kuhn, et al.              Expires July 23, 2020                 [Page 7]
+
+Internet-Draft            Coding and congestion             January 2020
+
 
 10.  Informative References
 
@@ -384,16 +420,6 @@ Authors' Addresses
    Email: nicolas.kuhn@cnes.fr
 
 
-
-
-
-
-
-Kuhn, et al.              Expires July 22, 2020                 [Page 7]
-
-Internet-Draft            Coding and congestion             January 2020
-
-
    Emmanuel Lochin
    ISAE-SUPAERO
 
@@ -419,30 +445,4 @@ Internet-Draft            Coding and congestion             January 2020
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Kuhn, et al.              Expires July 22, 2020                 [Page 8]
+Kuhn, et al.              Expires July 23, 2020                 [Page 8]
