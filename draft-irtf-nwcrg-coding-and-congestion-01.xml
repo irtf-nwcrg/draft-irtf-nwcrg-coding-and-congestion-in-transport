@@ -89,7 +89,7 @@
         <!-- ######################################################-->
 
     <abstract>
-        <t>Coding is a reliability mechanism that is distinct and separated from the loss detection of congestion controls. Using coding can be a useful way to better deal with tail losses or with networks with non-congestion losses. However, coding mechanisms should not hide congestion signals. This memo offers a discussion of how coding and congestion control can coexist. This document can help the comparison of FEC schemes by identifying at which level they are operating, with respect with the transport congestion control.</t>
+        <t>Coding is a reliability mechanism that is distinct and separated from the loss detection of congestion controls. Using coding can be a useful way to better deal with tail losses or with networks with non-congestion losses. However, coding mechanisms should not hide congestion signals. This memo offers a discussion of how coding and congestion control can coexist. This document can help the comparison of FEC schemes by identifying at which level they are operating with respect to the transport congestion control.</t>
         <t>This document is the product of the Coding for Efficient Network Communications Research Group (NWCRG). The scope of the document is end-to-end communications: coding for tunnels is out-of-the scope of the document.</t>
     </abstract>
   </front>
@@ -251,7 +251,7 @@
         
         <t><xref target="fig:fec-in"></xref> presents an architecture where FEC is within the transport. The coded packets are sent within what the congestion window allows, such as in <xref target="CTCP"/>. Examples of the solution would be sending coded packets when there is no more data to transmit or preferably send coded packets instead of the following packets in the send buffer.</t>
 	<t>The advantage of this approach is that it can enable conjoint optimization between the CC and the FEC. Moreover, the transmission of coded packets does not add congestion in potentially congested networks but help repair lost packets (such as tail losses).</t>
-	<t>The drawback of this approach is that it may not result in much gains as opposed to classical CC retransmissions mechanisms and it costs bandwidth that could have been exploited to transmit non coded data packets. The coding ratio needs to be carrefully designed.</t>
+	<t>The drawback of this approach is that it may not result in much gains as opposed to classical CC retransmissions mechanisms and it costs bandwidth that could have been exploited to transmit non coded data packets. The coding ratio needs to be carefully designed.</t>
 	</section>
 
         <!-- ######################################################-->
@@ -284,7 +284,7 @@
 	</figure>
         <t><xref target="fig:fec-below"></xref> presents an architecture where FEC is below the transport. The coded packets are sent on top of what is allowed by the congestion control. Examples of the solution could be adding a given percentage of the congestion window as supplementary packets or sending a given amount of coded packets at a given rate. The redundancy flow can be decorrelated from the congestion control that manages source packets: a secondary congestion control could be introduced underneath the FEC layer, such as in coupled congestion control for RTP media <xref target="I-D.ietf-rmcat-coupled-cc"/>. An example would be to exploit a lower than best-effort congestion control <xref target="RFC6297"/>.</t>
 	<t>The advantage of this approach is that it can result in performance gains when there are persistent transmission losses along the path.</t>
-	<t>The drawback of this approach is that it can induce congestion in already congested networks. The coding ratio needs to be carrefully designed.</t>
+	<t>The drawback of this approach is that it can induce congestion in already congested networks. The coding ratio needs to be carefully designed.</t>
 	</section>
 
         <!-- ######################################################-->
