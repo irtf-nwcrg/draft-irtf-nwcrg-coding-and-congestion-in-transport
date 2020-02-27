@@ -77,12 +77,11 @@ Table of Contents
 
    1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
    2.  Separate channels, separate entities  . . . . . . . . . . . .   3
-   3.  Scope . . . . . . . . . . . . . . . . . . . . . . . . . . . .   4
-     3.1.  Type of application . . . . . . . . . . . . . . . . . . .   4
-     3.2.  End-to-end  . . . . . . . . . . . . . . . . . . . . . . .   4
-     3.3.  Objective of the document . . . . . . . . . . . . . . . .   4
+   3.  Scope . . . . . . . . . . . . . . . . . . . . . . . . . . . .   5
+     3.1.  Type of application . . . . . . . . . . . . . . . . . . .   5
+     3.2.  End-to-end  . . . . . . . . . . . . . . . . . . . . . . .   5
    4.  FEC above the transport . . . . . . . . . . . . . . . . . . .   5
-   5.  FEC within the transport  . . . . . . . . . . . . . . . . . .   5
+   5.  FEC within the transport  . . . . . . . . . . . . . . . . . .   6
    6.  FEC below the transport . . . . . . . . . . . . . . . . . . .   6
    7.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   7
    8.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   8
@@ -109,25 +108,32 @@ Table of Contents
 
 
 
+
 Kuhn, et al.             Expires August 30, 2020                [Page 2]
 
 Internet-Draft            Coding and congestion            February 2020
 
 
-   This memo offers a discussion of how FEC coding and congestion
-   control can coexist.  Another objective is to encourage the research
-   community to also consider congestion control aspects when proposing
-   and comparing FEC coding solutions in communication systems.  That
-   being said, this document does not aim at proposing FEC coding
-   solutions characterization guidelines: comparing FEC Schemes without
-   considering congestion control can be relevant if the goal is to
-   compare those schemes only.
+   FEC coding and congestion control can be seen as two separate
+   channels.  In practice, implementations may mix the signals that are
+   exchanged on these channels.  This memo offers a discussion of how
+   FEC coding and congestion control can coexist.  Another objective is
+   to encourage the research community to also consider congestion
+   control aspects when proposing and comparing FEC coding solutions in
+   communication systems.  That being said, this document does not aim
+   at proposing FEC coding solutions characterization guidelines:
+   comparing FEC Schemes without considering congestion control can be
+   relevant if the goal is to compare those schemes only.
+
+   The proposed document considers FEC coding at the transport or
+   application layer for an end-to-end unicast data transfer.  The
+   typical application scenario that is considered in the current
+   version of the document is a client browsing the web.  This memo may
+   be extended to cases with multiple paths.
 
    This document represents the collaborative work and consensus of the
    Coding for Efficient Network Communications Research Group (NWCRG);
-   it is not an IETF product and is not a standard.  The proposed
-   recommendations apply for FEC coding at the transport or application
-   layer.  Coding for tunnels is out of scope for the document.
+   it is not an IETF product and is not a standard.
 
 2.  Separate channels, separate entities
 
@@ -141,6 +147,28 @@ Internet-Draft            Coding and congestion            February 2020
    signaling the packets that have been repaired (from the client to the
    server).  It is worth pointing out that there are cases where these
    channels are not separated.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Kuhn, et al.             Expires August 30, 2020                [Page 3]
+
+Internet-Draft            Coding and congestion            February 2020
+
 
     Client                          Server
 
@@ -160,15 +188,6 @@ Internet-Draft            Coding and congestion            February 2020
 
    Inside a host, the CC and FEC entities can be regarded as
    conceptually separate:
-
-
-
-
-
-Kuhn, et al.             Expires August 30, 2020                [Page 3]
-
-Internet-Draft            Coding and congestion            February 2020
-
 
        |                 ^                 |               ^
        | data            | coded           | data,        | sending
@@ -197,27 +216,8 @@ Internet-Draft            Coding and congestion            February 2020
    - information about repaired blocks may be quite irrelevant to a CC
    algorithm.
 
-3.  Scope
 
-   This section describes the scope of the document.
 
-3.1.  Type of application
-
-   The document focuses on reliable transmissions.
-
-3.2.  End-to-end
-
-   The document focuses on end-to-end coding, i.e. cases where coding is
-   added at the server and client end points.  The discussions should
-   then consider fairness with non-coding solutions.
-
-3.3.  Objective of the document
-
-   Section 2 presents that FEC and CC can be seen as two separate
-   channels.  In practice, implementations may mix the signals that are
-   exchanged on these channels.  This document discusses how FEC and CC
-   relate.  The discussion can help in avoiding comparing FEC schemes
-   that do not operate at the same level (with respect to the CC).  [NK:
 
 
 
@@ -226,9 +226,19 @@ Kuhn, et al.             Expires August 30, 2020                [Page 4]
 Internet-Draft            Coding and congestion            February 2020
 
 
-   We may want to later add that we provide recommendations - but for
-   the moment, we may just list the server side coding solutions in the
-   layering approach without providing recommendations for each case]
+3.  Scope
+
+   This section describes the scope of the document.
+
+3.1.  Type of application
+
+   The document focuses on reliable data transfers.
+
+3.2.  End-to-end
+
+   The document focuses on end-to-end coding, i.e. cases where coding is
+   added at the server and client end points.  The discussions should
+   then consider fairness with non-coding solutions.
 
 4.  FEC above the transport
 
@@ -264,16 +274,6 @@ Internet-Draft            Coding and congestion            February 2020
    The drawback of this approach is that it is useless if the transport
    guarantees data delivery by retransmitting packets.
 
-5.  FEC within the transport
-
-   Figure 4 illustrates the FEC within the transport case.
-
-
-
-
-
-
-
 
 
 
@@ -281,6 +281,10 @@ Kuhn, et al.             Expires August 30, 2020                [Page 5]
 
 Internet-Draft            Coding and congestion            February 2020
 
+
+5.  FEC within the transport
+
+   Figure 4 illustrates the FEC within the transport case.
 
                      |
                      | data, requirements
@@ -320,10 +324,6 @@ Internet-Draft            Coding and congestion            February 2020
 6.  FEC below the transport
 
    Figure 5 illustrates the FEC below the transport case.
-
-
-
-
 
 
 

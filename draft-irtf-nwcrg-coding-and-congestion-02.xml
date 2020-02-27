@@ -66,7 +66,7 @@
 
     <!-- Meta-data Declarations -->
 
-    <area>Transport</area>
+    <area>IRTF</area>
 
     <workgroup>NWCRG</workgroup>
 
@@ -99,8 +99,9 @@
     <section anchor="sec:introduction" title="Introduction">
 	<t>There are cases where deploying FEC coding improves the quality of the transmission. As an example, when a server transmits data to a client it may take time for the server to detect tail losses (i.e. ) and this would impact the experience of applications using short flows. Another example are networks where non-congestion losses are persistent and prevent a sender from exploiting the link capacity.</t>
 	<t>Coding is a reliability mechanism that is distinct and separated from the loss detection of congestion controls. <xref target="RFC5681"/> defines TCP as a loss-based congestion control; because FEC coding repairs such losses, blindly applying it may easily lead to an implementation that also hides a congestion signal to the sender. It is important to ensure that such information hiding does not occur.</t>
-        <t>This memo offers a discussion of how FEC coding and congestion control can coexist. Another objective is to encourage the research community to also consider congestion control aspects when proposing and comparing FEC coding solutions in communication systems. That being said, this document does not aim at proposing FEC coding solutions characterization guidelines: comparing FEC Schemes without considering congestion control can be relevant if the goal is to compare those schemes only.</t>
-        <t>This document represents the collaborative work and consensus of the Coding for Efficient Network Communications Research Group (NWCRG); it is not an IETF product and is not a standard. The proposed recommendations apply for FEC coding at the transport or application layer. Coding for tunnels is out of scope for the document.</t>
+	<t>FEC coding and congestion control can be seen as two separate channels. In practice, implementations may mix the signals that are exchanged on these channels. This memo offers a discussion of how FEC coding and congestion control can coexist. Another objective is to encourage the research community to also consider congestion control aspects when proposing and comparing FEC coding solutions in communication systems. That being said, this document does not aim at proposing FEC coding solutions characterization guidelines: comparing FEC Schemes without considering congestion control can be relevant if the goal is to compare those schemes only.</t>
+	<t>The proposed document considers FEC coding at the transport or application layer for an end-to-end unicast data transfer. The typical application scenario that is considered in the current version of the document is a client browsing the web. This memo may be extended to cases with multiple paths.</t>
+	<t>This document represents the collaborative work and consensus of the Coding for Efficient Network Communications Research Group (NWCRG); it is not an IETF product and is not a standard.</t>
     </section>
 
         <!-- ######################################################-->
@@ -182,14 +183,11 @@
         <section anchor="sec:scope" title="Scope">
 		<t>This section describes the scope of the document.</t>
         <section anchor="sec:scope:appli" title="Type of application">
-            <t>The document focuses on reliable transmissions.</t>
+            <t>The document focuses on reliable data transfers.</t>
         </section>
         <section anchor="sec:scope:e2e" title="End-to-end">
             <t>The document focuses on end-to-end coding, i.e. cases where coding is added at the server and client end points. The discussions should then consider fairness with non-coding solutions.</t>
         </section>
-	<section anchor="sec:scope:scope" title="Objective of the document">
-		<t><xref target="sec:notations"></xref> presents that FEC and CC can be seen as two separate channels. In practice, implementations may mix the signals that are exchanged on these channels. This document discusses how FEC and CC relate. The discussion can help in avoiding comparing FEC schemes that do not operate at the same level (with respect to the CC). [NK: We may want to later add that we provide recommendations - but for the moment, we may just list the server side coding solutions in the layering approach without providing recommendations for each case]</t>
-	</section>
     </section>
 
         <!-- ######################################################-->
