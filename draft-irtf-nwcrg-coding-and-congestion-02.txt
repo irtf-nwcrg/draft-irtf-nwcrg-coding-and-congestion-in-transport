@@ -400,7 +400,10 @@ Internet-Draft            Coding and congestion            February 2020
 
 9.  Security Considerations
 
-   There is no security considerations required for this document.
+   FEC and CC schemes can contribute to DoS attacks.  This is not
+   specific to this document.
+
+   More information TBD.
 
 10.  Informative References
 
@@ -438,9 +441,6 @@ Authors' Addresses
    UCLouvain
 
    Email: francois.michel@uclouvain.be
-
-
-
 
 
 

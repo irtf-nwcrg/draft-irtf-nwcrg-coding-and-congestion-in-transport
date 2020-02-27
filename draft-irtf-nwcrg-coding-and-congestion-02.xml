@@ -302,7 +302,8 @@
     </section>
 
     <section anchor="sec:ecurity" title="Security Considerations">
-    <t>There is no security considerations required for this document.</t>
+    <t>FEC and CC schemes can contribute to DoS attacks. This is not specific to this document.</t>
+    <t>More information TBD.</t>
     </section>
     </middle>
 
