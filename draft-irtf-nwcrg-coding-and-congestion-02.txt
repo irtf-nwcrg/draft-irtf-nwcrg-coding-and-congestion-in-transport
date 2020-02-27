@@ -77,13 +77,14 @@ Table of Contents
 
    1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
    2.  Separate channels, separate entities  . . . . . . . . . . . .   3
-   3.  FEC above the transport . . . . . . . . . . . . . . . . . . .   4
-   4.  FEC within the transport  . . . . . . . . . . . . . . . . . .   5
-   5.  FEC below the transport . . . . . . . . . . . . . . . . . . .   6
-   6.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   7
-   7.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   8
-   8.  Security Considerations . . . . . . . . . . . . . . . . . . .   8
-   9.  Informative References  . . . . . . . . . . . . . . . . . . .   8
+   3.  FEC and CC layering . . . . . . . . . . . . . . . . . . . . .   5
+     3.1.  FEC above the transport . . . . . . . . . . . . . . . . .   5
+     3.2.  FEC within the transport  . . . . . . . . . . . . . . . .   6
+     3.3.  FEC below the transport . . . . . . . . . . . . . . . . .   6
+   4.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   7
+   5.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   8
+   6.  Security Considerations . . . . . . . . . . . . . . . . . . .   8
+   7.  Informative References  . . . . . . . . . . . . . . . . . . .   8
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   8
 
 1.  Introduction
@@ -105,7 +106,6 @@ Table of Contents
 
    FEC coding and congestion control can be seen as two separate
    channels.  In practice, implementations may mix the signals that are
-   exchanged on these channels.  This memo offers a discussion of how
 
 
 
@@ -114,6 +114,7 @@ Kuhn, et al.             Expires August 30, 2020                [Page 2]
 Internet-Draft            Coding and congestion            February 2020
 
 
+   exchanged on these channels.  This memo offers a discussion of how
    FEC coding and congestion control can coexist.  Another objective is
    to encourage the research community to also consider congestion
    control aspects when proposing and comparing FEC coding solutions in
@@ -164,7 +165,6 @@ Internet-Draft            Coding and congestion            February 2020
 
 
 
-
 Kuhn, et al.             Expires August 30, 2020                [Page 3]
 
 Internet-Draft            Coding and congestion            February 2020
@@ -173,49 +173,49 @@ Internet-Draft            Coding and congestion            February 2020
    Inside a host, the CC and FEC entities can be regarded as
    conceptually separate:
 
-       |                 ^                 |               ^
-       | source          | repair          |packets       | sending
-       | packets         | packets         |requirements  | rate (or
-       v                 |                 v              | window)
-   +-----------------------------+        +-------------------------+
-   |             FEC             |        |           CC            |
-   +-----------------------------+        +-------------------------+
-     ^                                           ^
-     | signaling about                           | network
-     | losses and/or                             | measurements
+     |              ^                  |             ^
+     | source       | coding           |packets      | sending
+     | packets      | rate             |requirements | rate (or
+     v              |                  v             | window)
+   +-------------------+source and/or +--------------------+
+   |      FEC          |=> repair     |       CC           |=> packets
+   +-------------------+ packets      +--------------------+
+     ^                                         ^
+     | signaling about                         | network
+     | losses and/or                           | measurements
      | repaired packets
 
                  Figure 2: Separate entities (server side)
 
    Figure 2 provides more details than Figure 1 by focusing on the
-   server side.  The inputs to FEC (packet to work upon, and signaling
-   from the receiver about losses and/or repaired packets) are distinct
-   from the inputs to CC.  The latter calculates a sending rate or
-   window from network measurements, and it takes the packet to send as
-   input, sometimes along with application requirements such as upper/
-   lower rate bounds, periods of quiescence, or a priority.
+   server side.  Some elements are introduced:
 
-   It is not clear that the ACK signals feeding into a congestion
-   control algorithm are useful to FEC in their raw form, and vice versa
-   - information about repaired blocks may be quite irrelevant to a CC
-   algorithm.
+   o  'network measurements' (input control plane for the transport
+      including CC): refers to the information a ongestion control can
+      obtain from a network (e.g.  TCP can estimate the latency, the
+      loss rate and bottleneck).
 
-3.  FEC above the transport
+   o  'requirements' (input control plane for the transport including
+      CC): refers to application requirements such as upper/lower rate
+      bounds, periods of quiescence, or a priority.
 
-   Figure 3 illustrates the FEC above the transport case.
+   o  'sending rate (or window)' (output control plane for the transport
+      including CC): refers to the rate at which a congestion control
+      decides to transmit packets, based on 'network measurements'.
 
+   o  'signaling about losses and/or repaired packets' (input control
+      plane for the FEC): refers to the information a FEC server can
+      obtain from a FEC client about the performance of the FEC solution
+      as seen from the client.
 
+   o  'coding rate' (output control plane for the FEC): refers to the
+      coding rate that is used by the FEC solution.
 
-
-
-
-
-
-
-
-
-
-
+   o  'source and/or repair packets' (data plane for both the FEC and
+      the CC): refers to the packets that are transmitted.  There can
+      only be source packets (if the coding rate is 0), repair packets
+      (if the solution decides not to send the original source packets)
+      or a mix of both.
 
 
 
@@ -225,6 +225,28 @@ Kuhn, et al.             Expires August 30, 2020                [Page 4]
 
 Internet-Draft            Coding and congestion            February 2020
 
+
+   The inputs to FEC (packet to work upon, and signaling from the
+   receiver about losses and/or repaired packets) are distinct from the
+   inputs to CC.  The latter calculates a sending rate or window from
+   network measurements, and it takes the packet to send as input,
+   sometimes along with application requirements such as upper/lower
+   rate bounds, periods of quiescence, or a priority.
+
+   It is not clear that the ACK signals feeding into a congestion
+   control algorithm are useful to FEC in their raw form, and vice versa
+   - information about repaired blocks may be quite irrelevant to a CC
+   algorithm.
+
+3.  FEC and CC layering
+
+   This section discusses how FEC and CC can relate in different cases
+   (FEC above the transport, FEC within the transport, FEC below the
+   transport).
+
+3.1.  FEC above the transport
+
+   Figure 3 illustrates the FEC above the transport case.
 
                   | source
                   | packets
@@ -253,34 +275,20 @@ Internet-Draft            Coding and congestion            February 2020
    The advantage of this approach is that the FEC does not contribute to
    adding congestion in the network.
 
-   The drawback of this approach is that it is useless if the transport
-   guarantees data delivery by retransmitting packets.
-
-4.  FEC within the transport
-
-   Figure 4 illustrates the FEC within the transport case.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 Kuhn, et al.             Expires August 30, 2020                [Page 5]
 
 Internet-Draft            Coding and congestion            February 2020
 
+
+   This approach requires that the transport protocol does not include a
+   reliability (e.g., based on lost packet retransmition).  This
+   approach is relevant with UDP.
+
+3.2.  FEC within the transport
+
+   Figure 4 illustrates the FEC within the transport case.
 
                      |
                      | source packets,
@@ -317,17 +325,9 @@ Internet-Draft            Coding and congestion            February 2020
    bandwidth that could have been exploited to transmit source packets.
    The coding ratio needs to be carefully designed.
 
-5.  FEC below the transport
+3.3.  FEC below the transport
 
    Figure 5 illustrates the FEC below the transport case.
-
-
-
-
-
-
-
-
 
 
 
@@ -378,7 +378,7 @@ Internet-Draft            Coding and congestion            February 2020
    already congested networks.  The coding ratio needs to be carefully
    designed.
 
-6.  Acknowledgements
+4.  Acknowledgements
 
    Many thanks to Spencer Dawkins, Dave Oran, Carsten Bormann, Vincent
    Roca and Marie-Jose Montpetit for their useful comments that helped
@@ -394,18 +394,18 @@ Kuhn, et al.             Expires August 30, 2020                [Page 7]
 Internet-Draft            Coding and congestion            February 2020
 
 
-7.  IANA Considerations
+5.  IANA Considerations
 
    This memo includes no request to IANA.
 
-8.  Security Considerations
+6.  Security Considerations
 
    FEC and CC schemes can contribute to DoS attacks.  This is not
    specific to this document.
 
    More information TBD.
 
-9.  Informative References
+7.  Informative References
 
    [CTCP]     Kim (et al.), M., "Network Coded TCP (CTCP)",
               arXiv 1212.2291v3, 2013.

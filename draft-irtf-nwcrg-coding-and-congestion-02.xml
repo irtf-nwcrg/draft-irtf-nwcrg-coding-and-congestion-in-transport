@@ -142,23 +142,32 @@
     
     	<figure anchor="fig:sep-entities" title="Separate entities (server side)">
         <artwork>
-    |                 ^                 |               ^
-    | source          | repair          |packets       | sending
-    | packets         | packets         |requirements  | rate (or
-    v                 |                 v              | window)
-+-----------------------------+        +-------------------------+
-|             FEC             |        |           CC            |
-+-----------------------------+        +-------------------------+
-  ^                                           ^
-  | signaling about                           | network
-  | losses and/or                             | measurements
+  |              ^                  |             ^
+  | source       | coding           |packets      | sending
+  | packets      | rate             |requirements | rate (or
+  v              |                  v             | window)
++-------------------+source and/or +--------------------+
+|      FEC          |=> repair     |       CC           |=> packets
++-------------------+ packets      +--------------------+
+  ^                                         ^
+  | signaling about                         | network
+  | losses and/or                           | measurements
   | repaired packets                         
         </artwork>
         </figure>
 
-	<t><xref target="fig:sep-entities"></xref> provides more details than 
-	<xref target="fig:sep-channel"></xref> by focusing on the server side. 
-	The inputs to FEC (packet to work upon, and signaling 
+	<t><xref target="fig:sep-entities"></xref> provides more details than <xref target="fig:sep-channel"></xref> by focusing on the server side. Some elements are introduced:<list style="symbols">
+		<t>'network measurements' (input control plane for the transport including CC): refers to the information a ongestion control can obtain from a network (e.g. TCP can estimate the latency, the loss rate and bottleneck).</t>
+		<t>'requirements' (input control plane for the transport including CC): refers to application requirements such as upper/lower rate bounds, periods of quiescence, or a priority.</t>
+		<t>'sending rate (or window)' (output control plane for the transport including CC): refers to the rate at which a congestion control decides to transmit packets, based on 'network measurements'.</t>	
+		<t>'signaling about losses and/or repaired packets' (input control plane for the FEC): refers to the information a FEC server can obtain from a FEC client about the performance of the FEC solution as seen from the client.</t>
+		<t>'coding rate' (output control plane for the FEC): refers to the coding rate that is used by the FEC solution.</t>	
+		<t>'source and/or repair packets' (data plane for both the FEC and the CC): refers to the packets that are transmitted. There can only be source packets (if the coding rate is 0), repair packets (if the solution decides not to send the original source packets) or a mix of both.</t>	
+	</list></t>
+
+	<!-- <t><xref target="fig:sep-entities"></xref> provides more details than 
+	<xref target="fig:sep-channel"></xref> by focusing on the server side. -->
+	<t>The inputs to FEC (packet to work upon, and signaling 
 	from the receiver about losses and/or repaired packets)
         are distinct from the inputs to CC. The latter calculates a
         sending rate or window from network measurements, and it takes
@@ -194,10 +203,16 @@
         <!-- ######################################################-->
         <!-- New section -->
         <!-- ######################################################-->
-        <section anchor="sec:fec-above" title="FEC above the transport">
-		<t><xref target="fig:fec-above"></xref> illustrates the FEC above the transport case.</t> 	
-        <figure anchor="fig:fec-above" title="FEC above the transport (server side)">
-        <artwork>
+	<section anchor="sec:fec-cc" title="FEC and CC layering">
+	<t>This section discusses how FEC and CC can relate in different cases (FEC above the transport, FEC within the transport, FEC below the transport).</t>
+
+		<!-- ######################################################-->
+        	<!-- New subsection -->
+        	<!-- ######################################################-->
+		<section anchor="sec:fec-above" title="FEC above the transport">
+			<t><xref target="fig:fec-above"></xref> illustrates the FEC above the transport case.</t> 	
+        	<figure anchor="fig:fec-above" title="FEC above the transport (server side)">
+        	<artwork>
                | source             
                | packets                
                v                  
@@ -215,20 +230,20 @@
                       ^
                       | network
                       | measurements
-        </artwork>
-	</figure>
-	<t><xref target="fig:fec-above"></xref> presents an architecture where FEC is on top of the transport. The repair packets are sent within what the congestion window allows.</t>
-	<t>The advantage of this approach is that the FEC does not contribute to adding congestion in the network.</t>
-	<t>The drawback of this approach is that it is useless if the transport guarantees data delivery by retransmitting packets.</t>
-	</section>
+	        </artwork>
+		</figure>
+		<t><xref target="fig:fec-above"></xref> presents an architecture where FEC is on top of the transport. The repair packets are sent within what the congestion window allows.</t>
+		<t>The advantage of this approach is that the FEC does not contribute to adding congestion in the network.</t>
+		<t>This approach requires that the transport protocol does not include a reliability (e.g., based on lost packet retransmition). This approach is relevant with UDP.</t>
+		</section>
 
-        <!-- ######################################################-->
-        <!-- New section -->
-        <!-- ######################################################-->
-        <section anchor="sec:fec-in" title="FEC within the transport">
+	        <!-- ######################################################-->
+        	<!-- New subsection -->
+        	<!-- ######################################################-->
+	        <section anchor="sec:fec-in" title="FEC within the transport">
 		<t><xref target="fig:fec-in"></xref> illustrates the FEC within the transport case.</t> 	
-        <figure anchor="fig:fec-in" title="FEC in the transport (server side)">
-        <artwork>
+       	 	<figure anchor="fig:fec-in" title="FEC in the transport (server side)">
+        	<artwork>
 	  	  |                 
 		  | source packets,
 		  | requirements 
@@ -245,21 +260,22 @@
 	signaling about  network
 	losses and/or    measurements
 	repaired packets           
-        </artwork>
-	</figure>
+        	</artwork>
+		</figure>
         
-        <t><xref target="fig:fec-in"></xref> presents an architecture where FEC is within the transport. The repair packets are sent within what the congestion window allows, such as in <xref target="CTCP"/>. Examples of the solution would be sending repair packets when there is no more data to transmit or preferably send repair packets instead of the following packets in the send buffer.</t>
-	<t>The advantage of this approach is that it can enable conjoint optimization between the CC and the FEC. Moreover, the transmission of repair packets does not add congestion in potentially congested networks but help repair lost packets (such as tail losses).</t>
-	<t>The drawback of this approach is that it may not result in much gains as opposed to classical CC retransmissions mechanisms and it costs bandwidth that could have been exploited to transmit source packets. The coding ratio needs to be carefully designed.</t>
-	</section>
+        	<t><xref target="fig:fec-in"></xref> presents an architecture where FEC is within the transport. The repair packets are sent within what the congestion window allows, such as in <xref target="CTCP"/>. Examples of the solution would be sending repair packets when there is no more data to transmit or preferably send repair packets instead of the following packets in the send buffer.</t>
+		<t>The advantage of this approach is that it can enable conjoint optimization between the CC and the FEC. Moreover, the transmission of repair packets does not add congestion in potentially congested networks but help repair lost packets (such as tail losses).</t>
+		<t>The drawback of this approach is that it may not result in much gains as opposed to classical CC retransmissions mechanisms and it costs bandwidth that could have been exploited to transmit source packets. The coding ratio needs to be carefully designed.</t>
+		</section>
 
-        <!-- ######################################################-->
-        <!-- New section -->
-        <!-- ######################################################-->
-        <section anchor="sec:fec-below" title="FEC below the transport">
-	<t><xref target="fig:fec-below"></xref> illustrates the FEC below the transport case.</t> 	
-        <figure anchor="fig:fec-below" title="FEC below the transport (server side)">
-        <artwork>
+
+	        <!-- ######################################################-->
+        	<!-- New subsection -->
+        	<!-- ######################################################-->
+        	<section anchor="sec:fec-below" title="FEC below the transport">
+		<t><xref target="fig:fec-below"></xref> illustrates the FEC below the transport case.</t> 	
+        	<figure anchor="fig:fec-below" title="FEC below the transport (server side)">
+        	<artwork>
    | source packets  | sending rate            
    | requirements    | (or window)              
    v                 v 
@@ -279,11 +295,13 @@
 		      | losses and/or
 		      | repaired packets
 
-        </artwork>
-	</figure>
-        <t><xref target="fig:fec-below"></xref> presents an architecture where FEC is below the transport. The repair packets are sent on top of what is allowed by the congestion control. Examples of the solution could be adding a given percentage of the congestion window as supplementary packets or sending a given amount of repair packets at a given rate. The redundancy flow can be decorrelated from the congestion control that manages source packets: a secondary congestion control could be introduced underneath the FEC layer, such as in coupled congestion control for RTP media <xref target="I-D.ietf-rmcat-coupled-cc"/>. An example would be to exploit a lower than best-effort congestion control <xref target="RFC6297"/>.</t>
-	<t>The advantage of this approach is that it can result in performance gains when there are persistent transmission losses along the path.</t>
-	<t>The drawback of this approach is that it can induce congestion in already congested networks. The coding ratio needs to be carefully designed.</t>
+        	</artwork>
+		</figure>
+        	<t><xref target="fig:fec-below"></xref> presents an architecture where FEC is below the transport. The repair packets are sent on top of what is allowed by the congestion control. Examples of the solution could be adding a given percentage of the congestion window as supplementary packets or sending a given amount of repair packets at a given rate. The redundancy flow can be decorrelated from the congestion control that manages source packets: a secondary congestion control could be introduced underneath the FEC layer, such as in coupled congestion control for RTP media <xref target="I-D.ietf-rmcat-coupled-cc"/>. An example would be to exploit a lower than best-effort congestion control <xref target="RFC6297"/>.</t>
+		<t>The advantage of this approach is that it can result in performance gains when there are persistent transmission losses along the path.</t>
+		<t>The drawback of this approach is that it can induce congestion in already congested networks. The coding ratio needs to be carefully designed.</t>
+		</section>
+
 	</section>
 
         <!-- ######################################################-->
