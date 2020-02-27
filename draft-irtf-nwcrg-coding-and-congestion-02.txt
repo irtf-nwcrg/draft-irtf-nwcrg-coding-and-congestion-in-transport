@@ -20,12 +20,12 @@ Abstract
 
    FEC coding is a reliability mechanism that is distinct and separated
    from the loss detection of congestion controls.  Using FEC coding can
-   be a useful way to better deal with tail losses or with networks with
-   non-congestion losses.  However, FEC coding mechanisms should not
-   hide congestion signals.  This memo offers a discussion of how FEC
-   coding and congestion control can coexist.  This document can help
-   the comparison of FEC schemes by identifying at which level they are
-   operating with respect to the transport congestion control.
+   be a useful way to better deal with transfer tail losses or with
+   networks with non-congestion losses.  However, FEC coding mechanisms
+   should not hide congestion signals.  This memo offers a discussion of
+   how FEC coding and congestion control can coexist.  This document can
+   help the comparison of FEC schemes by identifying at which level they
+   are operating with respect to the transport congestion control.
 
    This document is the product of the Coding for Efficient Network
    Communications Research Group (NWCRG).  The scope of the document is
@@ -80,9 +80,9 @@ Table of Contents
    3.  Scope . . . . . . . . . . . . . . . . . . . . . . . . . . . .   4
      3.1.  Type of application . . . . . . . . . . . . . . . . . . .   4
      3.2.  End-to-end  . . . . . . . . . . . . . . . . . . . . . . .   4
-     3.3.  Objective of the document . . . . . . . . . . . . . . . .   5
+     3.3.  Objective of the document . . . . . . . . . . . . . . . .   4
    4.  FEC above the transport . . . . . . . . . . . . . . . . . . .   5
-   5.  FEC within the transport  . . . . . . . . . . . . . . . . . .   6
+   5.  FEC within the transport  . . . . . . . . . . . . . . . . . .   5
    6.  FEC below the transport . . . . . . . . . . . . . . . . . . .   6
    7.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   7
    8.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   8
@@ -93,11 +93,11 @@ Table of Contents
 1.  Introduction
 
    There are cases where deploying FEC coding improves the quality of
-   the transmission.  As an example, it may take time for the server to
-   detect tail losses and this would impact the experience of
-   applications using short flows.  Another example are networks where
-   non-congestion losses are persistent and prevent a sender from
-   exploiting the link capacity.
+   the transmission.  As an example, when a server transmits data to a
+   client it may take time for the server to detect tail losses (i.e. )
+   and this would impact the experience of applications using short
+   flows.  Another example are networks where non-congestion losses are
+   persistent and prevent a sender from exploiting the link capacity.
 
    Coding is a reliability mechanism that is distinct and separated from
    the loss detection of congestion controls.  [RFC5681] defines TCP as
@@ -115,9 +115,13 @@ Internet-Draft            Coding and congestion            February 2020
 
 
    This memo offers a discussion of how FEC coding and congestion
-   control can coexist.  One objective is to help the research community
-   consider congestion control aspects when proposing and comparing FEC
-   coding solutions.
+   control can coexist.  Another objective is to encourage the research
+   community to also consider congestion control aspects when proposing
+   and comparing FEC coding solutions in communication systems.  That
+   being said, this document does not aim at proposing FEC coding
+   solutions characterization guidelines: comparing FEC Schemes without
+   considering congestion control can be relevant if the goal is to
+   compare those schemes only.
 
    This document represents the collaborative work and consensus of the
    Coding for Efficient Network Communications Research Group (NWCRG);
@@ -133,7 +137,7 @@ Internet-Draft            Coding and congestion            February 2020
    data packets (from a server to a client) and potential information
    signaling the packets that have been received (from the client to the
    server).  The Forward Erasure Correction channel carries coded
-   packets (from the server to the client) and a potiential information
+   packets (from the server to the client) and a potential information
    signaling the packets that have been repaired (from the client to the
    server).  It is worth pointing out that there are cases where these
    channels are not separated.
@@ -141,25 +145,21 @@ Internet-Draft            Coding and congestion            February 2020
     Client                          Server
 
    +------+                        +------+
-   |      | -- { data packet  -----|      |
+   |      | <--- data packets -----|      |
    |  CC  |                        |  CC  |
-   |      | -- received packet } --|      |
+   |      | -- received packets -->|      |
    +------+                        +------+
 
    +------+                        +------+
-   |      | -- { coded packet  ----|      |
+   |      | <--- coded packets ----|      |
    | FEC  |                        | FEC  |
-   |      | -- repaired packet } --|      |
+   |      | -- repaired packets -->|      |
    +------+                        +------+
 
                  Figure 1: Notations and separate channels
 
    Inside a host, the CC and FEC entities can be regarded as
    conceptually separate:
-
-
-
-
 
 
 
@@ -172,21 +172,21 @@ Internet-Draft            Coding and congestion            February 2020
 
        |                 ^                 |               ^
        | data            | coded           | data,        | sending
-       |                 | data            |requirements  | rate (or
+       |                 | packets         |requirements  | rate (or
        v                 |                 v              | window)
    +-----------------------------+        +-------------------------+
    |             FEC             |        |           CC            |
    +-----------------------------+        +-------------------------+
      ^                                           ^
-     | information                               | network
-     | about repaired                            | measurements
-     | ratio
+     | signaling about                           | network
+     | losses and/or                             | measurements
+     | repaired packets
 
                  Figure 2: Separate entities (server side)
 
    Figure 2 provides more details than Figure 1 by focusing on the
    server side.  The inputs to FEC (data to work upon, and signaling
-   from the receiver about losses and/or repaired blocks) are distinct
+   from the receiver about losses and/or repaired packets) are distinct
    from the inputs to CC.  The latter calculates a sending rate or
    window from network measurements, and it takes the data to send as
    input, sometimes along with application requirements such as upper/
@@ -195,10 +195,7 @@ Internet-Draft            Coding and congestion            February 2020
    It is not clear that the ACK signals feeding into a congestion
    control algorithm are useful to FEC in their raw form, and vice versa
    - information about repaired blocks may be quite irrelevant to a CC
-   algorithm.  However, there can be meaningful other interactions
-   (indicated by the horizontal double arrow) between the two entities,
-   usually as a result of their operation rather than by relaying their
-   own raw inputs.
+   algorithm.
 
 3.  Scope
 
@@ -214,10 +211,13 @@ Internet-Draft            Coding and congestion            February 2020
    added at the server and client end points.  The discussions should
    then consider fairness with non-coding solutions.
 
+3.3.  Objective of the document
 
-
-
-
+   Section 2 presents that FEC and CC can be seen as two separate
+   channels.  In practice, implementations may mix the signals that are
+   exchanged on these channels.  This document discusses how FEC and CC
+   relate.  The discussion can help in avoiding comparing FEC schemes
+   that do not operate at the same level (with respect to the CC).  [NK:
 
 
 
@@ -226,13 +226,6 @@ Kuhn, et al.             Expires August 30, 2020                [Page 4]
 Internet-Draft            Coding and congestion            February 2020
 
 
-3.3.  Objective of the document
-
-   Section 2 presents that FEC and CC can be seen as two separate
-   channels.  In practice, implementations may mix the signals that are
-   exchanged on these channels.  This document discusses how FEC and CC
-   relate.  The discussion can help in avoiding comparing FEC schemes
-   that do not operate at the same level (with respect to the CC).  [NK:
    We may want to later add that we provide recommendations - but for
    the moment, we may just list the server side coding solutions in the
    layering approach without providing recommendations for each case]
@@ -248,9 +241,9 @@ Internet-Draft            Coding and congestion            February 2020
    |             FEC                    |
    +------------------------------------+
      ^                   |         ^
-     | information       | coded   | sending rate
-     | about repaired    | data    | (or window)
-     | ratio             v         |
+     | signaling about   | coded   | sending rate
+     | losses and/or     | data    | (or window)
+     | repaired packets  v         |
                       +-----------------+
                       | Transport       | coded data
                       | (including CC)  | ===>
@@ -271,6 +264,13 @@ Internet-Draft            Coding and congestion            February 2020
    The drawback of this approach is that it is useless if the transport
    guarantees data delivery by retransmitting packets.
 
+5.  FEC within the transport
+
+   Figure 4 illustrates the FEC within the transport case.
+
+
+
+
 
 
 
@@ -281,10 +281,6 @@ Kuhn, et al.             Expires August 30, 2020                [Page 5]
 
 Internet-Draft            Coding and congestion            February 2020
 
-
-5.  FEC within the transport
-
-   Figure 4 illustrates the FEC within the transport case.
 
                      |
                      | data, requirements
@@ -299,9 +295,9 @@ Internet-Draft            Coding and congestion            February 2020
            +---------------------+
                    ^          ^
                    |          |
-           information    network
-           about          measurements
-           repaired ratio
+           signaling about  network
+           losses and/or    measurements
+           repaired packets
 
                Figure 4: FEC in the transport (server side)
 
@@ -333,6 +329,10 @@ Internet-Draft            Coding and congestion            February 2020
 
 
 
+
+
+
+
 Kuhn, et al.             Expires August 30, 2020                [Page 6]
 
 Internet-Draft            Coding and congestion            February 2020
@@ -353,9 +353,9 @@ Internet-Draft            Coding and congestion            February 2020
                       |                 | ===>
                       +-----------------+
                          ^
-                         | information
-                         | about repaired
-                         | ratio
+                         | signaling about
+                         | losses and/or
+                         | repaired packets
 
 
               Figure 5: FEC below the transport (server side)

@@ -117,21 +117,21 @@
         <!-- New section -->
         <!-- ######################################################-->
         <section anchor="sec:notations" title="Separate channels, separate entities">
-        <t><xref target="fig:sep-channel"></xref> presents the notations that will be used in this document and introduce the Congestion Control (CC) and Forward Erasure Correction (FEC) channels. The Congestion Control channel carries data packets (from a server to a client) and potential information signaling the packets that have been received (from the client to the server). The Forward Erasure Correction channel carries coded packets (from the server to the client) and a potiential information signaling the packets that have been repaired (from the client to the server). It is worth pointing out that there are cases where these channels are not separated.</t>
+        <t><xref target="fig:sep-channel"></xref> presents the notations that will be used in this document and introduce the Congestion Control (CC) and Forward Erasure Correction (FEC) channels. The Congestion Control channel carries data packets (from a server to a client) and potential information signaling the packets that have been received (from the client to the server). The Forward Erasure Correction channel carries coded packets (from the server to the client) and a potential information signaling the packets that have been repaired (from the client to the server). It is worth pointing out that there are cases where these channels are not separated.</t>
         <figure anchor="fig:sep-channel" title="Notations and separate channels">
         <artwork>
  Client                          Server
 
 +------+                        +------+
-|      | -- { data packet  -----|      |
+|      | <![CDATA[<---]]> data packets -----|      |
 |  CC  |                        |  CC  |
-|      | -- received packet } --|      |
+|      | -- received packets -->|      |
 +------+                        +------+
 
 +------+                        +------+
-|      | -- { coded packet  ----|      |
+|      | <![CDATA[<---]]> coded packets ----|      |
 | FEC  |                        | FEC  |
-|      | -- repaired packet } --|      |
+|      | -- repaired packets -->|      |
 +------+                        +------+
         </artwork>
         </figure>
@@ -143,22 +143,22 @@
         <artwork>
     |                 ^                 |               ^
     | data            | coded           | data,        | sending
-    |                 | data            |requirements  | rate (or
+    |                 | packets         |requirements  | rate (or
     v                 |                 v              | window)
 +-----------------------------+        +-------------------------+
 |             FEC             |        |           CC            |
 +-----------------------------+        +-------------------------+
   ^                                           ^
-  | information                               | network
-  | about repaired                            | measurements
-  | ratio                         
+  | signaling about                           | network
+  | losses and/or                             | measurements
+  | repaired packets                         
         </artwork>
         </figure>
 
 	<t><xref target="fig:sep-entities"></xref> provides more details than 
 	<xref target="fig:sep-channel"></xref> by focusing on the server side. 
 	The inputs to FEC (data to work upon, and signaling 
-	from the receiver about losses and/or repaired blocks)
+	from the receiver about losses and/or repaired packets)
         are distinct from the inputs to CC. The latter calculates a
         sending rate or window from network measurements, and it takes
         the data to send as input, sometimes along with application requirements
@@ -166,10 +166,10 @@
 
         <t> It is not clear that the ACK signals feeding into a congestion control
             algorithm are useful to FEC in their raw form, and vice versa - information
-            about repaired blocks may be quite irrelevant to a CC algorithm. However,
+	    about repaired blocks may be quite irrelevant to a CC algorithm. <!-- However,
             there can be meaningful other interactions (indicated by the horizontal double arrow)
             between the two entities, usually as a result of their operation rather than
-	    by relaying their own raw inputs. <!-- For example, the network measurements carried
+	    by relaying their own raw inputs. For example, the network measurements carried
             out by CC can yield a longer-term statistical measure such as a loss ratio
             which is useful input for a FEC coding scheme. Similarly, unequal error
             protection using fountain codes can be used to assign different priorities
@@ -206,9 +206,9 @@
 |             FEC                    |   
 +------------------------------------+  
   ^                   |         ^
-  | information       | coded   | sending rate
-  | about repaired    | data    | (or window)
-  | ratio             v         |
+  | signaling about   | coded   | sending rate
+  | losses and/or     | data    | (or window)
+  | repaired packets  v         |
                    +-----------------+
 		   | Transport       | coded data
 		   | (including CC)  | ===>  
@@ -243,9 +243,9 @@
 	+---------------------+
 		^          ^
 		|          |
-	information    network
-	about          measurements
-	repaired ratio           
+	signaling about  network
+	losses and/or    measurements
+	repaired packets           
         </artwork>
 	</figure>
         
@@ -276,9 +276,9 @@
 		   |                 | ===>  
 		   +-----------------+
                       ^
-                      | information 
-		      | about repaired 
-		      | ratio
+                      | signaling about  
+		      | losses and/or
+		      | repaired packets
 
         </artwork>
 	</figure>
