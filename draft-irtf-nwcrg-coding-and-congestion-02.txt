@@ -90,9 +90,10 @@ Table of Contents
 
    There are cases where deploying FEC coding improves the quality of
    the transmission.  As an example, when a server transmits data to a
-   client it may take time for the server to detect tail losses (i.e. )
-   and this would impact the experience of applications using short
-   flows.  Another example are networks where non-congestion losses are
+   client, it may take time for the server to detect tail losses (i.e.
+   tail loss can refer to losses at the tail end of transactions).  This
+   would impact the experience of applications using short flows.
+   Another example are networks where non-congestion losses are
    persistent and prevent a sender from exploiting the link capacity.
 
    Coding is a reliability mechanism that is distinct and separated from
@@ -105,7 +106,6 @@ Table of Contents
    FEC coding and congestion control can be seen as two separate
    channels.  In practice, implementations may mix the signals that are
    exchanged on these channels.  This memo offers a discussion of how
-   FEC coding and congestion control can coexist.  Another objective is
 
 
 
@@ -114,6 +114,7 @@ Kuhn, et al.             Expires August 30, 2020                [Page 2]
 Internet-Draft            Coding and congestion            February 2020
 
 
+   FEC coding and congestion control can coexist.  Another objective is
    to encourage the research community to also consider congestion
    control aspects when proposing and comparing FEC coding solutions in
    communication systems.  That being said, this document does not aim
@@ -129,16 +130,17 @@ Internet-Draft            Coding and congestion            February 2020
 
    This document represents the collaborative work and consensus of the
    Coding for Efficient Network Communications Research Group (NWCRG);
-   it is not an IETF product and is not a standard.
+   it is not an IETF product and is not a standard.  The document
+   follows the terminology proposed in the taxonomy document [RFC8406].
 
 2.  Separate channels, separate entities
 
    Figure 1 presents the notations that will be used in this document
    and introduce the Congestion Control (CC) and Forward Erasure
    Correction (FEC) channels.  The Congestion Control channel carries
-   data packets (from a server to a client) and potential information
+   source packets (from a server to a client) and potential information
    signaling the packets that have been received (from the client to the
-   server).  The Forward Erasure Correction channel carries coded
+   server).  The Forward Erasure Correction channel carries repair
    packets (from the server to the client) and a potential information
    signaling the packets that have been repaired (from the client to the
    server).  It is worth pointing out that there are cases where these
@@ -147,21 +149,19 @@ Internet-Draft            Coding and congestion            February 2020
     Client                          Server
 
    +------+                        +------+
-   |      | <--- data packets -----|      |
+   |      | <--- source packets ---|      |
    |  CC  |                        |  CC  |
    |      | -- received packets -->|      |
    +------+                        +------+
 
    +------+                        +------+
-   |      | <--- coded packets ----|      |
+   |      | <--- repair packets ---|      |
    | FEC  |                        | FEC  |
    |      | -- repaired packets -->|      |
    +------+                        +------+
 
                  Figure 1: Notations and separate channels
 
-   Inside a host, the CC and FEC entities can be regarded as
-   conceptually separate:
 
 
 
@@ -170,9 +170,12 @@ Kuhn, et al.             Expires August 30, 2020                [Page 3]
 Internet-Draft            Coding and congestion            February 2020
 
 
+   Inside a host, the CC and FEC entities can be regarded as
+   conceptually separate:
+
        |                 ^                 |               ^
-       | data            | coded           | data,        | sending
-       |                 | packets         |requirements  | rate (or
+       | source          | repair          |packets       | sending
+       | packets         | packets         |requirements  | rate (or
        v                 |                 v              | window)
    +-----------------------------+        +-------------------------+
    |             FEC             |        |           CC            |
@@ -185,10 +188,10 @@ Internet-Draft            Coding and congestion            February 2020
                  Figure 2: Separate entities (server side)
 
    Figure 2 provides more details than Figure 1 by focusing on the
-   server side.  The inputs to FEC (data to work upon, and signaling
+   server side.  The inputs to FEC (packet to work upon, and signaling
    from the receiver about losses and/or repaired packets) are distinct
    from the inputs to CC.  The latter calculates a sending rate or
-   window from network measurements, and it takes the data to send as
+   window from network measurements, and it takes the packet to send as
    input, sometimes along with application requirements such as upper/
    lower rate bounds, periods of quiescence, or a priority.
 
@@ -218,26 +221,23 @@ Internet-Draft            Coding and congestion            February 2020
 
 
 
-
-
-
 Kuhn, et al.             Expires August 30, 2020                [Page 4]
 
 Internet-Draft            Coding and congestion            February 2020
 
 
-                  |
-                  | data
+                  | source
+                  | packets
                   v
    +------------------------------------+
    |             FEC                    |
    +------------------------------------+
-     ^                   |         ^
-     | signaling about   | coded   | sending rate
-     | losses and/or     | data    | (or window)
-     | repaired packets  v         |
-                      +-----------------+
-                      | Transport       | coded data
+     ^                   | source  ^
+     | signaling about   | and/or  | sending rate
+     | losses and/or     | repair  | (or window)
+     | repaired packets  v packets |
+                      +-----------------+ source and/or
+                      | Transport       | repair packets
                       | (including CC)  | ===>
                       +-----------------+
                          ^
@@ -247,7 +247,7 @@ Internet-Draft            Coding and congestion            February 2020
               Figure 3: FEC above the transport (server side)
 
    Figure 3 presents an architecture where FEC is on top of the
-   transport.  The coded packets are sent within what the congestion
+   transport.  The repair packets are sent within what the congestion
    window allows.
 
    The advantage of this approach is that the FEC does not contribute to
@@ -283,12 +283,12 @@ Internet-Draft            Coding and congestion            February 2020
 
 
                      |
-                     | data, requirements
-                     |
+                     | source packets,
+                     | requirements
                      v
            +---------------------+
-           | Transport           |
-           | +-----+  +-----+    | coded data
+           | Transport           | source and/or
+           | +-----+  +-----+    | repair packets
            | | FEC |  | CC  |    | ===>
            | +-----+  +-----+    |
            |                     |
@@ -302,20 +302,20 @@ Internet-Draft            Coding and congestion            February 2020
                Figure 4: FEC in the transport (server side)
 
    Figure 4 presents an architecture where FEC is within the transport.
-   The coded packets are sent within what the congestion window allows,
-   such as in [CTCP].  Examples of the solution would be sending coded
+   The repair packets are sent within what the congestion window allows,
+   such as in [CTCP].  Examples of the solution would be sending repair
    packets when there is no more data to transmit or preferably send
-   coded packets instead of the following packets in the send buffer.
+   repair packets instead of the following packets in the send buffer.
 
    The advantage of this approach is that it can enable conjoint
    optimization between the CC and the FEC.  Moreover, the transmission
-   of coded packets does not add congestion in potentially congested
+   of repair packets does not add congestion in potentially congested
    networks but help repair lost packets (such as tail losses).
 
    The drawback of this approach is that it may not result in much gains
    as opposed to classical CC retransmissions mechanisms and it costs
-   bandwidth that could have been exploited to transmit non coded data
-   packets.  The coding ratio needs to be carefully designed.
+   bandwidth that could have been exploited to transmit source packets.
+   The coding ratio needs to be carefully designed.
 
 5.  FEC below the transport
 
@@ -338,18 +338,18 @@ Kuhn, et al.             Expires August 30, 2020                [Page 6]
 Internet-Draft            Coding and congestion            February 2020
 
 
-      | data            | sending rate
+      | source packets  | sending rate
       | requirements    | (or window)
       v                 v
    +------------------------------------+
    |     Transport (including CC)       |
    +------------------------------------+
      ^                   |
-     | network           | data
+     | network           | source packets
      | measurements      |
                          v
-                      +-----------------+
-                      |      FEC        | coded data
+                      +-----------------+ source and/or
+                      |      FEC        | repair packets
                       |                 | ===>
                       +-----------------+
                          ^
@@ -361,10 +361,10 @@ Internet-Draft            Coding and congestion            February 2020
               Figure 5: FEC below the transport (server side)
 
    Figure 5 presents an architecture where FEC is below the transport.
-   The coded packets are sent on top of what is allowed by the
+   The repair packets are sent on top of what is allowed by the
    congestion control.  Examples of the solution could be adding a given
    percentage of the congestion window as supplementary packets or
-   sending a given amount of coded packets at a given rate.  The
+   sending a given amount of repair packets at a given rate.  The
    redundancy flow can be decorrelated from the congestion control that
    manages source packets: a secondary congestion control could be
    introduced underneath the FEC layer, such as in coupled congestion
@@ -423,6 +423,13 @@ Internet-Draft            Coding and congestion            February 2020
               Transport Protocols", RFC 6297, DOI 10.17487/RFC6297, June
               2011, <https://www.rfc-editor.org/info/rfc6297>.
 
+   [RFC8406]  Adamson, B., Adjih, C., Bilbao, J., Firoiu, V., Fitzek,
+              F., Ghanem, S., Lochin, E., Masucci, A., Montpetit, M-J.,
+              Pedersen, M., Peralta, G., Roca, V., Ed., Saxena, P., and
+              S. Sivakumar, "Taxonomy of Coding Techniques for Efficient
+              Network Communications", RFC 8406, DOI 10.17487/RFC8406,
+              June 2018, <https://www.rfc-editor.org/info/rfc8406>.
+
 Authors' Addresses
 
    Nicolas Kuhn
@@ -437,29 +444,22 @@ Authors' Addresses
    Email: emmanuel.lochin@isae-supaero.fr
 
 
-   Francois Michel
-   UCLouvain
-
-   Email: francois.michel@uclouvain.be
-
-
-
 
 Kuhn, et al.             Expires August 30, 2020                [Page 8]
 
 Internet-Draft            Coding and congestion            February 2020
 
 
+   Francois Michel
+   UCLouvain
+
+   Email: francois.michel@uclouvain.be
+
+
    Michael Welzl
    University of Oslo
 
    Email: michawe@ifi.uio.no
-
-
-
-
-
-
 
 
 
