@@ -77,16 +77,13 @@ Table of Contents
 
    1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
    2.  Separate channels, separate entities  . . . . . . . . . . . .   3
-   3.  Scope . . . . . . . . . . . . . . . . . . . . . . . . . . . .   5
-     3.1.  Type of application . . . . . . . . . . . . . . . . . . .   5
-     3.2.  End-to-end  . . . . . . . . . . . . . . . . . . . . . . .   5
-   4.  FEC above the transport . . . . . . . . . . . . . . . . . . .   5
-   5.  FEC within the transport  . . . . . . . . . . . . . . . . . .   6
-   6.  FEC below the transport . . . . . . . . . . . . . . . . . . .   6
-   7.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   7
-   8.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   8
-   9.  Security Considerations . . . . . . . . . . . . . . . . . . .   8
-   10. Informative References  . . . . . . . . . . . . . . . . . . .   8
+   3.  FEC above the transport . . . . . . . . . . . . . . . . . . .   4
+   4.  FEC within the transport  . . . . . . . . . . . . . . . . . .   5
+   5.  FEC below the transport . . . . . . . . . . . . . . . . . . .   6
+   6.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   7
+   7.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   8
+   8.  Security Considerations . . . . . . . . . . . . . . . . . . .   8
+   9.  Informative References  . . . . . . . . . . . . . . . . . . .   8
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   8
 
 1.  Introduction
@@ -105,7 +102,10 @@ Table of Contents
    also hides a congestion signal to the sender.  It is important to
    ensure that such information hiding does not occur.
 
-
+   FEC coding and congestion control can be seen as two separate
+   channels.  In practice, implementations may mix the signals that are
+   exchanged on these channels.  This memo offers a discussion of how
+   FEC coding and congestion control can coexist.  Another objective is
 
 
 
@@ -114,10 +114,6 @@ Kuhn, et al.             Expires August 30, 2020                [Page 2]
 Internet-Draft            Coding and congestion            February 2020
 
 
-   FEC coding and congestion control can be seen as two separate
-   channels.  In practice, implementations may mix the signals that are
-   exchanged on these channels.  This memo offers a discussion of how
-   FEC coding and congestion control can coexist.  Another objective is
    to encourage the research community to also consider congestion
    control aspects when proposing and comparing FEC coding solutions in
    communication systems.  That being said, this document does not aim
@@ -148,28 +144,6 @@ Internet-Draft            Coding and congestion            February 2020
    server).  It is worth pointing out that there are cases where these
    channels are not separated.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Kuhn, et al.             Expires August 30, 2020                [Page 3]
-
-Internet-Draft            Coding and congestion            February 2020
-
-
     Client                          Server
 
    +------+                        +------+
@@ -188,6 +162,13 @@ Internet-Draft            Coding and congestion            February 2020
 
    Inside a host, the CC and FEC entities can be regarded as
    conceptually separate:
+
+
+
+Kuhn, et al.             Expires August 30, 2020                [Page 3]
+
+Internet-Draft            Coding and congestion            February 2020
+
 
        |                 ^                 |               ^
        | data            | coded           | data,        | sending
@@ -216,6 +197,25 @@ Internet-Draft            Coding and congestion            February 2020
    - information about repaired blocks may be quite irrelevant to a CC
    algorithm.
 
+3.  FEC above the transport
+
+   Figure 3 illustrates the FEC above the transport case.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -225,24 +225,6 @@ Kuhn, et al.             Expires August 30, 2020                [Page 4]
 
 Internet-Draft            Coding and congestion            February 2020
 
-
-3.  Scope
-
-   This section describes the scope of the document.
-
-3.1.  Type of application
-
-   The document focuses on reliable data transfers.
-
-3.2.  End-to-end
-
-   The document focuses on end-to-end coding, i.e. cases where coding is
-   added at the server and client end points.  The discussions should
-   then consider fairness with non-coding solutions.
-
-4.  FEC above the transport
-
-   Figure 3 illustrates the FEC above the transport case.
 
                   |
                   | data
@@ -274,6 +256,24 @@ Internet-Draft            Coding and congestion            February 2020
    The drawback of this approach is that it is useless if the transport
    guarantees data delivery by retransmitting packets.
 
+4.  FEC within the transport
+
+   Figure 4 illustrates the FEC within the transport case.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -281,10 +281,6 @@ Kuhn, et al.             Expires August 30, 2020                [Page 5]
 
 Internet-Draft            Coding and congestion            February 2020
 
-
-5.  FEC within the transport
-
-   Figure 4 illustrates the FEC within the transport case.
 
                      |
                      | data, requirements
@@ -321,9 +317,13 @@ Internet-Draft            Coding and congestion            February 2020
    bandwidth that could have been exploited to transmit non coded data
    packets.  The coding ratio needs to be carefully designed.
 
-6.  FEC below the transport
+5.  FEC below the transport
 
    Figure 5 illustrates the FEC below the transport case.
+
+
+
+
 
 
 
@@ -378,7 +378,7 @@ Internet-Draft            Coding and congestion            February 2020
    already congested networks.  The coding ratio needs to be carefully
    designed.
 
-7.  Acknowledgements
+6.  Acknowledgements
 
    Many thanks to Spencer Dawkins, Dave Oran, Carsten Bormann, Vincent
    Roca and Marie-Jose Montpetit for their useful comments that helped
@@ -394,18 +394,18 @@ Kuhn, et al.             Expires August 30, 2020                [Page 7]
 Internet-Draft            Coding and congestion            February 2020
 
 
-8.  IANA Considerations
+7.  IANA Considerations
 
    This memo includes no request to IANA.
 
-9.  Security Considerations
+8.  Security Considerations
 
    FEC and CC schemes can contribute to DoS attacks.  This is not
    specific to this document.
 
    More information TBD.
 
-10.  Informative References
+9.  Informative References
 
    [CTCP]     Kim (et al.), M., "Network Coded TCP (CTCP)",
               arXiv 1212.2291v3, 2013.

@@ -180,7 +180,8 @@
         <!-- ######################################################-->
         <!-- New section -->
         <!-- ######################################################-->
-        <section anchor="sec:scope" title="Scope">
+	<!-- 
+	<section anchor="sec:scope" title="Scope">
 		<t>This section describes the scope of the document.</t>
         <section anchor="sec:scope:appli" title="Type of application">
             <t>The document focuses on reliable data transfers.</t>
@@ -189,7 +190,7 @@
             <t>The document focuses on end-to-end coding, i.e. cases where coding is added at the server and client end points. The discussions should then consider fairness with non-coding solutions.</t>
         </section>
     </section>
-
+	--> 
         <!-- ######################################################-->
         <!-- New section -->
         <!-- ######################################################-->
