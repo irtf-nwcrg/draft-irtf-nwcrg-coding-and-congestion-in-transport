@@ -5,12 +5,12 @@
 NWCRG                                                            N. Kuhn
 Internet-Draft                                                      CNES
 Intended status: Informational                                 E. Lochin
-Expires: August 30, 2020                                    ISAE-SUPAERO
+Expires: August 31, 2020                                    ISAE-SUPAERO
                                                                F. Michel
                                                                UCLouvain
                                                                 M. Welzl
                                                       University of Oslo
-                                                       February 27, 2020
+                                                       February 28, 2020
 
 
                Coding and congestion control in transport
@@ -23,9 +23,13 @@ Abstract
    be a useful way to better deal with transfer tail losses or with
    networks with non-congestion losses.  However, FEC coding mechanisms
    should not hide congestion signals.  This memo offers a discussion of
-   how FEC coding and congestion control can coexist.  This document can
-   help the comparison of FEC schemes by identifying at which level they
-   are operating with respect to the transport congestion control.
+   how FEC coding and congestion control can coexist.  Another objective
+   is to encourage the research community to also consider congestion
+   control aspects when proposing and comparing FEC coding solutions in
+   communication systems.  That being said, this document does not aim
+   at proposing FEC coding solutions characterization guidelines:
+   comparing FEC Schemes without considering congestion control can be
+   relevant if the goal is to compare those schemes only.
 
    This document is the product of the Coding for Efficient Network
    Communications Research Group (NWCRG).  The scope of the document is
@@ -47,16 +51,14 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on August 30, 2020.
 
 
-
-
-
-Kuhn, et al.             Expires August 30, 2020                [Page 1]
+Kuhn, et al.             Expires August 31, 2020                [Page 1]
 
 Internet-Draft            Coding and congestion            February 2020
 
+
+   This Internet-Draft will expire on August 31, 2020.
 
 Copyright Notice
 
@@ -80,12 +82,12 @@ Table of Contents
    3.  FEC and CC layering . . . . . . . . . . . . . . . . . . . . .   5
      3.1.  FEC above the transport . . . . . . . . . . . . . . . . .   5
      3.2.  FEC within the transport  . . . . . . . . . . . . . . . .   6
-     3.3.  FEC below the transport . . . . . . . . . . . . . . . . .   6
-   4.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   7
-   5.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   8
-   6.  Security Considerations . . . . . . . . . . . . . . . . . . .   8
-   7.  Informative References  . . . . . . . . . . . . . . . . . . .   8
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   8
+     3.3.  FEC below the transport . . . . . . . . . . . . . . . . .   7
+   4.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   8
+   5.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   9
+   6.  Security Considerations . . . . . . . . . . . . . . . . . . .   9
+   7.  Informative References  . . . . . . . . . . . . . . . . . . .   9
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   9
 
 1.  Introduction
 
@@ -104,16 +106,16 @@ Table of Contents
    also hides a congestion signal to the sender.  It is important to
    ensure that such information hiding does not occur.
 
-   FEC coding and congestion control can be seen as two separate
-   channels.  In practice, implementations may mix the signals that are
 
 
 
-Kuhn, et al.             Expires August 30, 2020                [Page 2]
+Kuhn, et al.             Expires August 31, 2020                [Page 2]
 
 Internet-Draft            Coding and congestion            February 2020
 
 
+   FEC coding and congestion control can be seen as two separate
+   channels.  In practice, implementations may mix the signals that are
    exchanged on these channels.  This memo offers a discussion of how
    FEC coding and congestion control can coexist.  Another objective is
    to encourage the research community to also consider congestion
@@ -147,6 +149,27 @@ Internet-Draft            Coding and congestion            February 2020
    server).  It is worth pointing out that there are cases where these
    channels are not separated.
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Kuhn, et al.             Expires August 31, 2020                [Page 3]
+
+Internet-Draft            Coding and congestion            February 2020
+
+
     Client                          Server
 
    +------+                        +------+
@@ -162,13 +185,6 @@ Internet-Draft            Coding and congestion            February 2020
    +------+                        +------+
 
                  Figure 1: Notations and separate channels
-
-
-
-Kuhn, et al.             Expires August 30, 2020                [Page 3]
-
-Internet-Draft            Coding and congestion            February 2020
-
 
    Inside a host, the CC and FEC entities can be regarded as
    conceptually separate:
@@ -203,6 +219,13 @@ Internet-Draft            Coding and congestion            February 2020
       including CC): refers to the rate at which a congestion control
       decides to transmit packets, based on 'network measurements'.
 
+
+
+Kuhn, et al.             Expires August 31, 2020                [Page 4]
+
+Internet-Draft            Coding and congestion            February 2020
+
+
    o  'signaling about losses and/or repaired packets' (input control
       plane for the FEC): refers to the information a FEC server can
       obtain from a FEC client about the performance of the FEC solution
@@ -216,15 +239,6 @@ Internet-Draft            Coding and congestion            February 2020
       only be source packets (if the coding rate is 0), repair packets
       (if the solution decides not to send the original source packets)
       or a mix of both.
-
-
-
-
-
-Kuhn, et al.             Expires August 30, 2020                [Page 4]
-
-Internet-Draft            Coding and congestion            February 2020
-
 
    The inputs to FEC (packet to work upon, and signaling from the
    receiver about losses and/or repaired packets) are distinct from the
@@ -247,6 +261,26 @@ Internet-Draft            Coding and congestion            February 2020
 3.1.  FEC above the transport
 
    Figure 3 illustrates the FEC above the transport case.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Kuhn, et al.             Expires August 31, 2020                [Page 5]
+
+Internet-Draft            Coding and congestion            February 2020
+
 
                   | source
                   | packets
@@ -275,13 +309,6 @@ Internet-Draft            Coding and congestion            February 2020
    The advantage of this approach is that the FEC does not contribute to
    adding congestion in the network.
 
-
-
-Kuhn, et al.             Expires August 30, 2020                [Page 5]
-
-Internet-Draft            Coding and congestion            February 2020
-
-
    This approach requires that the transport protocol does not include a
    reliability (e.g., based on lost packet retransmition).  This
    approach is relevant with UDP.
@@ -289,6 +316,27 @@ Internet-Draft            Coding and congestion            February 2020
 3.2.  FEC within the transport
 
    Figure 4 illustrates the FEC within the transport case.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Kuhn, et al.             Expires August 31, 2020                [Page 6]
+
+Internet-Draft            Coding and congestion            February 2020
+
 
                      |
                      | source packets,
@@ -333,7 +381,15 @@ Internet-Draft            Coding and congestion            February 2020
 
 
 
-Kuhn, et al.             Expires August 30, 2020                [Page 6]
+
+
+
+
+
+
+
+
+Kuhn, et al.             Expires August 31, 2020                [Page 7]
 
 Internet-Draft            Coding and congestion            February 2020
 
@@ -389,7 +445,7 @@ Internet-Draft            Coding and congestion            February 2020
 
 
 
-Kuhn, et al.             Expires August 30, 2020                [Page 7]
+Kuhn, et al.             Expires August 31, 2020                [Page 8]
 
 Internet-Draft            Coding and congestion            February 2020
 
@@ -445,7 +501,7 @@ Authors' Addresses
 
 
 
-Kuhn, et al.             Expires August 30, 2020                [Page 8]
+Kuhn, et al.             Expires August 31, 2020                [Page 9]
 
 Internet-Draft            Coding and congestion            February 2020
 
@@ -501,4 +557,4 @@ Internet-Draft            Coding and congestion            February 2020
 
 
 
-Kuhn, et al.             Expires August 30, 2020                [Page 9]
+Kuhn, et al.             Expires August 31, 2020               [Page 10]
