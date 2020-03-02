@@ -5,12 +5,12 @@
 NWCRG                                                            N. Kuhn
 Internet-Draft                                                      CNES
 Intended status: Informational                                 E. Lochin
-Expires: August 31, 2020                                    ISAE-SUPAERO
+Expires: September 3, 2020                                  ISAE-SUPAERO
                                                                F. Michel
                                                                UCLouvain
                                                                 M. Welzl
                                                       University of Oslo
-                                                       February 28, 2020
+                                                           March 2, 2020
 
 
                Coding and congestion control in transport
@@ -53,12 +53,12 @@ Status of This Memo
 
 
 
-Kuhn, et al.             Expires August 31, 2020                [Page 1]
+Kuhn, et al.            Expires September 3, 2020               [Page 1]
 
-Internet-Draft            Coding and congestion            February 2020
+Internet-Draft            Coding and congestion               March 2020
 
 
-   This Internet-Draft will expire on August 31, 2020.
+   This Internet-Draft will expire on September 3, 2020.
 
 Copyright Notice
 
@@ -92,12 +92,12 @@ Table of Contents
 1.  Introduction
 
    There are cases where deploying FEC coding improves the quality of
-   the transmission.  As an example, when a server transmits data to a
-   client, it may take time for the server to detect tail losses (i.e.
-   tail loss can refer to losses at the tail end of transactions).  This
-   would impact the experience of applications using short flows.
-   Another example are networks where non-congestion losses are
-   persistent and prevent a sender from exploiting the link capacity.
+   the transmission.  As an example, it may take time for the sender to
+   detect tail losses (i.e. tail loss can refer to losses at the tail
+   end of transactions).  This would impact the experience of
+   applications using short flows.  Another example are networks where
+   non-congestion losses are persistent and prevent a sender from
+   exploiting the link capacity.
 
    Coding is a reliability mechanism that is distinct and separated from
    the loss detection of congestion controls.  [RFC5681] defines TCP as
@@ -109,9 +109,9 @@ Table of Contents
 
 
 
-Kuhn, et al.             Expires August 31, 2020                [Page 2]
+Kuhn, et al.            Expires September 3, 2020               [Page 2]
 
-Internet-Draft            Coding and congestion            February 2020
+Internet-Draft            Coding and congestion               March 2020
 
 
    FEC coding and congestion control can be seen as two separate
@@ -141,13 +141,13 @@ Internet-Draft            Coding and congestion            February 2020
    Figure 1 presents the notations that will be used in this document
    and introduce the Congestion Control (CC) and Forward Erasure
    Correction (FEC) channels.  The Congestion Control channel carries
-   source packets (from a server to a client) and potential information
-   signaling the packets that have been received (from the client to the
-   server).  The Forward Erasure Correction channel carries repair
-   packets (from the server to the client) and a potential information
-   signaling the packets that have been repaired (from the client to the
-   server).  It is worth pointing out that there are cases where these
-   channels are not separated.
+   source packets (from a sender to a receiver) and potential
+   information signaling the packets that have been received (from the
+   receiver to the sender).  The Forward Erasure Correction channel
+   carries repair packets (from the sender to the receiver) and a
+   potential information signaling the packets that have been repaired
+   (from the receiver to the sender).  It is worth pointing out that
+   there are cases where these channels are not separated.
 
 
 
@@ -165,12 +165,12 @@ Internet-Draft            Coding and congestion            February 2020
 
 
 
-Kuhn, et al.             Expires August 31, 2020                [Page 3]
+Kuhn, et al.            Expires September 3, 2020               [Page 3]
 
-Internet-Draft            Coding and congestion            February 2020
+Internet-Draft            Coding and congestion               March 2020
 
 
-    Client                          Server
+   Receiver                         Sender
 
    +------+                        +------+
    |      | <--- source packets ---|      |
@@ -201,10 +201,10 @@ Internet-Draft            Coding and congestion            February 2020
      | losses and/or                           | measurements
      | repaired packets
 
-                 Figure 2: Separate entities (server side)
+                 Figure 2: Separate entities (sender-side)
 
    Figure 2 provides more details than Figure 1 by focusing on the
-   server side.  Some elements are introduced:
+   sender-side.  Some elements are introduced:
 
    o  'network measurements' (input control plane for the transport
       including CC): refers to the information a ongestion control can
@@ -221,15 +221,15 @@ Internet-Draft            Coding and congestion            February 2020
 
 
 
-Kuhn, et al.             Expires August 31, 2020                [Page 4]
+Kuhn, et al.            Expires September 3, 2020               [Page 4]
 
-Internet-Draft            Coding and congestion            February 2020
+Internet-Draft            Coding and congestion               March 2020
 
 
    o  'signaling about losses and/or repaired packets' (input control
-      plane for the FEC): refers to the information a FEC server can
-      obtain from a FEC client about the performance of the FEC solution
-      as seen from the client.
+      plane for the FEC): refers to the information a FEC sender can
+      obtain from a FEC receiver about the performance of the FEC
+      solution as seen from the receiver.
 
    o  'coding rate' (output control plane for the FEC): refers to the
       coding rate that is used by the FEC solution.
@@ -277,9 +277,9 @@ Internet-Draft            Coding and congestion            February 2020
 
 
 
-Kuhn, et al.             Expires August 31, 2020                [Page 5]
+Kuhn, et al.            Expires September 3, 2020               [Page 5]
 
-Internet-Draft            Coding and congestion            February 2020
+Internet-Draft            Coding and congestion               March 2020
 
 
                   | source
@@ -300,7 +300,7 @@ Internet-Draft            Coding and congestion            February 2020
                          | network
                          | measurements
 
-              Figure 3: FEC above the transport (server side)
+              Figure 3: FEC above the transport (sender-side)
 
    Figure 3 presents an architecture where FEC is on top of the
    transport.  The repair packets are sent within what the congestion
@@ -333,9 +333,9 @@ Internet-Draft            Coding and congestion            February 2020
 
 
 
-Kuhn, et al.             Expires August 31, 2020                [Page 6]
+Kuhn, et al.            Expires September 3, 2020               [Page 6]
 
-Internet-Draft            Coding and congestion            February 2020
+Internet-Draft            Coding and congestion               March 2020
 
 
                      |
@@ -355,7 +355,7 @@ Internet-Draft            Coding and congestion            February 2020
            losses and/or    measurements
            repaired packets
 
-               Figure 4: FEC in the transport (server side)
+               Figure 4: FEC in the transport (sender-side)
 
    Figure 4 presents an architecture where FEC is within the transport.
    The repair packets are sent within what the congestion window allows,
@@ -389,9 +389,9 @@ Internet-Draft            Coding and congestion            February 2020
 
 
 
-Kuhn, et al.             Expires August 31, 2020                [Page 7]
+Kuhn, et al.            Expires September 3, 2020               [Page 7]
 
-Internet-Draft            Coding and congestion            February 2020
+Internet-Draft            Coding and congestion               March 2020
 
 
       | source packets  | sending rate
@@ -414,7 +414,7 @@ Internet-Draft            Coding and congestion            February 2020
                          | repaired packets
 
 
-              Figure 5: FEC below the transport (server side)
+              Figure 5: FEC below the transport (sender-side)
 
    Figure 5 presents an architecture where FEC is below the transport.
    The repair packets are sent on top of what is allowed by the
@@ -445,9 +445,9 @@ Internet-Draft            Coding and congestion            February 2020
 
 
 
-Kuhn, et al.             Expires August 31, 2020                [Page 8]
+Kuhn, et al.            Expires September 3, 2020               [Page 8]
 
-Internet-Draft            Coding and congestion            February 2020
+Internet-Draft            Coding and congestion               March 2020
 
 
 5.  IANA Considerations
@@ -501,9 +501,9 @@ Authors' Addresses
 
 
 
-Kuhn, et al.             Expires August 31, 2020                [Page 9]
+Kuhn, et al.            Expires September 3, 2020               [Page 9]
 
-Internet-Draft            Coding and congestion            February 2020
+Internet-Draft            Coding and congestion               March 2020
 
 
    Francois Michel
@@ -557,4 +557,4 @@ Internet-Draft            Coding and congestion            February 2020
 
 
 
-Kuhn, et al.             Expires August 31, 2020               [Page 10]
+Kuhn, et al.            Expires September 3, 2020              [Page 10]
