@@ -89,7 +89,7 @@
         <!-- ######################################################-->
 
     <abstract>
-	    <t>FEC coding is a reliability mechanism that is distinct and separated from the loss detection of congestion controls. Using FEC coding can be a useful way to better deal with transfer tail losses or with networks with non-congestion losses. However, FEC coding mechanisms should not hide congestion signals. This memo offers a discussion of how FEC coding and congestion control can coexist. Another objective is to encourage the research community to also consider congestion control aspects when proposing and comparing FEC coding solutions in communication systems. That being said, this document does not aim at proposing FEC coding solutions characterization guidelines: comparing FEC Schemes without considering congestion control can be relevant if the goal is to compare those schemes only.</t>
+	    <t>FEC coding is a reliability mechanism that is distinct and separate from the loss detection of congestion controls. Using FEC coding can be a useful way to deal with transfer tail losses or with networks having non-congestion losses. However, FEC coding mechanisms should not hide congestion signals. This memo offers a discussion of how FEC coding and congestion control can coexist. Another objective is to encourage the research community to also consider congestion control aspects when proposing and comparing FEC coding solutions in communication systems.</t>
         <t>This document is the product of the Coding for Efficient Network Communications Research Group (NWCRG). The scope of the document is end-to-end communications: FEC coding for tunnels is out-of-the scope of the document.</t>
     </abstract>
   </front>
@@ -97,9 +97,10 @@
   <middle>
 
     <section anchor="sec:introduction" title="Introduction">
-	<t>There are cases where deploying FEC coding improves the quality of the transmission. As an example, it may take time for the sender to detect tail losses (i.e. tail loss can refer to losses at the tail end of transactions). This would impact the experience of applications using short flows. Another example are networks where non-congestion losses are persistent and prevent a sender from exploiting the link capacity.</t>
-	<t>Coding is a reliability mechanism that is distinct and separated from the loss detection of congestion controls. <xref target="RFC5681"/> defines TCP as a loss-based congestion control; because FEC coding repairs such losses, blindly applying it may easily lead to an implementation that also hides a congestion signal to the sender. It is important to ensure that such information hiding does not occur.</t>
-	<t>FEC coding and congestion control can be seen as two separate channels. In practice, implementations may mix the signals that are exchanged on these channels. This memo offers a discussion of how FEC coding and congestion control can coexist. Another objective is to encourage the research community to also consider congestion control aspects when proposing and comparing FEC coding solutions in communication systems. That being said, this document does not aim at proposing FEC coding solutions characterization guidelines: comparing FEC Schemes without considering congestion control can be relevant if the goal is to compare those schemes only.</t>
+	<t>There are cases where deploying FEC coding improves the performance of a transmission. As an example, it may take time for the sender to detect transfer tail losses (losses that occur at the end of a transfer, where e.g. TCP obtains no more ACKs to quickly repair the loss via retransmission). This would improve the experience of applications using short flows. Another example are networks where non-congestion losses are persistent and prevent a sender from exploiting the link capacity.</t>
+	<t>Coding is a reliability mechanism that is distinct and separate from the loss detection of congestion controls. <xref target="RFC5681"/> defines TCP as a loss-based congestion control; because FEC coding repairs such losses, blindly applying it may easily lead to an implementation that also hides a congestion signal to the sender. It is important to ensure that such information hiding does not occur.</t>
+	<t>FEC coding and congestion control can be seen as two separate channels. In practice, implementations may mix the signals that are exchanged on these channels. This memo offers a discussion of how FEC coding and congestion control can coexist. Another objective is to encourage the research community to also consider congestion control aspects when proposing and comparing FEC coding solutions in communication systems. This being said, this document does not aim at proposing guidelines for characterizing
+        FEC coding solutions: comparing FEC Schemes without considering congestion control can be relevant if the goal is to compare those schemes only.</t>
 	<t>The proposed document considers FEC coding at the transport or application layer for an end-to-end unicast data transfer. The typical application scenario that is considered in the current version of the document is a client browsing the web. This memo may be extended to cases with multiple paths.</t>
 	<t>This document represents the collaborative work and consensus of the Coding for Efficient Network Communications Research Group (NWCRG); it is not an IETF product and is not a standard. The document follows the terminology proposed in the taxonomy document <xref target="RFC8406"></xref>.</t>
     </section>
@@ -118,22 +119,22 @@
         <!-- New section -->
         <!-- ######################################################-->
         <section anchor="sec:notations" title="Separate channels, separate entities">
-        <t><xref target="fig:sep-channel"></xref> presents the notations that will be used in this document and introduce the Congestion Control (CC) and Forward Erasure Correction (FEC) channels. The Congestion Control channel carries source packets (from a sender to a receiver) and potential information signaling the packets that have been received (from the receiver to the sender). The Forward Erasure Correction channel carries repair packets (from the sender to the receiver) and a potential information signaling the packets that have been repaired (from the receiver to the sender). It is worth pointing out that there are cases where these channels are not separated.</t>
+        <t><xref target="fig:sep-channel"></xref> presents the notations that will be used in this document and introduces the Congestion Control (CC) and Forward Erasure Correction (FEC) channels. The Congestion Control channel carries source packets from a sender to a receiver, and packets signaling information about the network (number of packets received vs. lost, ECN marks, etc.) from the receiver to the sender. The Forward Erasure Correction channel carries repair packets (from the sender to the receiver) and potential information signaling which packets have been repaired (from the receiver to the sender). It is worth pointing out that there are cases where these channels are not separated.</t>
         <figure anchor="fig:sep-channel" title="Notations and separate channels">
         <artwork>
-Receiver                         Sender
+ Sender                                Receiver
 
-+------+                        +------+
-|      | <![CDATA[<---]]> source packets ---|      |
-|  CC  |                        |  CC  |
-|      | -- received packets -->|      |
-+------+                        +------+
++------+                               +------+
+|      | <![CDATA[-----]]>    source packets  ---->|      |
+|  CC  |                               |  CC  |
+|      | <![CDATA[<---]]>  network information  ---|      |
++------+                               +------+
 
-+------+                        +------+
-|      | <![CDATA[<---]]> repair packets ---|      |
-| FEC  |                        | FEC  |
-|      | -- repaired packets -->|      |
-+------+                        +------+
++------+                               +------+
+|      | <![CDATA[-----]]>    repair packets  ---->|      |
+| FEC  |                               | FEC  |
+|      | <![CDATA[<---]]> info: repaired packets --|      |
++------+                               +------+
         </artwork>
         </figure>
         
@@ -151,15 +152,15 @@ Receiver                         Sender
 +-------------------+ packets      +--------------------+
   ^                                         ^
   | signaling about                         | network
-  | losses and/or                           | measurements
+  | losses and/or                           | information
   | repaired packets                         
         </artwork>
         </figure>
 
 	<t><xref target="fig:sep-entities"></xref> provides more details than <xref target="fig:sep-channel"></xref> by focusing on the sender-side. Some elements are introduced:<list style="symbols">
-		<t>'network measurements' (input control plane for the transport including CC): refers to the information a ongestion control can obtain from a network (e.g. TCP can estimate the latency, the loss rate and bottleneck).</t>
+		<t>'network information' (input control plane for the transport including CC): refers not only to the network information that is explicitly signaled from the receiver, but all the information a congestion control obtains from a network (e.g. TCP can estimate the latency and the available capacity at the bottleneck).</t>
 		<t>'requirements' (input control plane for the transport including CC): refers to application requirements such as upper/lower rate bounds, periods of quiescence, or a priority.</t>
-		<t>'sending rate (or window)' (output control plane for the transport including CC): refers to the rate at which a congestion control decides to transmit packets, based on 'network measurements'.</t>	
+		<t>'sending rate (or window)' (output control plane for the transport including CC): refers to the rate at which a congestion control decides to transmit packets, based on 'network information'.</t>
 		<t>'signaling about losses and/or repaired packets' (input control plane for the FEC): refers to the information a FEC sender can obtain from a FEC receiver about the performance of the FEC solution as seen from the receiver.</t>
 		<t>'coding rate' (output control plane for the FEC): refers to the coding rate that is used by the FEC solution.</t>	
 		<t>'source and/or repair packets' (data plane for both the FEC and the CC): refers to the packets that are transmitted. There can only be source packets (if the coding rate is 0), repair packets (if the solution decides not to send the original source packets) or a mix of both.</t>	
@@ -167,10 +168,10 @@ Receiver                         Sender
 
 	<!-- <t><xref target="fig:sep-entities"></xref> provides more details than 
 	<xref target="fig:sep-channel"></xref> by focusing on the server side. -->
-	<t>The inputs to FEC (packet to work upon, and signaling 
+	<t>The inputs to FEC (packets to work upon, and signaling
 	from the receiver about losses and/or repaired packets)
         are distinct from the inputs to CC. The latter calculates a
-        sending rate or window from network measurements, and it takes
+        sending rate or window from network information, and it takes
         the packet to send as input, sometimes along with application requirements
         such as upper/lower rate bounds, periods of quiescence, or a priority.</t>
 
@@ -223,18 +224,18 @@ Receiver                         Sender
   | signaling about   | and/or  | sending rate
   | losses and/or     | repair  | (or window)
   | repaired packets  v packets |
-                   +-----------------+ source and/or 
-		   | Transport       | repair packets
-		   | (including CC)  | ===>  
-		   +-----------------+
+           +-----------------+
+		   | Transport       | source and/or
+		   | (including CC)  | repair packets
+		   +-----------------+ ===>
                       ^
                       | network
-                      | measurements
+                      | information
 	        </artwork>
 		</figure>
 		<t><xref target="fig:fec-above"></xref> presents an architecture where FEC is on top of the transport. The repair packets are sent within what the congestion window allows.</t>
 		<t>The advantage of this approach is that the FEC does not contribute to adding congestion in the network.</t>
-		<t>This approach requires that the transport protocol does not include a reliability (e.g., based on lost packet retransmition). This approach is relevant with UDP.</t>
+		<t>While CC is in principle independent of other transport functions such as reliability, we note that CC is often embedded in reliable transfer protocols (e.g. TCP). This approach requires that the transport protocol does not implement a fully reliable data transfer service (e.g., based on lost packet retransmission). UDP is an example of a protocol for which this approach is relevant.</t>
 		</section>
 
 	        <!-- ######################################################-->
@@ -255,17 +256,17 @@ Receiver                         Sender
 	| +-----+  +-----+    | 
 	|                     | 
 	+---------------------+
-		^          ^
-		|          |
+		^             ^
+		|             |
 	signaling about  network
-	losses and/or    measurements
+	losses and/or    information
 	repaired packets           
         	</artwork>
 		</figure>
         
         	<t><xref target="fig:fec-in"></xref> presents an architecture where FEC is within the transport. The repair packets are sent within what the congestion window allows, such as in <xref target="CTCP"/>. Examples of the solution would be sending repair packets when there is no more data to transmit or preferably send repair packets instead of the following packets in the send buffer.</t>
-		<t>The advantage of this approach is that it can enable conjoint optimization between the CC and the FEC. Moreover, the transmission of repair packets does not add congestion in potentially congested networks but help repair lost packets (such as tail losses).</t>
-		<t>The drawback of this approach is that it may not result in much gains as opposed to classical CC retransmissions mechanisms and it costs bandwidth that could have been exploited to transmit source packets. The coding ratio needs to be carefully designed.</t>
+		<t>The advantage of this approach is that it can enable conjoint optimization between the CC and the FEC. Moreover, the transmission of repair packets does not add congestion in potentially congested networks but helps repair lost packets (such as tail losses).</t>
+		<t>The drawback of this approach is that it may not result in much gains as opposed to classical retransmission mechanisms and it costs bandwidth that could have been exploited to transmit source packets. The coding ratio needs to be carefully designed.</t>
 		</section>
 
 
@@ -284,7 +285,7 @@ Receiver                         Sender
 +------------------------------------+  
   ^                   | 
   | network           | source packets  
-  | measurements      | 
+  | information       |
                       v 
 		   +-----------------+ source and/or
 		   |      FEC        | repair packets 
@@ -292,12 +293,12 @@ Receiver                         Sender
 		   +-----------------+
                       ^
                       | signaling about  
-		      | losses and/or
-		      | repaired packets
+		              | losses and/or
+		              | repaired packets
 
         	</artwork>
 		</figure>
-        	<t><xref target="fig:fec-below"></xref> presents an architecture where FEC is below the transport. The repair packets are sent on top of what is allowed by the congestion control. Examples of the solution could be adding a given percentage of the congestion window as supplementary packets or sending a given amount of repair packets at a given rate. The redundancy flow can be decorrelated from the congestion control that manages source packets: a secondary congestion control could be introduced underneath the FEC layer, such as in coupled congestion control for RTP media <xref target="I-D.ietf-rmcat-coupled-cc"/>. An example would be to exploit a lower than best-effort congestion control <xref target="RFC6297"/>.</t>
+        	<t><xref target="fig:fec-below"></xref> presents an architecture where FEC is below the transport. The repair packets are sent on top of what is allowed by the congestion control. Examples of the solution could be adding a given percentage of the congestion window as supplementary packets or sending a given amount of repair packets at a given rate. The redundancy flow can be decorrelated from the congestion control that manages source packets: a secondary congestion control could be introduced underneath the FEC layer. The separate congestion control mechanisms could be made to work together while adhering to priorities, as in coupled congestion control for RTP media <xref target="I-D.ietf-rmcat-coupled-cc"/>. Another possibility would be to exploit a lower than best-effort congestion control <xref target="RFC6297"/> for repair packets.</t>
 		<t>The advantage of this approach is that it can result in performance gains when there are persistent transmission losses along the path.</t>
 		<t>The drawback of this approach is that it can induce congestion in already congested networks. The coding ratio needs to be carefully designed.</t>
 		</section>
@@ -320,7 +321,8 @@ Receiver                         Sender
 
     <section anchor="sec:ecurity" title="Security Considerations">
     <t>FEC and CC schemes can contribute to DoS attacks. This is not specific to this document.</t>
-    <t>More information TBD.</t>
+    <t>In case of FEC below the transport, the aggregate rate of source and repair packets may exceed the rate at which a congestion control mechanism allows an application to send. This could result in an application obtaining more
+       than its fair share of the network capacity.</t>
     </section>
     </middle>
 
