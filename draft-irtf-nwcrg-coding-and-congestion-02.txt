@@ -5,12 +5,12 @@
 NWCRG                                                            N. Kuhn
 Internet-Draft                                                      CNES
 Intended status: Informational                                 E. Lochin
-Expires: September 3, 2020                                  ISAE-SUPAERO
+Expires: September 6, 2020                                  ISAE-SUPAERO
                                                                F. Michel
                                                                UCLouvain
                                                                 M. Welzl
                                                       University of Oslo
-                                                           March 2, 2020
+                                                           March 5, 2020
 
 
                Coding and congestion control in transport
@@ -18,18 +18,15 @@ Expires: September 3, 2020                                  ISAE-SUPAERO
 
 Abstract
 
-   FEC coding is a reliability mechanism that is distinct and separated
+   FEC coding is a reliability mechanism that is distinct and separate
    from the loss detection of congestion controls.  Using FEC coding can
-   be a useful way to better deal with transfer tail losses or with
-   networks with non-congestion losses.  However, FEC coding mechanisms
-   should not hide congestion signals.  This memo offers a discussion of
-   how FEC coding and congestion control can coexist.  Another objective
-   is to encourage the research community to also consider congestion
+   be a useful way to deal with transfer tail losses or with networks
+   having non-congestion losses.  However, FEC coding mechanisms should
+   not hide congestion signals.  This memo offers a discussion of how
+   FEC coding and congestion control can coexist.  Another objective is
+   to encourage the research community to also consider congestion
    control aspects when proposing and comparing FEC coding solutions in
-   communication systems.  That being said, this document does not aim
-   at proposing FEC coding solutions characterization guidelines:
-   comparing FEC Schemes without considering congestion control can be
-   relevant if the goal is to compare those schemes only.
+   communication systems.
 
    This document is the product of the Coding for Efficient Network
    Communications Research Group (NWCRG).  The scope of the document is
@@ -51,14 +48,15 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
+   This Internet-Draft will expire on September 6, 2020.
 
 
-Kuhn, et al.            Expires September 3, 2020               [Page 1]
+
+
+Kuhn, et al.            Expires September 6, 2020               [Page 1]
 
 Internet-Draft            Coding and congestion               March 2020
 
-
-   This Internet-Draft will expire on September 3, 2020.
 
 Copyright Notice
 
@@ -91,15 +89,16 @@ Table of Contents
 
 1.  Introduction
 
-   There are cases where deploying FEC coding improves the quality of
-   the transmission.  As an example, it may take time for the sender to
-   detect tail losses (i.e. tail loss can refer to losses at the tail
-   end of transactions).  This would impact the experience of
+   There are cases where deploying FEC coding improves the performance
+   of a transmission.  As an example, it may take time for the sender to
+   detect transfer tail losses (losses that occur at the end of a
+   transfer, where e.g.  TCP obtains no more ACKs to quickly repair the
+   loss via retransmission).  This would improve the experience of
    applications using short flows.  Another example are networks where
    non-congestion losses are persistent and prevent a sender from
    exploiting the link capacity.
 
-   Coding is a reliability mechanism that is distinct and separated from
+   Coding is a reliability mechanism that is distinct and separate from
    the loss detection of congestion controls.  [RFC5681] defines TCP as
    a loss-based congestion control; because FEC coding repairs such
    losses, blindly applying it may easily lead to an implementation that
@@ -109,7 +108,8 @@ Table of Contents
 
 
 
-Kuhn, et al.            Expires September 3, 2020               [Page 2]
+
+Kuhn, et al.            Expires September 6, 2020               [Page 2]
 
 Internet-Draft            Coding and congestion               March 2020
 
@@ -120,8 +120,8 @@ Internet-Draft            Coding and congestion               March 2020
    FEC coding and congestion control can coexist.  Another objective is
    to encourage the research community to also consider congestion
    control aspects when proposing and comparing FEC coding solutions in
-   communication systems.  That being said, this document does not aim
-   at proposing FEC coding solutions characterization guidelines:
+   communication systems.  This being said, this document does not aim
+   at proposing guidelines for characterizing FEC coding solutions:
    comparing FEC Schemes without considering congestion control can be
    relevant if the goal is to compare those schemes only.
 
@@ -139,15 +139,16 @@ Internet-Draft            Coding and congestion               March 2020
 2.  Separate channels, separate entities
 
    Figure 1 presents the notations that will be used in this document
-   and introduce the Congestion Control (CC) and Forward Erasure
+   and introduces the Congestion Control (CC) and Forward Erasure
    Correction (FEC) channels.  The Congestion Control channel carries
-   source packets (from a sender to a receiver) and potential
-   information signaling the packets that have been received (from the
-   receiver to the sender).  The Forward Erasure Correction channel
-   carries repair packets (from the sender to the receiver) and a
-   potential information signaling the packets that have been repaired
-   (from the receiver to the sender).  It is worth pointing out that
-   there are cases where these channels are not separated.
+   source packets from a sender to a receiver, and packets signaling
+   information about the network (number of packets received vs. lost,
+   ECN marks, etc.) from the receiver to the sender.  The Forward
+   Erasure Correction channel carries repair packets (from the sender to
+   the receiver) and potential information signaling which packets have
+   been repaired (from the receiver to the sender).  It is worth
+   pointing out that there are cases where these channels are not
+   separated.
 
 
 
@@ -164,25 +165,24 @@ Internet-Draft            Coding and congestion               March 2020
 
 
 
-
-Kuhn, et al.            Expires September 3, 2020               [Page 3]
+Kuhn, et al.            Expires September 6, 2020               [Page 3]
 
 Internet-Draft            Coding and congestion               March 2020
 
 
-   Receiver                         Sender
+    Sender                                Receiver
 
-   +------+                        +------+
-   |      | <--- source packets ---|      |
-   |  CC  |                        |  CC  |
-   |      | -- received packets -->|      |
-   +------+                        +------+
+   +------+                               +------+
+   |      | -----    source packets  ---->|      |
+   |  CC  |                               |  CC  |
+   |      | <---  network information  ---|      |
+   +------+                               +------+
 
-   +------+                        +------+
-   |      | <--- repair packets ---|      |
-   | FEC  |                        | FEC  |
-   |      | -- repaired packets -->|      |
-   +------+                        +------+
+   +------+                               +------+
+   |      | -----    repair packets  ---->|      |
+   | FEC  |                               | FEC  |
+   |      | <--- info: repaired packets --|      |
+   +------+                               +------+
 
                  Figure 1: Notations and separate channels
 
@@ -198,7 +198,7 @@ Internet-Draft            Coding and congestion               March 2020
    +-------------------+ packets      +--------------------+
      ^                                         ^
      | signaling about                         | network
-     | losses and/or                           | measurements
+     | losses and/or                           | information
      | repaired packets
 
                  Figure 2: Separate entities (sender-side)
@@ -206,25 +206,29 @@ Internet-Draft            Coding and congestion               March 2020
    Figure 2 provides more details than Figure 1 by focusing on the
    sender-side.  Some elements are introduced:
 
-   o  'network measurements' (input control plane for the transport
-      including CC): refers to the information a ongestion control can
-      obtain from a network (e.g.  TCP can estimate the latency, the
-      loss rate and bottleneck).
+   o  'network information' (input control plane for the transport
+      including CC): refers not only to the network information that is
+      explicitly signaled from the receiver, but all the information a
+      congestion control obtains from a network (e.g.  TCP can estimate
+      the latency and the available capacity at the bottleneck).
 
    o  'requirements' (input control plane for the transport including
       CC): refers to application requirements such as upper/lower rate
       bounds, periods of quiescence, or a priority.
 
-   o  'sending rate (or window)' (output control plane for the transport
-      including CC): refers to the rate at which a congestion control
-      decides to transmit packets, based on 'network measurements'.
 
 
 
-Kuhn, et al.            Expires September 3, 2020               [Page 4]
+
+
+Kuhn, et al.            Expires September 6, 2020               [Page 4]
 
 Internet-Draft            Coding and congestion               March 2020
 
+
+   o  'sending rate (or window)' (output control plane for the transport
+      including CC): refers to the rate at which a congestion control
+      decides to transmit packets, based on 'network information'.
 
    o  'signaling about losses and/or repaired packets' (input control
       plane for the FEC): refers to the information a FEC sender can
@@ -240,10 +244,10 @@ Internet-Draft            Coding and congestion               March 2020
       (if the solution decides not to send the original source packets)
       or a mix of both.
 
-   The inputs to FEC (packet to work upon, and signaling from the
+   The inputs to FEC (packets to work upon, and signaling from the
    receiver about losses and/or repaired packets) are distinct from the
    inputs to CC.  The latter calculates a sending rate or window from
-   network measurements, and it takes the packet to send as input,
+   network information, and it takes the packet to send as input,
    sometimes along with application requirements such as upper/lower
    rate bounds, periods of quiescence, or a priority.
 
@@ -273,11 +277,7 @@ Internet-Draft            Coding and congestion               March 2020
 
 
 
-
-
-
-
-Kuhn, et al.            Expires September 3, 2020               [Page 5]
+Kuhn, et al.            Expires September 6, 2020               [Page 5]
 
 Internet-Draft            Coding and congestion               March 2020
 
@@ -292,13 +292,13 @@ Internet-Draft            Coding and congestion               March 2020
      | signaling about   | and/or  | sending rate
      | losses and/or     | repair  | (or window)
      | repaired packets  v packets |
-                      +-----------------+ source and/or
-                      | Transport       | repair packets
-                      | (including CC)  | ===>
                       +-----------------+
+                      | Transport       | source and/or
+                      | (including CC)  | repair packets
+                      +-----------------+ ===>
                          ^
                          | network
-                         | measurements
+                         | information
 
               Figure 3: FEC above the transport (sender-side)
 
@@ -309,9 +309,12 @@ Internet-Draft            Coding and congestion               March 2020
    The advantage of this approach is that the FEC does not contribute to
    adding congestion in the network.
 
-   This approach requires that the transport protocol does not include a
-   reliability (e.g., based on lost packet retransmition).  This
-   approach is relevant with UDP.
+   While CC is in principle independent of other transport functions
+   such as reliability, we note that CC is often embedded in reliable
+   transfer protocols (e.g.  TCP).  This approach requires that the
+   transport protocol does not implement a fully reliable data transfer
+   service (e.g., based on lost packet retransmission).  UDP is an
+   example of a protocol for which this approach is relevant.
 
 3.2.  FEC within the transport
 
@@ -330,10 +333,7 @@ Internet-Draft            Coding and congestion               March 2020
 
 
 
-
-
-
-Kuhn, et al.            Expires September 3, 2020               [Page 6]
+Kuhn, et al.            Expires September 6, 2020               [Page 6]
 
 Internet-Draft            Coding and congestion               March 2020
 
@@ -349,10 +349,10 @@ Internet-Draft            Coding and congestion               March 2020
            | +-----+  +-----+    |
            |                     |
            +---------------------+
-                   ^          ^
-                   |          |
+             ^               ^
+             |               |
            signaling about  network
-           losses and/or    measurements
+           losses and/or    information
            repaired packets
 
                Figure 4: FEC in the transport (sender-side)
@@ -366,10 +366,10 @@ Internet-Draft            Coding and congestion               March 2020
    The advantage of this approach is that it can enable conjoint
    optimization between the CC and the FEC.  Moreover, the transmission
    of repair packets does not add congestion in potentially congested
-   networks but help repair lost packets (such as tail losses).
+   networks but helps repair lost packets (such as tail losses).
 
    The drawback of this approach is that it may not result in much gains
-   as opposed to classical CC retransmissions mechanisms and it costs
+   as opposed to classical retransmission mechanisms and it costs
    bandwidth that could have been exploited to transmit source packets.
    The coding ratio needs to be carefully designed.
 
@@ -389,7 +389,7 @@ Internet-Draft            Coding and congestion               March 2020
 
 
 
-Kuhn, et al.            Expires September 3, 2020               [Page 7]
+Kuhn, et al.            Expires September 6, 2020               [Page 7]
 
 Internet-Draft            Coding and congestion               March 2020
 
@@ -402,7 +402,7 @@ Internet-Draft            Coding and congestion               March 2020
    +------------------------------------+
      ^                   |
      | network           | source packets
-     | measurements      |
+     | information       |
                          v
                       +-----------------+ source and/or
                       |      FEC        | repair packets
@@ -413,7 +413,6 @@ Internet-Draft            Coding and congestion               March 2020
                          | losses and/or
                          | repaired packets
 
-
               Figure 5: FEC below the transport (sender-side)
 
    Figure 5 presents an architecture where FEC is below the transport.
@@ -423,9 +422,12 @@ Internet-Draft            Coding and congestion               March 2020
    sending a given amount of repair packets at a given rate.  The
    redundancy flow can be decorrelated from the congestion control that
    manages source packets: a secondary congestion control could be
-   introduced underneath the FEC layer, such as in coupled congestion
-   control for RTP media [I-D.ietf-rmcat-coupled-cc].  An example would
-   be to exploit a lower than best-effort congestion control [RFC6297].
+   introduced underneath the FEC layer.  The separate congestion control
+   mechanisms could be made to work together while adhering to
+   priorities, as in coupled congestion control for RTP media
+   [I-D.ietf-rmcat-coupled-cc].  Another possibility would be to exploit
+   a lower than best-effort congestion control [RFC6297] for repair
+   packets.
 
    The advantage of this approach is that it can result in performance
    gains when there are persistent transmission losses along the path.
@@ -443,9 +445,7 @@ Internet-Draft            Coding and congestion               March 2020
 
 
 
-
-
-Kuhn, et al.            Expires September 3, 2020               [Page 8]
+Kuhn, et al.            Expires September 6, 2020               [Page 8]
 
 Internet-Draft            Coding and congestion               March 2020
 
@@ -459,7 +459,11 @@ Internet-Draft            Coding and congestion               March 2020
    FEC and CC schemes can contribute to DoS attacks.  This is not
    specific to this document.
 
-   More information TBD.
+   In case of FEC below the transport, the aggregate rate of source and
+   repair packets may exceed the rate at which a congestion control
+   mechanism allows an application to send.  This could result in an
+   application obtaining more than its fair share of the network
+   capacity.
 
 7.  Informative References
 
@@ -494,16 +498,18 @@ Authors' Addresses
    Email: nicolas.kuhn@cnes.fr
 
 
+
+
+
+Kuhn, et al.            Expires September 6, 2020               [Page 9]
+
+Internet-Draft            Coding and congestion               March 2020
+
+
    Emmanuel Lochin
    ISAE-SUPAERO
 
    Email: emmanuel.lochin@isae-supaero.fr
-
-
-
-Kuhn, et al.            Expires September 3, 2020               [Page 9]
-
-Internet-Draft            Coding and congestion               March 2020
 
 
    Francois Michel
@@ -551,10 +557,4 @@ Internet-Draft            Coding and congestion               March 2020
 
 
 
-
-
-
-
-
-
-Kuhn, et al.            Expires September 3, 2020              [Page 10]
+Kuhn, et al.            Expires September 6, 2020              [Page 10]
