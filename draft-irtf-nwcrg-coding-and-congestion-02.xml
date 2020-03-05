@@ -97,7 +97,7 @@
   <middle>
 
     <section anchor="sec:introduction" title="Introduction">
-	<t>There are cases where deploying FEC coding improves the quality of the transmission. As an example, when a server transmits data to a client, it may take time for the server to detect tail losses (i.e. tail loss can refer to losses at the tail end of transactions). This would impact the experience of applications using short flows. Another example are networks where non-congestion losses are persistent and prevent a sender from exploiting the link capacity.</t>
+	<t>There are cases where deploying FEC coding improves the quality of the transmission. As an example, it may take time for the sender to detect tail losses (i.e. tail loss can refer to losses at the tail end of transactions). This would impact the experience of applications using short flows. Another example are networks where non-congestion losses are persistent and prevent a sender from exploiting the link capacity.</t>
 	<t>Coding is a reliability mechanism that is distinct and separated from the loss detection of congestion controls. <xref target="RFC5681"/> defines TCP as a loss-based congestion control; because FEC coding repairs such losses, blindly applying it may easily lead to an implementation that also hides a congestion signal to the sender. It is important to ensure that such information hiding does not occur.</t>
 	<t>FEC coding and congestion control can be seen as two separate channels. In practice, implementations may mix the signals that are exchanged on these channels. This memo offers a discussion of how FEC coding and congestion control can coexist. Another objective is to encourage the research community to also consider congestion control aspects when proposing and comparing FEC coding solutions in communication systems. That being said, this document does not aim at proposing FEC coding solutions characterization guidelines: comparing FEC Schemes without considering congestion control can be relevant if the goal is to compare those schemes only.</t>
 	<t>The proposed document considers FEC coding at the transport or application layer for an end-to-end unicast data transfer. The typical application scenario that is considered in the current version of the document is a client browsing the web. This memo may be extended to cases with multiple paths.</t>
@@ -118,10 +118,10 @@
         <!-- New section -->
         <!-- ######################################################-->
         <section anchor="sec:notations" title="Separate channels, separate entities">
-        <t><xref target="fig:sep-channel"></xref> presents the notations that will be used in this document and introduce the Congestion Control (CC) and Forward Erasure Correction (FEC) channels. The Congestion Control channel carries source packets (from a server to a client) and potential information signaling the packets that have been received (from the client to the server). The Forward Erasure Correction channel carries repair packets (from the server to the client) and a potential information signaling the packets that have been repaired (from the client to the server). It is worth pointing out that there are cases where these channels are not separated.</t>
+        <t><xref target="fig:sep-channel"></xref> presents the notations that will be used in this document and introduce the Congestion Control (CC) and Forward Erasure Correction (FEC) channels. The Congestion Control channel carries source packets (from a sender to a receiver) and potential information signaling the packets that have been received (from the receiver to the sender). The Forward Erasure Correction channel carries repair packets (from the sender to the receiver) and a potential information signaling the packets that have been repaired (from the receiver to the sender). It is worth pointing out that there are cases where these channels are not separated.</t>
         <figure anchor="fig:sep-channel" title="Notations and separate channels">
         <artwork>
- Client                          Server
+Receiver                         Sender
 
 +------+                        +------+
 |      | <![CDATA[<---]]> source packets ---|      |
@@ -140,7 +140,7 @@
         <t>Inside a host, the CC and FEC entities can be regarded as
             conceptually separate:</t>
     
-    	<figure anchor="fig:sep-entities" title="Separate entities (server side)">
+    	<figure anchor="fig:sep-entities" title="Separate entities (sender-side)">
         <artwork>
   |              ^                  |             ^
   | source       | coding           |packets      | sending
@@ -156,11 +156,11 @@
         </artwork>
         </figure>
 
-	<t><xref target="fig:sep-entities"></xref> provides more details than <xref target="fig:sep-channel"></xref> by focusing on the server side. Some elements are introduced:<list style="symbols">
+	<t><xref target="fig:sep-entities"></xref> provides more details than <xref target="fig:sep-channel"></xref> by focusing on the sender-side. Some elements are introduced:<list style="symbols">
 		<t>'network measurements' (input control plane for the transport including CC): refers to the information a ongestion control can obtain from a network (e.g. TCP can estimate the latency, the loss rate and bottleneck).</t>
 		<t>'requirements' (input control plane for the transport including CC): refers to application requirements such as upper/lower rate bounds, periods of quiescence, or a priority.</t>
 		<t>'sending rate (or window)' (output control plane for the transport including CC): refers to the rate at which a congestion control decides to transmit packets, based on 'network measurements'.</t>	
-		<t>'signaling about losses and/or repaired packets' (input control plane for the FEC): refers to the information a FEC server can obtain from a FEC client about the performance of the FEC solution as seen from the client.</t>
+		<t>'signaling about losses and/or repaired packets' (input control plane for the FEC): refers to the information a FEC sender can obtain from a FEC receiver about the performance of the FEC solution as seen from the receiver.</t>
 		<t>'coding rate' (output control plane for the FEC): refers to the coding rate that is used by the FEC solution.</t>	
 		<t>'source and/or repair packets' (data plane for both the FEC and the CC): refers to the packets that are transmitted. There can only be source packets (if the coding rate is 0), repair packets (if the solution decides not to send the original source packets) or a mix of both.</t>	
 	</list></t>
@@ -211,7 +211,7 @@
         	<!-- ######################################################-->
 		<section anchor="sec:fec-above" title="FEC above the transport">
 			<t><xref target="fig:fec-above"></xref> illustrates the FEC above the transport case.</t> 	
-        	<figure anchor="fig:fec-above" title="FEC above the transport (server side)">
+            <figure anchor="fig:fec-above" title="FEC above the transport (sender-side)">
         	<artwork>
                | source             
                | packets                
@@ -241,8 +241,8 @@
         	<!-- New subsection -->
         	<!-- ######################################################-->
 	        <section anchor="sec:fec-in" title="FEC within the transport">
-		<t><xref target="fig:fec-in"></xref> illustrates the FEC within the transport case.</t> 	
-       	 	<figure anchor="fig:fec-in" title="FEC in the transport (server side)">
+		<t><xref target="fig:fec-in"></xref> illustrates the FEC within the transport case.</t>
+       	    <figure anchor="fig:fec-in" title="FEC in the transport (sender-side)">
         	<artwork>
 	  	  |                 
 		  | source packets,
@@ -274,7 +274,7 @@
         	<!-- ######################################################-->
         	<section anchor="sec:fec-below" title="FEC below the transport">
 		<t><xref target="fig:fec-below"></xref> illustrates the FEC below the transport case.</t> 	
-        	<figure anchor="fig:fec-below" title="FEC below the transport (server side)">
+            <figure anchor="fig:fec-below" title="FEC below the transport (sender-side)">
         	<artwork>
    | source packets  | sending rate            
    | requirements    | (or window)              
