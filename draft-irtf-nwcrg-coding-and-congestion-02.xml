@@ -235,7 +235,7 @@
 		</figure>
 		<t><xref target="fig:fec-above"></xref> presents an architecture where FEC is on top of the transport. The repair packets are sent within what the congestion window allows.</t>
 		<t>The advantage of this approach is that the FEC does not contribute to adding congestion in the network.</t>
-		<t>This approach requires that the transport protocol does not implement fully reliable data transfer (e.g., based on lost packet retransmition). This approach is relevant with UDP.</t>
+		<t>While CC is in principle independent of other transport functions such as reliability, we note that CC is often embedded in reliable transfer protocols (e.g. TCP). This approach requires that the transport protocol does not implement a fully reliable data transfer service (e.g., based on lost packet retransmission). UDP is an example of a protocol for which this approach is relevant.</t>
 		</section>
 
 	        <!-- ######################################################-->
