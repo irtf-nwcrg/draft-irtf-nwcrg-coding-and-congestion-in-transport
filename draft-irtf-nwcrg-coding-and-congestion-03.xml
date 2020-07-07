@@ -141,23 +141,41 @@
         <t>Inside a host, the CC and FEC entities can be regarded as
             conceptually separate:</t>
     
-    	<figure anchor="fig:sep-entities" title="Separate entities (sender-side)">
+    	<figure anchor="fig:sep-entities-srv" title="Separate entities (sender-side)">
         <artwork>
-  |              ^                  |             ^
-  | source       | coding           |packets      | sending
-  | packets      | rate             |requirements | rate (or
-  v              |                  v             | window)
-+-------------------+source and/or +--------------------+
-|      FEC          |=> repair     |       CC           |=> packets
-+-------------------+ packets      +--------------------+
-  ^                                         ^
-  | signaling about                         | network
-  | losses and/or                           | information
+  |            ^             |             ^
+  | source     | coding      |packets      | sending
+  | packets    | rate        |requirements | rate (or
+  v            |             v             | window)
++---------------+source     +-----------------+
+|    FEC        |and/or     |    CC           |
+|               |repair     |                 |source 
+|               |packets    |                 |packets
++---------------+==>        +-----------------+==>
+  ^                                       ^
+  | signaling about                       | network
+  | losses and/or                         | information
   | repaired packets                         
         </artwork>
         </figure>
 
-	<t><xref target="fig:sep-entities"></xref> provides more details than <xref target="fig:sep-channel"></xref> by focusing on the sender-side. Some elements are introduced:<list style="symbols">
+    	<figure anchor="fig:sep-entities-clt" title="Separate entities (client-side)">
+        <artwork>
+  |                                 |             
+  | source and/or                   | packets      
+  | repair packets                  |             
+  v                                 v             
++---------------+signaling     +-----------------+
+|    FEC        |losses        |    CC           |
+|               |and/or        |                 |
+|               |repaired      |                 |network
+|               |packets       |                 |information
++---------------+==>           +-----------------+==>   
+                 repaired packets      
+        </artwork>
+        </figure>
+
+	<t><xref target="fig:sep-entities-srv"></xref> and <xref target="fig:sep-entities-clt"></xref> provide more details than <xref target="fig:sep-channel"></xref>. Some elements are introduced:<list style="symbols">
 		<t>'network information' (input control plane for the transport including CC): refers not only to the network information that is explicitly signaled from the receiver, but all the information a congestion control obtains from a network (e.g. TCP can estimate the latency and the available capacity at the bottleneck).</t>
 		<t>'requirements' (input control plane for the transport including CC): refers to application requirements such as upper/lower rate bounds, periods of quiescence, or a priority.</t>
 		<t>'sending rate (or window)' (output control plane for the transport including CC): refers to the rate at which a congestion control decides to transmit packets, based on 'network information'.</t>
@@ -204,105 +222,147 @@
         <!-- ######################################################-->
         <!-- New section -->
         <!-- ######################################################-->
-	<section anchor="sec:fec-cc" title="FEC and CC layering">
-	<t>This section discusses how FEC and CC can relate in different cases (FEC above the transport, FEC within the transport, FEC below the transport).</t>
+	<!-- <section anchor="sec:fec-cc" title="FEC and CC layering">
+	<t>This section discusses how FEC and CC can relate in different cases (FEC above the transport, FEC within the transport, FEC below the transport).</t> -->
 
-		<!-- ######################################################-->
-        	<!-- New subsection -->
-        	<!-- ######################################################-->
-		<section anchor="sec:fec-above" title="FEC above the transport">
-			<t><xref target="fig:fec-above"></xref> illustrates the FEC above the transport case.</t> 	
-            <figure anchor="fig:fec-above" title="FEC above the transport (sender-side)">
+	<!-- ######################################################-->
+        <!-- New section -->
+        <!-- ######################################################-->
+	<section anchor="sec:fec-above" title="FEC above the transport">
+		<section anchor="sec:fec-above-fig" title="Flowchart">
+		<t><xref target="fig:fec-above"></xref> illustrates the FEC above the transport case. </t> 	
+              <figure anchor="fig:fec-above" title="FEC above the transport">
         	<artwork>
-               | source             
-               | packets                
-               v                  
-+------------------------------------+   
-|             FEC                    |   
-+------------------------------------+  
-  ^                   | source  ^
-  | signaling about   | and/or  | sending rate
-  | losses and/or     | repair  | (or window)
-  | repaired packets  v packets |
-                   +-----------------+
-		   | Transport       | source and/or
-		   | (including CC)  | repair packets
-		   +-----------------+ ===>
-                      ^
-                      | network
-                      | information
-	        </artwork>
+ | source                               ^ source 
+ | packets                              | packets
+ v                                      | 
++-------------+                      +-------------+ 
+|FEC          |             signaling|FEC          |
+|             |                losses|             |
+|             |                and/or|             |
+|             |              repaired|             |
+|             |               packets|             |
+|             |                   <![CDATA[<]]>==|             |
++-------------+                      +-------------+
+ | source  ^                            ^ source       
+ | and/or  | sending                    | and/or
+ | repair  | rate                       | repair
+ | packets | (or window)                | packets
+ v         |                            |
++-------------+                      +-------------+
+|Transport    |source         network|Transport    |
+|(incl. CC)   |and/or     information|             |
+|             |repair             <![CDATA[<]]>==|             |
+|             |packets               |             |
++-------------+==>                   +-------------+
+
+     SERVER                                 CLIENT 
+		</artwork>
 		</figure>
-		<t><xref target="fig:fec-above"></xref> presents an architecture where FEC is on top of the transport. The repair packets are sent within what the congestion window allows.</t>
+
+		<t><xref target="fig:fec-above"></xref> present an architecture where FEC is on top of the transport. The repair packets are sent within what the congestion window allows.</t>
+	</section>
+
+	<section anchor="sec:fec-above-example" title="Example">
+		<t> TODO </t>
+	</section>
+
+	<section anchor="sec:fec-above-discu" title="Discussion">
 		<t>The advantage of this approach is that the FEC does not contribute to adding congestion in the network.</t>
 		<t>While CC is in principle independent of other transport functions such as reliability, we note that CC is often embedded in reliable transfer protocols (e.g. TCP). This approach requires that the transport protocol does not implement a fully reliable data transfer service (e.g., based on lost packet retransmission). UDP is an example of a protocol for which this approach is relevant.</t>
+		<t> TODO MENTION RECEIVER </t>
+	</section>
+
 		</section>
 
-	        <!-- ######################################################-->
-        	<!-- New subsection -->
-        	<!-- ######################################################-->
-	        <section anchor="sec:fec-in" title="FEC within the transport">
-		<t><xref target="fig:fec-in"></xref> illustrates the FEC within the transport case.</t>
-       	    <figure anchor="fig:fec-in" title="FEC in the transport (sender-side)">
+	<!-- ######################################################-->
+	<!-- New subsection -->
+        <!-- ######################################################-->
+	<section anchor="sec:fec-in" title="FEC within the transport">
+	<section anchor="sec:fec-in-fig" title="Flowchart">
+	<t><xref target="fig:fec-in"></xref> illustrates the FEC within the transport case.</t>
+	<figure anchor="fig:fec-in" title="FEC in the transport">
         	<artwork>
-	  	  |                 
-		  | source packets,
-		  | requirements 
-		  v
-	+---------------------+
-	| Transport           | source and/or
-	| +-----+  +-----+    | repair packets 
-	| | FEC |  | CC  |    | ===>
-	| +-----+  +-----+    | 
-	|                     | 
-	+---------------------+
-	  ^               ^
-	  |               |
-	signaling about  network
-	losses and/or    information
-	repaired packets           
+ | source  | sending                    ^ source 
+ | packets | rate                       | packets
+ v         v                            | 
++------------+                      +------------+ 
+| Transport  |             signaling| Transport  |
+|            |                losses|            |
+| +---+ +--+ |                and/or| +---+ +--+ |
+| |FEC| |CC| |              repaired| |FEC| |CC| |
+| +---+ +--+ |source         packets| +---+ +--+ |
+|            |and/or             <![CDATA[<]]>==|            |
+|            |repair         network|            |
+|            |packets    information|            |
++------------+ ==>               <![CDATA[<]]>==+------------+
+
+    SERVER                              CLIENT 
         	</artwork>
 		</figure>
-        
-        	<t><xref target="fig:fec-in"></xref> presents an architecture where FEC is within the transport. The repair packets are sent within what the congestion window allows, such as in <xref target="CTCP"/>. Examples of the solution would be sending repair packets when there is no more data to transmit or preferably send repair packets instead of the following packets in the send buffer.</t>
+	
+	<t><xref target="fig:fec-in"></xref> presents an architecture where FEC is within the transport. The repair packets are sent within what the congestion window allows, such as in <xref target="CTCP"/>. Examples of the solution would be sending repair packets when there is no more data to transmit or preferably send repair packets instead of the following packets in the send buffer.</t>
+	</section>
+
+	<section anchor="sec:fec-in-example" title="Example">
+		<t> TODO </t>
+	</section>
+
+	<section anchor="sec:fec-in-discu" title="Discussion">
 		<t>The advantage of this approach is that it can enable conjoint optimization between the CC and the FEC. Moreover, the transmission of repair packets does not add congestion in potentially congested networks but helps repair lost packets (such as tail losses).</t>
 		<t>The drawback of this approach is that it may not result in much gains as opposed to classical retransmission mechanisms and it costs bandwidth that could have been exploited to transmit source packets. The coding ratio needs to be carefully designed.</t>
-		</section>
-
-
-	        <!-- ######################################################-->
-        	<!-- New subsection -->
-        	<!-- ######################################################-->
-        	<section anchor="sec:fec-below" title="FEC below the transport">
-		<t><xref target="fig:fec-below"></xref> illustrates the FEC below the transport case.</t> 	
-            <figure anchor="fig:fec-below" title="FEC below the transport (sender-side)">
-        	<artwork>
-   | source packets  | sending rate            
-   | requirements    | (or window)              
-   v                 v 
-+------------------------------------+   
-|     Transport (including CC)       |   
-+------------------------------------+  
-  ^                   | 
-  | network           | source packets  
-  | information       |
-                      v 
-		   +-----------------+ source and/or
-		   |      FEC        | repair packets 
-		   |                 | ===>  
-		   +-----------------+
-                      ^
-                      | signaling about  
-		      | losses and/or
-		      | repaired packets
-        	</artwork>
-		</figure>
-        	<t><xref target="fig:fec-below"></xref> presents an architecture where FEC is below the transport. The repair packets are sent on top of what is allowed by the congestion control. Examples of the solution could be adding a given percentage of the congestion window as supplementary packets or sending a given amount of repair packets at a given rate. The redundancy flow can be decorrelated from the congestion control that manages source packets: a secondary congestion control could be introduced underneath the FEC layer. The separate congestion control mechanisms could be made to work together while adhering to priorities, as in coupled congestion control for RTP media <xref target="I-D.ietf-rmcat-coupled-cc"/>. Another possibility would be to exploit a lower than best-effort congestion control <xref target="RFC6297"/> for repair packets.</t>
-		<t>The advantage of this approach is that it can result in performance gains when there are persistent transmission losses along the path.</t>
-		<t>The drawback of this approach is that it can induce congestion in already congested networks. The coding ratio needs to be carefully designed.</t>
-		</section>
+		<t> TODO MENTION RECEIVER </t>
+	</section>
 
 	</section>
+
+
+	 <!-- ######################################################-->
+         <!-- New subsection -->
+         <!-- ######################################################-->
+        <section anchor="sec:fec-below" title="FEC below the transport">
+	<section anchor="sec:fec-below-fig" title="Flowchart">
+		<t><xref target="fig:fec-below"></xref> illustrates the FEC below the transport case.</t> 	
+            <figure anchor="fig:fec-below" title="FEC below the transport">
+        	<artwork>
+ | source  | sending rate               ^ source 
+ | packets | (or window)                | packets
+ v         v                            | 
++--------------+                      +--------------+
+|Transport     |               network|Transport     |
+|(including CC)|           information|              |
+|              |                   <![CDATA[<]]>==|              |
++--------------+                      +--------------+
+ | source packets                       ^ source packets
+ v                                      |
++--------------+                      +--------------+ 
+| FEC          |             signaling|  FEC         |
+|              |source          losses|              |
+|              |and/or          and/or|              |
+|              |repair        repaired|              |
+|              |packets        packets|              |
+|              |==>                <![CDATA[<]]>==|              |
++--------------+                      +--------------+
+
+     SERVER                                 CLIENT 
+		</artwork>
+	</figure>
+
+	<t><xref target="fig:fec-below"></xref> presents an architecture where FEC is below the transport. The repair packets are sent on top of what is allowed by the congestion control.</t>
+	</section>
+
+	<section anchor="sec:fec-below-example" title="Example">
+	<t>Examples of the solution could be adding a given percentage of the congestion window as supplementary packets or sending a given amount of repair packets at a given rate. The redundancy flow can be decorrelated from the congestion control that manages source packets: a secondary congestion control could be introduced underneath the FEC layer. The separate congestion control mechanisms could be made to work together while adhering to priorities, as in coupled congestion control for RTP media <xref target="I-D.ietf-rmcat-coupled-cc"/>. Another possibility would be to exploit a lower than best-effort congestion control <xref target="RFC6297"/> for repair packets.</t>
+	</section>
+
+	<section anchor="sec:fec-below-discu" title="Discussion">
+	<t>The advantage of this approach is that it can result in performance gains when there are persistent transmission losses along the path.</t>
+	<t>The drawback of this approach is that it can induce congestion in already congested networks. The coding ratio needs to be carefully designed.</t>
+	<t> TODO MENTION RECEIVER </t>
+	</section>
+		</section>
+
+		<!-- </section> -->
 
         <!-- ######################################################-->
         <!-- ######################################################-->
