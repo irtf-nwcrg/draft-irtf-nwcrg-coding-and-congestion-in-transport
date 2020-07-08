@@ -77,18 +77,15 @@ Table of Contents
 
    1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
    2.  Separate channels, separate entities  . . . . . . . . . . . .   3
-   3.  FEC above the transport . . . . . . . . . . . . . . . . . . .   5
+   3.  FEC above the transport . . . . . . . . . . . . . . . . . . .   6
      3.1.  Flowchart . . . . . . . . . . . . . . . . . . . . . . . .   6
-     3.2.  Example . . . . . . . . . . . . . . . . . . . . . . . . .   6
-     3.3.  Discussion  . . . . . . . . . . . . . . . . . . . . . . .   6
+     3.2.  Discussion  . . . . . . . . . . . . . . . . . . . . . . .   6
    4.  FEC within the transport  . . . . . . . . . . . . . . . . . .   7
      4.1.  Flowchart . . . . . . . . . . . . . . . . . . . . . . . .   7
-     4.2.  Example . . . . . . . . . . . . . . . . . . . . . . . . .   7
-     4.3.  Discussion  . . . . . . . . . . . . . . . . . . . . . . .   7
+     4.2.  Discussion  . . . . . . . . . . . . . . . . . . . . . . .   7
    5.  FEC below the transport . . . . . . . . . . . . . . . . . . .   8
      5.1.  Flowchart . . . . . . . . . . . . . . . . . . . . . . . .   8
-     5.2.  Example . . . . . . . . . . . . . . . . . . . . . . . . .   8
-     5.3.  Discussion  . . . . . . . . . . . . . . . . . . . . . . .   9
+     5.2.  Discussion  . . . . . . . . . . . . . . . . . . . . . . .   8
    6.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   9
    7.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   9
    8.  Security Considerations . . . . . . . . . . . . . . . . . . .   9
@@ -106,6 +103,9 @@ Table of Contents
    non-congestion losses are persistent and prevent a sender from
    exploiting the link capacity.
 
+   Coding is a reliability mechanism that is distinct and separate from
+   the loss detection of congestion controls.  [RFC5681] defines TCP as
+   a loss-based congestion control; because FEC coding repairs such
 
 
 
@@ -114,9 +114,6 @@ Kuhn, et al.             Expires January 9, 2021                [Page 2]
 Internet-Draft            Coding and congestion                July 2020
 
 
-   Coding is a reliability mechanism that is distinct and separate from
-   the loss detection of congestion controls.  [RFC5681] defines TCP as
-   a loss-based congestion control; because FEC coding repairs such
    losses, blindly applying it may easily lead to an implementation that
    also hides a congestion signal to the sender.  It is important to
    ensure that such information hiding does not occur.
@@ -156,6 +153,9 @@ Internet-Draft            Coding and congestion                July 2020
    been repaired (from the receiver to the sender).  It is worth
    pointing out that there are cases where these channels are not
    separated.
+
+
+
 
 
 
@@ -269,11 +269,11 @@ Internet-Draft            Coding and congestion                July 2020
    - information about repaired blocks may be quite irrelevant to a CC
    algorithm.
 
-3.  FEC above the transport
-
-
-
-
+   The choice of the adequate transport layer may be related to
+   application requirements.  In the case of an unreliable live
+   transfer, the transport layer may implement a non-reliable transport
+   layer (e.g.  UDP) or a partially reliable transport layer (e.g.  DCCP
+   [RFC8406] or those proposed by RMCAT WG).  In the case of a reliable
 
 
 
@@ -281,6 +281,12 @@ Kuhn, et al.             Expires January 9, 2021                [Page 5]
 
 Internet-Draft            Coding and congestion                July 2020
 
+
+   data transfer, the transport layer may implement a retransmission
+   mechanism to guarantee the reliability of the file transfer (e.g.
+   TCP).
+
+3.  FEC above the transport
 
 3.1.  Flowchart
 
@@ -312,24 +318,18 @@ Internet-Draft            Coding and congestion                July 2020
                      Figure 4: FEC above the transport
 
    Figure 4 present an architecture where FEC is on top of the
-   transport.  The repair packets are sent within what the congestion
-   window allows.
+   transport.
 
-3.2.  Example
-
-   TODO
-
-3.3.  Discussion
-
-   The advantage of this approach is that the FEC does not contribute to
-   adding congestion in the network.
+3.2.  Discussion
 
    While CC is in principle independent of other transport functions
    such as reliability, we note that CC is often embedded in reliable
-   transfer protocols (e.g.  TCP).  This approach requires that the
+   transfer protocols (e.g.  TCP).  This approach may require that the
    transport protocol does not implement a fully reliable data transfer
-   service (e.g., based on lost packet retransmission).  UDP is an
-   example of a protocol for which this approach is relevant.
+   service (e.g., based on lost packet retransmission), otherwise this
+   could lead to spurious retransmissions.  UDP is an example of a
+   protocol for which this approach is relevant.
+
 
 
 
@@ -337,6 +337,11 @@ Kuhn, et al.             Expires January 9, 2021                [Page 6]
 
 Internet-Draft            Coding and congestion                July 2020
 
+
+   The advantage of this approach is that the FEC does not contribute to
+   adding congestion in the network.  When a congestion control is
+   implementedd at the transport layer, the repair packets are sent
+   within what the congestion window allows.
 
 4.  FEC within the transport
 
@@ -364,13 +369,7 @@ Internet-Draft            Coding and congestion                July 2020
    The repair packets are sent within what the congestion window allows,
    such as in [CTCP].
 
-4.2.  Example
-
-   Examples of the solution would be sending repair packets when there
-   is no more data to transmit or preferably send repair packets instead
-   of the following packets in the send buffer.
-
-4.3.  Discussion
+4.2.  Discussion
 
    The advantage of this approach is that it can enable conjoint
    optimization between the CC and the FEC.  Moreover, the transmission
@@ -382,8 +381,9 @@ Internet-Draft            Coding and congestion                July 2020
    bandwidth that could have been exploited to transmit source packets.
    The coding ratio needs to be carefully designed.
 
-
-
+   Examples of the solution would be sending repair packets when there
+   is no more data to transmit or preferably send repair packets instead
+   of the following packets in the send buffer.
 
 
 
@@ -425,7 +425,14 @@ Internet-Draft            Coding and congestion                July 2020
    The repair packets are sent on top of what is allowed by the
    congestion control.
 
-5.2.  Example
+5.2.  Discussion
+
+   The advantage of this approach is that it can result in performance
+   gains when there are persistent transmission losses along the path.
+
+   The drawback of this approach is that it can induce congestion in
+   already congested networks.  The coding ratio needs to be carefully
+   designed.
 
    Examples of the solution could be adding a given percentage of the
    congestion window as supplementary packets or sending a given amount
@@ -435,13 +442,6 @@ Internet-Draft            Coding and congestion                July 2020
    layer.  The separate congestion control mechanisms could be made to
    work together while adhering to priorities, as in coupled congestion
    control for RTP media [I-D.ietf-rmcat-coupled-cc].  Another
-   possibility would be to exploit a lower than best-effort congestion
-   control [RFC6297] for repair packets.
-
-
-
-
-
 
 
 
@@ -450,14 +450,8 @@ Kuhn, et al.             Expires January 9, 2021                [Page 8]
 Internet-Draft            Coding and congestion                July 2020
 
 
-5.3.  Discussion
-
-   The advantage of this approach is that it can result in performance
-   gains when there are persistent transmission losses along the path.
-
-   The drawback of this approach is that it can induce congestion in
-   already congested networks.  The coding ratio needs to be carefully
-   designed.
+   possibility would be to exploit a lower than best-effort congestion
+   control [RFC6297] for repair packets.
 
 6.  Acknowledgements
 
@@ -498,6 +492,12 @@ Internet-Draft            Coding and congestion                July 2020
               Transport Protocols", RFC 6297, DOI 10.17487/RFC6297, June
               2011, <https://www.rfc-editor.org/info/rfc6297>.
 
+   [RFC8406]  Adamson, B., Adjih, C., Bilbao, J., Firoiu, V., Fitzek,
+              F., Ghanem, S., Lochin, E., Masucci, A., Montpetit, M-J.,
+              Pedersen, M., Peralta, G., Roca, V., Ed., Saxena, P., and
+              S. Sivakumar, "Taxonomy of Coding Techniques for Efficient
+              Network Communications", RFC 8406, DOI 10.17487/RFC8406,
+              June 2018, <https://www.rfc-editor.org/info/rfc8406>.
 
 
 
@@ -505,13 +505,6 @@ Kuhn, et al.             Expires January 9, 2021                [Page 9]
 
 Internet-Draft            Coding and congestion                July 2020
 
-
-   [RFC8406]  Adamson, B., Adjih, C., Bilbao, J., Firoiu, V., Fitzek,
-              F., Ghanem, S., Lochin, E., Masucci, A., Montpetit, M-J.,
-              Pedersen, M., Peralta, G., Roca, V., Ed., Saxena, P., and
-              S. Sivakumar, "Taxonomy of Coding Techniques for Efficient
-              Network Communications", RFC 8406, DOI 10.17487/RFC8406,
-              June 2018, <https://www.rfc-editor.org/info/rfc8406>.
 
 Authors' Addresses
 
@@ -537,6 +530,13 @@ Authors' Addresses
    University of Oslo
 
    Email: michawe@ifi.uio.no
+
+
+
+
+
+
+
 
 
 
