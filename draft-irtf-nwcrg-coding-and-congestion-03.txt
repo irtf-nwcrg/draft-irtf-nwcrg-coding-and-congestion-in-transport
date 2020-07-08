@@ -79,7 +79,7 @@ Table of Contents
    2.  Separate channels, separate entities  . . . . . . . . . . . .   3
    3.  FEC above the transport . . . . . . . . . . . . . . . . . . .   6
      3.1.  Flowchart . . . . . . . . . . . . . . . . . . . . . . . .   6
-     3.2.  Discussion  . . . . . . . . . . . . . . . . . . . . . . .   6
+     3.2.  Discussion  . . . . . . . . . . . . . . . . . . . . . . .   7
    4.  FEC within the transport  . . . . . . . . . . . . . . . . . .   7
      4.1.  Flowchart . . . . . . . . . . . . . . . . . . . . . . . .   7
      4.2.  Discussion  . . . . . . . . . . . . . . . . . . . . . . .   7
@@ -132,8 +132,8 @@ Internet-Draft            Coding and congestion                July 2020
    The proposed document considers FEC coding at the transport or
    application layer for an end-to-end unicast data transfer.  The
    typical application scenario that is considered in the current
-   version of the document is a client browsing the web.  This memo may
-   be extended to cases with multiple paths.
+   version of the document is a client browsing the web or watching a
+   live video.  This memo may be extended to cases with multiple paths.
 
    This document represents the collaborative work and consensus of the
    Coding for Efficient Network Communications Research Group (NWCRG);
@@ -262,18 +262,18 @@ Internet-Draft            Coding and congestion                July 2020
    inputs to CC.  The latter calculates a sending rate or window from
    network information, and it takes the packet to send as input,
    sometimes along with application requirements such as upper/lower
-   rate bounds, periods of quiescence, or a priority.
-
-   It is not clear that the ACK signals feeding into a congestion
-   control algorithm are useful to FEC in their raw form, and vice versa
-   - information about repaired blocks may be quite irrelevant to a CC
-   algorithm.
+   rate bounds, periods of quiescence, or a priority.  It is not clear
+   that the ACK signals feeding into a congestion control algorithm are
+   useful to FEC in their raw form, and vice versa - information about
+   repaired blocks may be quite irrelevant to a CC algorithm.
 
    The choice of the adequate transport layer may be related to
-   application requirements.  In the case of an unreliable live
-   transfer, the transport layer may implement a non-reliable transport
-   layer (e.g.  UDP) or a partially reliable transport layer (e.g.  DCCP
-   [RFC8406] or those proposed by RMCAT WG).  In the case of a reliable
+   application requirements:
+
+   o  In the case of an unreliable live transfer, the transport layer
+      may implement a non-reliable transport layer (e.g.  UDP) or a
+      partially reliable transport layer (e.g.  DCCP [RFC8406] or those
+      proposed by RMCAT WG).  Depending on the amount of redundancy and
 
 
 
@@ -282,9 +282,15 @@ Kuhn, et al.             Expires January 9, 2021                [Page 5]
 Internet-Draft            Coding and congestion                July 2020
 
 
-   data transfer, the transport layer may implement a retransmission
-   mechanism to guarantee the reliability of the file transfer (e.g.
-   TCP).
+      network conditions, there could be cases where it ends up being
+      impossible to carry traffic.
+
+   o  In the case of a reliable data transfer, the transport layer may
+      implement a retransmission mechanism to guarantee the reliability
+      of the file transfer (e.g.  TCP).  Depending on how the FEC and CC
+      functions are scheduled (FEC above CC, FEC in CC, FEC below CC),
+      the impact of a reliable transport on the FEC reliability
+      mechanisms is different.
 
 3.  FEC above the transport
 
@@ -320,6 +326,18 @@ Internet-Draft            Coding and congestion                July 2020
    Figure 4 present an architecture where FEC is on top of the
    transport.
 
+
+
+
+
+
+
+
+Kuhn, et al.             Expires January 9, 2021                [Page 6]
+
+Internet-Draft            Coding and congestion                July 2020
+
+
 3.2.  Discussion
 
    While CC is in principle independent of other transport functions
@@ -329,14 +347,6 @@ Internet-Draft            Coding and congestion                July 2020
    service (e.g., based on lost packet retransmission), otherwise this
    could lead to spurious retransmissions.  UDP is an example of a
    protocol for which this approach is relevant.
-
-
-
-
-Kuhn, et al.             Expires January 9, 2021                [Page 6]
-
-Internet-Draft            Coding and congestion                July 2020
-
 
    The advantage of this approach is that the FEC does not contribute to
    adding congestion in the network.  When a congestion control is
@@ -376,6 +386,14 @@ Internet-Draft            Coding and congestion                July 2020
    of repair packets does not add congestion in potentially congested
    networks but helps repair lost packets (such as tail losses).
 
+
+
+
+Kuhn, et al.             Expires January 9, 2021                [Page 7]
+
+Internet-Draft            Coding and congestion                July 2020
+
+
    The drawback of this approach is that it may not result in much gains
    as opposed to classical retransmission mechanisms and it costs
    bandwidth that could have been exploited to transmit source packets.
@@ -384,15 +402,6 @@ Internet-Draft            Coding and congestion                July 2020
    Examples of the solution would be sending repair packets when there
    is no more data to transmit or preferably send repair packets instead
    of the following packets in the send buffer.
-
-
-
-
-
-Kuhn, et al.             Expires January 9, 2021                [Page 7]
-
-Internet-Draft            Coding and congestion                July 2020
-
 
 5.  FEC below the transport
 
@@ -434,6 +443,13 @@ Internet-Draft            Coding and congestion                July 2020
    already congested networks.  The coding ratio needs to be carefully
    designed.
 
+
+
+Kuhn, et al.             Expires January 9, 2021                [Page 8]
+
+Internet-Draft            Coding and congestion                July 2020
+
+
    Examples of the solution could be adding a given percentage of the
    congestion window as supplementary packets or sending a given amount
    of repair packets at a given rate.  The redundancy flow can be
@@ -442,14 +458,6 @@ Internet-Draft            Coding and congestion                July 2020
    layer.  The separate congestion control mechanisms could be made to
    work together while adhering to priorities, as in coupled congestion
    control for RTP media [I-D.ietf-rmcat-coupled-cc].  Another
-
-
-
-Kuhn, et al.             Expires January 9, 2021                [Page 8]
-
-Internet-Draft            Coding and congestion                July 2020
-
-
    possibility would be to exploit a lower than best-effort congestion
    control [RFC6297] for repair packets.
 
@@ -488,6 +496,16 @@ Internet-Draft            Coding and congestion                July 2020
               Control", RFC 5681, DOI 10.17487/RFC5681, September 2009,
               <https://www.rfc-editor.org/info/rfc5681>.
 
+
+
+
+
+
+Kuhn, et al.             Expires January 9, 2021                [Page 9]
+
+Internet-Draft            Coding and congestion                July 2020
+
+
    [RFC6297]  Welzl, M. and D. Ros, "A Survey of Lower-than-Best-Effort
               Transport Protocols", RFC 6297, DOI 10.17487/RFC6297, June
               2011, <https://www.rfc-editor.org/info/rfc6297>.
@@ -498,13 +516,6 @@ Internet-Draft            Coding and congestion                July 2020
               S. Sivakumar, "Taxonomy of Coding Techniques for Efficient
               Network Communications", RFC 8406, DOI 10.17487/RFC8406,
               June 2018, <https://www.rfc-editor.org/info/rfc8406>.
-
-
-
-Kuhn, et al.             Expires January 9, 2021                [Page 9]
-
-Internet-Draft            Coding and congestion                July 2020
-
 
 Authors' Addresses
 
@@ -530,17 +541,6 @@ Authors' Addresses
    University of Oslo
 
    Email: michawe@ifi.uio.no
-
-
-
-
-
-
-
-
-
-
-
 
 
 

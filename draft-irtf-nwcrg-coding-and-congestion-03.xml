@@ -101,7 +101,7 @@
 	<t>Coding is a reliability mechanism that is distinct and separate from the loss detection of congestion controls. <xref target="RFC5681"/> defines TCP as a loss-based congestion control; because FEC coding repairs such losses, blindly applying it may easily lead to an implementation that also hides a congestion signal to the sender. It is important to ensure that such information hiding does not occur.</t>
 	<t>FEC coding and congestion control can be seen as two separate channels. In practice, implementations may mix the signals that are exchanged on these channels. This memo offers a discussion of how FEC coding and congestion control can coexist. Another objective is to encourage the research community to also consider congestion control aspects when proposing and comparing FEC coding solutions in communication systems. This being said, this document does not aim at proposing guidelines for characterizing
         FEC coding solutions: comparing FEC Schemes without considering congestion control can be relevant if the goal is to compare those schemes only.</t>
-	<t>The proposed document considers FEC coding at the transport or application layer for an end-to-end unicast data transfer. The typical application scenario that is considered in the current version of the document is a client browsing the web. This memo may be extended to cases with multiple paths.</t>
+	<t>The proposed document considers FEC coding at the transport or application layer for an end-to-end unicast data transfer. The typical application scenario that is considered in the current version of the document is a client browsing the web or watching a live video. This memo may be extended to cases with multiple paths.</t>
 	<t>This document represents the collaborative work and consensus of the Coding for Efficient Network Communications Research Group (NWCRG); it is not an IETF product and is not a standard. The document follows the terminology proposed in the taxonomy document <xref target="RFC8406"></xref>.</t>
     </section>
 
@@ -191,9 +191,8 @@
         are distinct from the inputs to CC. The latter calculates a
         sending rate or window from network information, and it takes
         the packet to send as input, sometimes along with application requirements
-        such as upper/lower rate bounds, periods of quiescence, or a priority.</t>
-
-        <t> It is not clear that the ACK signals feeding into a congestion control
+        such as upper/lower rate bounds, periods of quiescence, or a priority.
+        It is not clear that the ACK signals feeding into a congestion control
             algorithm are useful to FEC in their raw form, and vice versa - information
 	    about repaired blocks may be quite irrelevant to a CC algorithm. <!-- However,
             there can be meaningful other interactions (indicated by the horizontal double arrow)
@@ -204,7 +203,9 @@
             protection using fountain codes can be used to assign different priorities
 	    to blocks of data, and these priorities can be honored by a CC mechanism. --> </t> 
 
-	<t>The choice of the adequate transport layer may be related to application requirements. In the case of an unreliable live transfer, the transport layer may implement a non-reliable transport layer (e.g. UDP) or a partially reliable transport layer (e.g. DCCP <xref target="RFC8406"></xref> or those proposed by RMCAT WG). In the case of a reliable data transfer, the transport layer may implement a retransmission mechanism to guarantee the reliability of the file transfer (e.g. TCP).</t>	
+    <t>The choice of the adequate transport layer may be related to application requirements:<list style="symbols"> 
+	<t>In the case of an unreliable live transfer, the transport layer may implement a non-reliable transport layer (e.g. UDP) or a partially reliable transport layer (e.g. DCCP <xref target="RFC8406"></xref> or those proposed by RMCAT WG). Depending on the amount of redundancy and network conditions, there could be cases where it ends up being impossible to carry traffic.</t>
+	<t>In the case of a reliable data transfer, the transport layer may implement a retransmission mechanism to guarantee the reliability of the file transfer (e.g. TCP). Depending on how the FEC and CC functions are scheduled (FEC above CC, FEC in CC, FEC below CC), the impact of a reliable transport on the FEC reliability mechanisms is different.</t></list></t>	
     </section>
 
         <!-- ######################################################-->
