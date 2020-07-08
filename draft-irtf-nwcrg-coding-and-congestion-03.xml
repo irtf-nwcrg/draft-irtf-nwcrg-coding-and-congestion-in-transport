@@ -229,8 +229,7 @@
         <!-- New section -->
         <!-- ######################################################-->
 	<section anchor="sec:fec-above" title="FEC above the transport">
-		<section anchor="sec:fec-above-fig" title="Flowchart">
-		<t><xref target="fig:fec-above"></xref> illustrates the FEC above the transport case. </t> 	
+	<section anchor="sec:fec-above-fig" title="Flowchart">
               <figure anchor="fig:fec-above" title="FEC above the transport">
         	<artwork>
  | source                               ^ source 
@@ -270,7 +269,6 @@
 	<section anchor="sec:fec-above-discu" title="Discussion">
 		<t>The advantage of this approach is that the FEC does not contribute to adding congestion in the network.</t>
 		<t>While CC is in principle independent of other transport functions such as reliability, we note that CC is often embedded in reliable transfer protocols (e.g. TCP). This approach requires that the transport protocol does not implement a fully reliable data transfer service (e.g., based on lost packet retransmission). UDP is an example of a protocol for which this approach is relevant.</t>
-		<t> TODO MENTION RECEIVER </t>
 	</section>
 
 		</section>
@@ -280,7 +278,6 @@
         <!-- ######################################################-->
 	<section anchor="sec:fec-in" title="FEC within the transport">
 	<section anchor="sec:fec-in-fig" title="Flowchart">
-	<t><xref target="fig:fec-in"></xref> illustrates the FEC within the transport case.</t>
 	<figure anchor="fig:fec-in" title="FEC in the transport">
         	<artwork>
  | source  | sending                    ^ source 
@@ -301,17 +298,16 @@
         	</artwork>
 		</figure>
 	
-	<t><xref target="fig:fec-in"></xref> presents an architecture where FEC is within the transport. The repair packets are sent within what the congestion window allows, such as in <xref target="CTCP"/>. Examples of the solution would be sending repair packets when there is no more data to transmit or preferably send repair packets instead of the following packets in the send buffer.</t>
+		<t><xref target="fig:fec-in"></xref> presents an architecture where FEC is within the transport. The repair packets are sent within what the congestion window allows, such as in <xref target="CTCP"/>.</t>
 	</section>
 
 	<section anchor="sec:fec-in-example" title="Example">
-		<t> TODO </t>
+		<t>Examples of the solution would be sending repair packets when there is no more data to transmit or preferably send repair packets instead of the following packets in the send buffer.</t>
 	</section>
 
 	<section anchor="sec:fec-in-discu" title="Discussion">
 		<t>The advantage of this approach is that it can enable conjoint optimization between the CC and the FEC. Moreover, the transmission of repair packets does not add congestion in potentially congested networks but helps repair lost packets (such as tail losses).</t>
 		<t>The drawback of this approach is that it may not result in much gains as opposed to classical retransmission mechanisms and it costs bandwidth that could have been exploited to transmit source packets. The coding ratio needs to be carefully designed.</t>
-		<t> TODO MENTION RECEIVER </t>
 	</section>
 
 	</section>
@@ -322,7 +318,6 @@
          <!-- ######################################################-->
         <section anchor="sec:fec-below" title="FEC below the transport">
 	<section anchor="sec:fec-below-fig" title="Flowchart">
-		<t><xref target="fig:fec-below"></xref> illustrates the FEC below the transport case.</t> 	
             <figure anchor="fig:fec-below" title="FEC below the transport">
         	<artwork>
  | source  | sending rate               ^ source 
@@ -358,7 +353,6 @@
 	<section anchor="sec:fec-below-discu" title="Discussion">
 	<t>The advantage of this approach is that it can result in performance gains when there are persistent transmission losses along the path.</t>
 	<t>The drawback of this approach is that it can induce congestion in already congested networks. The coding ratio needs to be carefully designed.</t>
-	<t> TODO MENTION RECEIVER </t>
 	</section>
 		</section>
 

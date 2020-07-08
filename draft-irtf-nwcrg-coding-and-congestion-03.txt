@@ -5,12 +5,12 @@
 NWCRG                                                            N. Kuhn
 Internet-Draft                                                      CNES
 Intended status: Informational                                 E. Lochin
-Expires: January 8, 2021                                    ISAE-SUPAERO
+Expires: January 9, 2021                                    ISAE-SUPAERO
                                                                F. Michel
                                                                UCLouvain
                                                                 M. Welzl
                                                       University of Oslo
-                                                            July 7, 2020
+                                                            July 8, 2020
 
 
                Coding and congestion control in transport
@@ -48,12 +48,12 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on January 8, 2021.
+   This Internet-Draft will expire on January 9, 2021.
 
 
 
 
-Kuhn, et al.             Expires January 8, 2021                [Page 1]
+Kuhn, et al.             Expires January 9, 2021                [Page 1]
 
 Internet-Draft            Coding and congestion                July 2020
 
@@ -109,7 +109,7 @@ Table of Contents
 
 
 
-Kuhn, et al.             Expires January 8, 2021                [Page 2]
+Kuhn, et al.             Expires January 9, 2021                [Page 2]
 
 Internet-Draft            Coding and congestion                July 2020
 
@@ -165,7 +165,7 @@ Internet-Draft            Coding and congestion                July 2020
 
 
 
-Kuhn, et al.             Expires January 8, 2021                [Page 3]
+Kuhn, et al.             Expires January 9, 2021                [Page 3]
 
 Internet-Draft            Coding and congestion                July 2020
 
@@ -221,7 +221,7 @@ Internet-Draft            Coding and congestion                July 2020
 
 
 
-Kuhn, et al.             Expires January 8, 2021                [Page 4]
+Kuhn, et al.             Expires January 9, 2021                [Page 4]
 
 Internet-Draft            Coding and congestion                July 2020
 
@@ -277,14 +277,12 @@ Internet-Draft            Coding and congestion                July 2020
 
 
 
-Kuhn, et al.             Expires January 8, 2021                [Page 5]
+Kuhn, et al.             Expires January 9, 2021                [Page 5]
 
 Internet-Draft            Coding and congestion                July 2020
 
 
 3.1.  Flowchart
-
-   Figure 4 illustrates the FEC above the transport case.
 
     | source                               ^ source
     | packets                              | packets
@@ -330,24 +328,19 @@ Internet-Draft            Coding and congestion                July 2020
    such as reliability, we note that CC is often embedded in reliable
    transfer protocols (e.g.  TCP).  This approach requires that the
    transport protocol does not implement a fully reliable data transfer
+   service (e.g., based on lost packet retransmission).  UDP is an
+   example of a protocol for which this approach is relevant.
 
 
 
-Kuhn, et al.             Expires January 8, 2021                [Page 6]
+Kuhn, et al.             Expires January 9, 2021                [Page 6]
 
 Internet-Draft            Coding and congestion                July 2020
 
 
-   service (e.g., based on lost packet retransmission).  UDP is an
-   example of a protocol for which this approach is relevant.
-
-   TODO MENTION RECEIVER
-
 4.  FEC within the transport
 
 4.1.  Flowchart
-
-   Figure 5 illustrates the FEC within the transport case.
 
     | source  | sending                    ^ source
     | packets | rate                       | packets
@@ -369,13 +362,13 @@ Internet-Draft            Coding and congestion                July 2020
 
    Figure 5 presents an architecture where FEC is within the transport.
    The repair packets are sent within what the congestion window allows,
-   such as in [CTCP].  Examples of the solution would be sending repair
-   packets when there is no more data to transmit or preferably send
-   repair packets instead of the following packets in the send buffer.
+   such as in [CTCP].
 
 4.2.  Example
 
-   TODO
+   Examples of the solution would be sending repair packets when there
+   is no more data to transmit or preferably send repair packets instead
+   of the following packets in the send buffer.
 
 4.3.  Discussion
 
@@ -386,24 +379,24 @@ Internet-Draft            Coding and congestion                July 2020
 
    The drawback of this approach is that it may not result in much gains
    as opposed to classical retransmission mechanisms and it costs
+   bandwidth that could have been exploited to transmit source packets.
+   The coding ratio needs to be carefully designed.
 
 
 
-Kuhn, et al.             Expires January 8, 2021                [Page 7]
+
+
+
+
+
+Kuhn, et al.             Expires January 9, 2021                [Page 7]
 
 Internet-Draft            Coding and congestion                July 2020
 
 
-   bandwidth that could have been exploited to transmit source packets.
-   The coding ratio needs to be carefully designed.
-
-   TODO MENTION RECEIVER
-
 5.  FEC below the transport
 
 5.1.  Flowchart
-
-   Figure 6 illustrates the FEC below the transport case.
 
     | source  | sending rate               ^ source
     | packets | (or window)                | packets
@@ -442,16 +435,20 @@ Internet-Draft            Coding and congestion                July 2020
    layer.  The separate congestion control mechanisms could be made to
    work together while adhering to priorities, as in coupled congestion
    control for RTP media [I-D.ietf-rmcat-coupled-cc].  Another
+   possibility would be to exploit a lower than best-effort congestion
+   control [RFC6297] for repair packets.
 
 
 
-Kuhn, et al.             Expires January 8, 2021                [Page 8]
+
+
+
+
+
+Kuhn, et al.             Expires January 9, 2021                [Page 8]
 
 Internet-Draft            Coding and congestion                July 2020
 
-
-   possibility would be to exploit a lower than best-effort congestion
-   control [RFC6297] for repair packets.
 
 5.3.  Discussion
 
@@ -461,8 +458,6 @@ Internet-Draft            Coding and congestion                July 2020
    The drawback of this approach is that it can induce congestion in
    already congested networks.  The coding ratio needs to be carefully
    designed.
-
-   TODO MENTION RECEIVER
 
 6.  Acknowledgements
 
@@ -499,16 +494,17 @@ Internet-Draft            Coding and congestion                July 2020
               Control", RFC 5681, DOI 10.17487/RFC5681, September 2009,
               <https://www.rfc-editor.org/info/rfc5681>.
 
-
-
-Kuhn, et al.             Expires January 8, 2021                [Page 9]
-
-Internet-Draft            Coding and congestion                July 2020
-
-
    [RFC6297]  Welzl, M. and D. Ros, "A Survey of Lower-than-Best-Effort
               Transport Protocols", RFC 6297, DOI 10.17487/RFC6297, June
               2011, <https://www.rfc-editor.org/info/rfc6297>.
+
+
+
+
+Kuhn, et al.             Expires January 9, 2021                [Page 9]
+
+Internet-Draft            Coding and congestion                July 2020
+
 
    [RFC8406]  Adamson, B., Adjih, C., Bilbao, J., Firoiu, V., Fitzek,
               F., Ghanem, S., Lochin, E., Masucci, A., Montpetit, M-J.,
@@ -557,4 +553,8 @@ Authors' Addresses
 
 
 
-Kuhn, et al.             Expires January 8, 2021               [Page 10]
+
+
+
+
+Kuhn, et al.             Expires January 9, 2021               [Page 10]
