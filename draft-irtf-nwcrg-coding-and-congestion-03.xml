@@ -165,9 +165,8 @@
   | source and/or                   | packets      
   | repair packets                  |             
   v                                 v             
-+---------------+signaling     +-----------------+
-|    FEC        |losses        |    CC           |
-|               |and/or        |                 |
++---------------+              +-----------------+
+|    FEC        |signaling     |    CC           |
 |               |repaired      |                 |network
 |               |packets       |                 |information
 +---------------+==>           +-----------------+==>   
@@ -179,7 +178,7 @@
 		<t>'network information' (input control plane for the transport including CC): refers not only to the network information that is explicitly signaled from the receiver, but all the information a congestion control obtains from a network (e.g. TCP can estimate the latency and the available capacity at the bottleneck).</t>
 		<t>'requirements' (input control plane for the transport including CC): refers to application requirements such as upper/lower rate bounds, periods of quiescence, or a priority.</t>
 		<t>'sending rate (or window)' (output control plane for the transport including CC): refers to the rate at which a congestion control decides to transmit packets, based on 'network information'.</t>
-		<t>'signaling about losses and/or repaired packets' (input control plane for the FEC): refers to the information a FEC sender can obtain from a FEC receiver about the performance of the FEC solution as seen from the receiver.</t>
+		<t>'signaling repaired packets' (input control plane for the FEC): refers to the information a FEC sender can obtain from a FEC receiver about the performance of the FEC solution as seen from the receiver.</t>
 		<t>'coding rate' (output control plane for the FEC): refers to the coding rate that is used by the FEC solution.</t>	
 		<t>'source and/or repair packets' (data plane for both the FEC and the CC): refers to the packets that are transmitted. There can only be source packets (if the coding rate is 0), repair packets (if the solution decides not to send the original source packets) or a mix of both.</t>	
 	</list></t>
@@ -204,7 +203,7 @@
 	    to blocks of data, and these priorities can be honored by a CC mechanism. --> </t> 
 
     <t>The choice of the adequate transport layer may be related to application requirements:<list style="symbols"> 
-	<t>In the case of an unreliable live transfer, the transport layer may implement a non-reliable transport layer (e.g. UDP) or a partially reliable transport layer (e.g. DCCP <xref target="RFC8406"></xref> or those proposed by RMCAT WG). Depending on the amount of redundancy and network conditions, there could be cases where it ends up being impossible to carry traffic.</t>
+		    <t>In the case of an unreliable data transfer, the transport layer may implement a non-reliable transport layer (e.g. UDP or DCCP <xref target="RFC4340"></xref> or a partially reliable transport protocol such as SCTP with partial reliability <xref target="RFC3758"></xref>). Depending on the amount of redundancy and network conditions, there could be cases where it ends up being impossible to carry traffic.</t>
 	<t>In the case of a reliable data transfer, the transport layer may implement a retransmission mechanism to guarantee the reliability of the file transfer (e.g. TCP). Depending on how the FEC and CC functions are scheduled (FEC above CC, FEC in CC, FEC below CC), the impact of a reliable transport on the FEC reliability mechanisms is different.</t></list></t>	
     </section>
 
@@ -240,8 +239,6 @@
  v                                      | 
 +-------------+                      +-------------+ 
 |FEC          |             signaling|FEC          |
-|             |                losses|             |
-|             |                and/or|             |
 |             |              repaired|             |
 |             |               packets|             |
 |             |                   <![CDATA[<]]>==|             |
@@ -283,9 +280,9 @@
  | packets | rate                       | packets
  v         v                            | 
 +------------+                      +------------+ 
-| Transport  |             signaling| Transport  |
-|            |                losses|            |
-| +---+ +--+ |                and/or| +---+ +--+ |
+| Transport  |                      | Transport  |
+|            |                      |            |
+| +---+ +--+ |             signaling| +---+ +--+ |
 | |FEC| |CC| |              repaired| |FEC| |CC| |
 | +---+ +--+ |source         packets| +---+ +--+ |
 |            |and/or             <![CDATA[<]]>==|            |
@@ -327,9 +324,8 @@
  | source packets                       ^ source packets
  v                                      |
 +--------------+                      +--------------+ 
-| FEC          |             signaling|  FEC         |
-|              |source          losses|              |
-|              |and/or          and/or|              |
+| FEC          |source                |  FEC         |
+|              |and/or       signaling|              |
 |              |repair        repaired|              |
 |              |packets        packets|              |
 |              |==>                <![CDATA[<]]>==|              |
@@ -389,6 +385,8 @@
 
     <references title="Informative References">
         <!-- <?rfc include="reference.RFC.3168.xml"?> -->
+        <?rfc include="reference.RFC.3758.xml"?>
+        <?rfc include="reference.RFC.4340.xml"?>
         <?rfc include="reference.RFC.5681.xml"?>
         <?rfc include="reference.RFC.6297.xml"?>
         <?rfc include="reference.RFC.8406.xml"?>

@@ -5,12 +5,12 @@
 NWCRG                                                            N. Kuhn
 Internet-Draft                                                      CNES
 Intended status: Informational                                 E. Lochin
-Expires: January 9, 2021                                    ISAE-SUPAERO
+Expires: January 10, 2021                                   ISAE-SUPAERO
                                                                F. Michel
                                                                UCLouvain
                                                                 M. Welzl
                                                       University of Oslo
-                                                            July 8, 2020
+                                                            July 9, 2020
 
 
                Coding and congestion control in transport
@@ -48,12 +48,12 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on January 9, 2021.
+   This Internet-Draft will expire on January 10, 2021.
 
 
 
 
-Kuhn, et al.             Expires January 9, 2021                [Page 1]
+Kuhn, et al.            Expires January 10, 2021                [Page 1]
 
 Internet-Draft            Coding and congestion                July 2020
 
@@ -79,7 +79,7 @@ Table of Contents
    2.  Separate channels, separate entities  . . . . . . . . . . . .   3
    3.  FEC above the transport . . . . . . . . . . . . . . . . . . .   6
      3.1.  Flowchart . . . . . . . . . . . . . . . . . . . . . . . .   6
-     3.2.  Discussion  . . . . . . . . . . . . . . . . . . . . . . .   7
+     3.2.  Discussion  . . . . . . . . . . . . . . . . . . . . . . .   6
    4.  FEC within the transport  . . . . . . . . . . . . . . . . . .   7
      4.1.  Flowchart . . . . . . . . . . . . . . . . . . . . . . . .   7
      4.2.  Discussion  . . . . . . . . . . . . . . . . . . . . . . .   7
@@ -109,7 +109,7 @@ Table of Contents
 
 
 
-Kuhn, et al.             Expires January 9, 2021                [Page 2]
+Kuhn, et al.            Expires January 10, 2021                [Page 2]
 
 Internet-Draft            Coding and congestion                July 2020
 
@@ -165,7 +165,7 @@ Internet-Draft            Coding and congestion                July 2020
 
 
 
-Kuhn, et al.             Expires January 9, 2021                [Page 3]
+Kuhn, et al.            Expires January 10, 2021                [Page 3]
 
 Internet-Draft            Coding and congestion                July 2020
 
@@ -209,9 +209,8 @@ Internet-Draft            Coding and congestion                July 2020
      | source and/or                   | packets
      | repair packets                  |
      v                                 v
-   +---------------+signaling     +-----------------+
-   |    FEC        |losses        |    CC           |
-   |               |and/or        |                 |
+   +---------------+              +-----------------+
+   |    FEC        |signaling     |    CC           |
    |               |repaired      |                 |network
    |               |packets       |                 |information
    +---------------+==>           +-----------------+==>
@@ -221,7 +220,8 @@ Internet-Draft            Coding and congestion                July 2020
 
 
 
-Kuhn, et al.             Expires January 9, 2021                [Page 4]
+
+Kuhn, et al.            Expires January 10, 2021                [Page 4]
 
 Internet-Draft            Coding and congestion                July 2020
 
@@ -243,10 +243,10 @@ Internet-Draft            Coding and congestion                July 2020
       including CC): refers to the rate at which a congestion control
       decides to transmit packets, based on 'network information'.
 
-   o  'signaling about losses and/or repaired packets' (input control
-      plane for the FEC): refers to the information a FEC sender can
-      obtain from a FEC receiver about the performance of the FEC
-      solution as seen from the receiver.
+   o  'signaling repaired packets' (input control plane for the FEC):
+      refers to the information a FEC sender can obtain from a FEC
+      receiver about the performance of the FEC solution as seen from
+      the receiver.
 
    o  'coding rate' (output control plane for the FEC): refers to the
       coding rate that is used by the FEC solution.
@@ -270,20 +270,20 @@ Internet-Draft            Coding and congestion                July 2020
    The choice of the adequate transport layer may be related to
    application requirements:
 
-   o  In the case of an unreliable live transfer, the transport layer
-      may implement a non-reliable transport layer (e.g.  UDP) or a
-      partially reliable transport layer (e.g.  DCCP [RFC8406] or those
-      proposed by RMCAT WG).  Depending on the amount of redundancy and
+   o  In the case of an unreliable data transfer, the transport layer
+      may implement a non-reliable transport layer (e.g.  UDP or DCCP
+      [RFC4340] or a partially reliable transport protocol such as SCTP
+      with partial reliability [RFC3758]).  Depending on the amount of
 
 
 
-Kuhn, et al.             Expires January 9, 2021                [Page 5]
+Kuhn, et al.            Expires January 10, 2021                [Page 5]
 
 Internet-Draft            Coding and congestion                July 2020
 
 
-      network conditions, there could be cases where it ends up being
-      impossible to carry traffic.
+      redundancy and network conditions, there could be cases where it
+      ends up being impossible to carry traffic.
 
    o  In the case of a reliable data transfer, the transport layer may
       implement a retransmission mechanism to guarantee the reliability
@@ -301,8 +301,6 @@ Internet-Draft            Coding and congestion                July 2020
     v                                      |
    +-------------+                      +-------------+
    |FEC          |             signaling|FEC          |
-   |             |                losses|             |
-   |             |                and/or|             |
    |             |              repaired|             |
    |             |               packets|             |
    |             |                   <==|             |
@@ -326,24 +324,20 @@ Internet-Draft            Coding and congestion                July 2020
    Figure 4 present an architecture where FEC is on top of the
    transport.
 
-
-
-
-
-
-
-
-Kuhn, et al.             Expires January 9, 2021                [Page 6]
-
-Internet-Draft            Coding and congestion                July 2020
-
-
 3.2.  Discussion
 
    While CC is in principle independent of other transport functions
    such as reliability, we note that CC is often embedded in reliable
    transfer protocols (e.g.  TCP).  This approach may require that the
    transport protocol does not implement a fully reliable data transfer
+
+
+
+Kuhn, et al.            Expires January 10, 2021                [Page 6]
+
+Internet-Draft            Coding and congestion                July 2020
+
+
    service (e.g., based on lost packet retransmission), otherwise this
    could lead to spurious retransmissions.  UDP is an example of a
    protocol for which this approach is relevant.
@@ -361,9 +355,9 @@ Internet-Draft            Coding and congestion                July 2020
     | packets | rate                       | packets
     v         v                            |
    +------------+                      +------------+
-   | Transport  |             signaling| Transport  |
-   |            |                losses|            |
-   | +---+ +--+ |                and/or| +---+ +--+ |
+   | Transport  |                      | Transport  |
+   |            |                      |            |
+   | +---+ +--+ |             signaling| +---+ +--+ |
    | |FEC| |CC| |              repaired| |FEC| |CC| |
    | +---+ +--+ |source         packets| +---+ +--+ |
    |            |and/or             <==|            |
@@ -386,18 +380,19 @@ Internet-Draft            Coding and congestion                July 2020
    of repair packets does not add congestion in potentially congested
    networks but helps repair lost packets (such as tail losses).
 
-
-
-
-Kuhn, et al.             Expires January 9, 2021                [Page 7]
-
-Internet-Draft            Coding and congestion                July 2020
-
-
    The drawback of this approach is that it may not result in much gains
    as opposed to classical retransmission mechanisms and it costs
    bandwidth that could have been exploited to transmit source packets.
    The coding ratio needs to be carefully designed.
+
+
+
+
+
+Kuhn, et al.            Expires January 10, 2021                [Page 7]
+
+Internet-Draft            Coding and congestion                July 2020
+
 
    Examples of the solution would be sending repair packets when there
    is no more data to transmit or preferably send repair packets instead
@@ -418,9 +413,8 @@ Internet-Draft            Coding and congestion                July 2020
     | source packets                       ^ source packets
     v                                      |
    +--------------+                      +--------------+
-   | FEC          |             signaling|  FEC         |
-   |              |source          losses|              |
-   |              |and/or          and/or|              |
+   | FEC          |source                |  FEC         |
+   |              |and/or       signaling|              |
    |              |repair        repaired|              |
    |              |packets        packets|              |
    |              |==>                <==|              |
@@ -443,18 +437,19 @@ Internet-Draft            Coding and congestion                July 2020
    already congested networks.  The coding ratio needs to be carefully
    designed.
 
-
-
-Kuhn, et al.             Expires January 9, 2021                [Page 8]
-
-Internet-Draft            Coding and congestion                July 2020
-
-
    Examples of the solution could be adding a given percentage of the
    congestion window as supplementary packets or sending a given amount
    of repair packets at a given rate.  The redundancy flow can be
    decorrelated from the congestion control that manages source packets:
    a secondary congestion control could be introduced underneath the FEC
+
+
+
+Kuhn, et al.            Expires January 10, 2021                [Page 8]
+
+Internet-Draft            Coding and congestion                July 2020
+
+
    layer.  The separate congestion control mechanisms could be made to
    work together while adhering to priorities, as in coupled congestion
    control for RTP media [I-D.ietf-rmcat-coupled-cc].  Another
@@ -492,19 +487,28 @@ Internet-Draft            Coding and congestion                July 2020
               control for RTP media", draft-ietf-rmcat-coupled-cc-09
               (work in progress), August 2019.
 
-   [RFC5681]  Allman, M., Paxson, V., and E. Blanton, "TCP Congestion
-              Control", RFC 5681, DOI 10.17487/RFC5681, September 2009,
-              <https://www.rfc-editor.org/info/rfc5681>.
+   [RFC3758]  Stewart, R., Ramalho, M., Xie, Q., Tuexen, M., and P.
+              Conrad, "Stream Control Transmission Protocol (SCTP)
+              Partial Reliability Extension", RFC 3758,
+              DOI 10.17487/RFC3758, May 2004,
+              <https://www.rfc-editor.org/info/rfc3758>.
+
+   [RFC4340]  Kohler, E., Handley, M., and S. Floyd, "Datagram
+              Congestion Control Protocol (DCCP)", RFC 4340,
+              DOI 10.17487/RFC4340, March 2006,
+              <https://www.rfc-editor.org/info/rfc4340>.
 
 
 
 
-
-
-Kuhn, et al.             Expires January 9, 2021                [Page 9]
+Kuhn, et al.            Expires January 10, 2021                [Page 9]
 
 Internet-Draft            Coding and congestion                July 2020
 
+
+   [RFC5681]  Allman, M., Paxson, V., and E. Blanton, "TCP Congestion
+              Control", RFC 5681, DOI 10.17487/RFC5681, September 2009,
+              <https://www.rfc-editor.org/info/rfc5681>.
 
    [RFC6297]  Welzl, M. and D. Ros, "A Survey of Lower-than-Best-Effort
               Transport Protocols", RFC 6297, DOI 10.17487/RFC6297, June
@@ -553,8 +557,4 @@ Authors' Addresses
 
 
 
-
-
-
-
-Kuhn, et al.             Expires January 9, 2021               [Page 10]
+Kuhn, et al.            Expires January 10, 2021               [Page 10]
