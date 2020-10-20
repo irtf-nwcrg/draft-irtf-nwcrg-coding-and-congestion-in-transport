@@ -5,12 +5,12 @@
 NWCRG                                                            N. Kuhn
 Internet-Draft                                                      CNES
 Intended status: Informational                                 E. Lochin
-Expires: January 10, 2021                                   ISAE-SUPAERO
+Expires: April 23, 2021                                     ISAE-SUPAERO
                                                                F. Michel
                                                                UCLouvain
                                                                 M. Welzl
                                                       University of Oslo
-                                                            July 9, 2020
+                                                        October 20, 2020
 
 
                Coding and congestion control in transport
@@ -48,14 +48,14 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on January 10, 2021.
+   This Internet-Draft will expire on April 23, 2021.
 
 
 
 
-Kuhn, et al.            Expires January 10, 2021                [Page 1]
+Kuhn, et al.             Expires April 23, 2021                 [Page 1]
 
-Internet-Draft            Coding and congestion                July 2020
+Internet-Draft            Coding and congestion             October 2020
 
 
 Copyright Notice
@@ -75,22 +75,47 @@ Copyright Notice
 
 Table of Contents
 
-   1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
+   1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   3
    2.  Separate channels, separate entities  . . . . . . . . . . . .   3
    3.  FEC above the transport . . . . . . . . . . . . . . . . . . .   6
      3.1.  Flowchart . . . . . . . . . . . . . . . . . . . . . . . .   6
-     3.2.  Discussion  . . . . . . . . . . . . . . . . . . . . . . .   6
-   4.  FEC within the transport  . . . . . . . . . . . . . . . . . .   7
-     4.1.  Flowchart . . . . . . . . . . . . . . . . . . . . . . . .   7
-     4.2.  Discussion  . . . . . . . . . . . . . . . . . . . . . . .   7
-   5.  FEC below the transport . . . . . . . . . . . . . . . . . . .   8
-     5.1.  Flowchart . . . . . . . . . . . . . . . . . . . . . . . .   8
-     5.2.  Discussion  . . . . . . . . . . . . . . . . . . . . . . .   8
-   6.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   9
-   7.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   9
-   8.  Security Considerations . . . . . . . . . . . . . . . . . . .   9
-   9.  Informative References  . . . . . . . . . . . . . . . . . . .   9
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  10
+     3.2.  Discussion  . . . . . . . . . . . . . . . . . . . . . . .   7
+   4.  FEC within the transport  . . . . . . . . . . . . . . . . . .   8
+     4.1.  Flowchart . . . . . . . . . . . . . . . . . . . . . . . .   8
+     4.2.  Discussion  . . . . . . . . . . . . . . . . . . . . . . .   8
+   5.  FEC below the transport . . . . . . . . . . . . . . . . . . .   9
+     5.1.  Flowchart . . . . . . . . . . . . . . . . . . . . . . . .   9
+     5.2.  Discussion  . . . . . . . . . . . . . . . . . . . . . . .   9
+   6.  Fairness, redundacy rate and congestion signals . . . . . . .  10
+     6.1.  Fairness and impact on non-coded flows  . . . . . . . . .  10
+       6.1.1.  FEC above the transport . . . . . . . . . . . . . . .  10
+       6.1.2.  FEC within the transport  . . . . . . . . . . . . . .  10
+       6.1.3.  FEC below the transport . . . . . . . . . . . . . . .  10
+     6.2.  Congestion control and recovered symbols  . . . . . . . .  11
+       6.2.1.  FEC above the transport . . . . . . . . . . . . . . .  11
+       6.2.2.  FEC within the transport  . . . . . . . . . . . . . .  11
+       6.2.3.  FEC below the transport . . . . . . . . . . . . . . .  11
+     6.3.  Interactions between congestion control and coding rates   11
+       6.3.1.  FEC above the transport . . . . . . . . . . . . . . .  12
+       6.3.2.  FEC within the transport  . . . . . . . . . . . . . .  12
+       6.3.3.  FEC below the transport . . . . . . . . . . . . . . .  12
+     6.4.  On the useless repaired symbols . . . . . . . . . . . . .  12
+       6.4.1.  FEC above the transport . . . . . . . . . . . . . . .  12
+       6.4.2.  FEC within the transport  . . . . . . . . . . . . . .  12
+       6.4.3.  FEC below the transport . . . . . . . . . . . . . . .  13
+   7.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .  13
+   8.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  13
+   9.  Security Considerations . . . . . . . . . . . . . . . . . . .  13
+
+
+
+Kuhn, et al.             Expires April 23, 2021                 [Page 2]
+
+Internet-Draft            Coding and congestion             October 2020
+
+
+   10. Informative References  . . . . . . . . . . . . . . . . . . .  13
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  14
 
 1.  Introduction
 
@@ -106,14 +131,6 @@ Table of Contents
    Coding is a reliability mechanism that is distinct and separate from
    the loss detection of congestion controls.  [RFC5681] defines TCP as
    a loss-based congestion control; because FEC coding repairs such
-
-
-
-Kuhn, et al.            Expires January 10, 2021                [Page 2]
-
-Internet-Draft            Coding and congestion                July 2020
-
-
    losses, blindly applying it may easily lead to an implementation that
    also hides a congestion signal to the sender.  It is important to
    ensure that such information hiding does not occur.
@@ -145,6 +162,14 @@ Internet-Draft            Coding and congestion                July 2020
    Figure 1 presents the notations that will be used in this document
    and introduces the Congestion Control (CC) and Forward Erasure
    Correction (FEC) channels.  The Congestion Control channel carries
+
+
+
+Kuhn, et al.             Expires April 23, 2021                 [Page 3]
+
+Internet-Draft            Coding and congestion             October 2020
+
+
    source packets from a sender to a receiver, and packets signaling
    information about the network (number of packets received vs. lost,
    ECN marks, etc.) from the receiver to the sender.  The Forward
@@ -153,22 +178,6 @@ Internet-Draft            Coding and congestion                July 2020
    been repaired (from the receiver to the sender).  It is worth
    pointing out that there are cases where these channels are not
    separated.
-
-
-
-
-
-
-
-
-
-
-
-
-Kuhn, et al.            Expires January 10, 2021                [Page 3]
-
-Internet-Draft            Coding and congestion                July 2020
-
 
     Sender                                Receiver
 
@@ -179,9 +188,9 @@ Internet-Draft            Coding and congestion                July 2020
    +------+                               +------+
 
    +------+                               +------+
-   |      | -----    repair packets  ---->|      |
+   |      | -----    repair symbols  ---->|      |
    | FEC  |                               | FEC  |
-   |      | <--- info: repaired packets --|      |
+   |      | <--- info: repaired symbols --|      |
    +------+                               +------+
 
                  Figure 1: Notations and separate channels
@@ -196,35 +205,38 @@ Internet-Draft            Coding and congestion                July 2020
    +---------------+source     +-----------------+
    |    FEC        |and/or     |    CC           |
    |               |repair     |                 |source
-   |               |packets    |                 |packets
+   |               |symbols    |                 |packets
    +---------------+==>        +-----------------+==>
      ^                                       ^
      | signaling about                       | network
      | losses and/or                         | information
-     | repaired packets
+     | repaired symbols
 
                  Figure 2: Separate entities (sender-side)
 
+
+
+
+
+
+
+
+Kuhn, et al.             Expires April 23, 2021                 [Page 4]
+
+Internet-Draft            Coding and congestion             October 2020
+
+
      |                                 |
      | source and/or                   | packets
-     | repair packets                  |
+     | repair symbols                  |
      v                                 v
    +---------------+              +-----------------+
    |    FEC        |signaling     |    CC           |
    |               |repaired      |                 |network
-   |               |packets       |                 |information
+   |               |symbols       |                 |information
    +---------------+==>           +-----------------+==>
-                    repaired packets
 
                  Figure 3: Separate entities (client-side)
-
-
-
-
-Kuhn, et al.            Expires January 10, 2021                [Page 4]
-
-Internet-Draft            Coding and congestion                July 2020
-
 
    Figure 2 and Figure 3 provide more details than Figure 1.  Some
    elements are introduced:
@@ -243,7 +255,7 @@ Internet-Draft            Coding and congestion                July 2020
       including CC): refers to the rate at which a congestion control
       decides to transmit packets, based on 'network information'.
 
-   o  'signaling repaired packets' (input control plane for the FEC):
+   o  'signaling repaired symbols' (input control plane for the FEC):
       refers to the information a FEC sender can obtain from a FEC
       receiver about the performance of the FEC solution as seen from
       the receiver.
@@ -251,17 +263,25 @@ Internet-Draft            Coding and congestion                July 2020
    o  'coding rate' (output control plane for the FEC): refers to the
       coding rate that is used by the FEC solution.
 
-   o  'source and/or repair packets' (data plane for both the FEC and
-      the CC): refers to the packets that are transmitted.  There can
-      only be source packets (if the coding rate is 0), repair packets
-      (if the solution decides not to send the original source packets)
-      or a mix of both.
+   o  'source and/or repair symbols' (data plane for both the FEC and
+      the CC): refers to the data that is transmitted.  There can only
+      be source packets (if the coding rate is 0), repair symbols (if
+      the solution decides not to send the original source packets) or a
+      mix of both.
 
    The inputs to FEC (packets to work upon, and signaling from the
-   receiver about losses and/or repaired packets) are distinct from the
+   receiver about losses and/or repaired symbols) are distinct from the
    inputs to CC.  The latter calculates a sending rate or window from
    network information, and it takes the packet to send as input,
    sometimes along with application requirements such as upper/lower
+
+
+
+Kuhn, et al.             Expires April 23, 2021                 [Page 5]
+
+Internet-Draft            Coding and congestion             October 2020
+
+
    rate bounds, periods of quiescence, or a priority.  It is not clear
    that the ACK signals feeding into a congestion control algorithm are
    useful to FEC in their raw form, and vice versa - information about
@@ -274,14 +294,6 @@ Internet-Draft            Coding and congestion                July 2020
       may implement a non-reliable transport layer (e.g.  UDP or DCCP
       [RFC4340] or a partially reliable transport protocol such as SCTP
       with partial reliability [RFC3758]).  Depending on the amount of
-
-
-
-Kuhn, et al.            Expires January 10, 2021                [Page 5]
-
-Internet-Draft            Coding and congestion                July 2020
-
-
       redundancy and network conditions, there could be cases where it
       ends up being impossible to carry traffic.
 
@@ -296,19 +308,49 @@ Internet-Draft            Coding and congestion                July 2020
 
 3.1.  Flowchart
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Kuhn, et al.             Expires April 23, 2021                 [Page 6]
+
+Internet-Draft            Coding and congestion             October 2020
+
+
     | source                               ^ source
     | packets                              | packets
     v                                      |
    +-------------+                      +-------------+
    |FEC          |             signaling|FEC          |
    |             |              repaired|             |
-   |             |               packets|             |
+   |             |               symbols|             |
    |             |                   <==|             |
    +-------------+                      +-------------+
     | source  ^                            ^ source
     | and/or  | sending                    | and/or
     | repair  | rate                       | repair
-    | packets | (or window)                | packets
+    | symbols | (or window)                | symbols
     v         |                            |
    +-------------+                      +-------------+
    |Transport    |source         network|Transport    |
@@ -330,22 +372,29 @@ Internet-Draft            Coding and congestion                July 2020
    such as reliability, we note that CC is often embedded in reliable
    transfer protocols (e.g.  TCP).  This approach may require that the
    transport protocol does not implement a fully reliable data transfer
-
-
-
-Kuhn, et al.            Expires January 10, 2021                [Page 6]
-
-Internet-Draft            Coding and congestion                July 2020
-
-
    service (e.g., based on lost packet retransmission), otherwise this
    could lead to spurious retransmissions.  UDP is an example of a
    protocol for which this approach is relevant.
 
    The advantage of this approach is that the FEC does not contribute to
    adding congestion in the network.  When a congestion control is
-   implementedd at the transport layer, the repair packets are sent
-   within what the congestion window allows.
+   implemented at the transport layer, the repair symbols are sent
+   within what the congestion window allows.  This approach can result
+   in improved quality of experience for latency sensitive and non
+   reliable applications.
+
+   For reliable transfers, including redundancy reduces goodput for
+   large files transfers but can result in reduced transfer time for
+   short files in case of tail losses.
+
+
+
+Kuhn, et al.             Expires April 23, 2021                 [Page 7]
+
+Internet-Draft            Coding and congestion             October 2020
+
+
+   This discussion section is extended in Section 6.
 
 4.  FEC within the transport
 
@@ -359,7 +408,7 @@ Internet-Draft            Coding and congestion                July 2020
    |            |                      |            |
    | +---+ +--+ |             signaling| +---+ +--+ |
    | |FEC| |CC| |              repaired| |FEC| |CC| |
-   | +---+ +--+ |source         packets| +---+ +--+ |
+   | +---+ +--+ |source         symbols| +---+ +--+ |
    |            |and/or             <==|            |
    |            |repair         network|            |
    |            |packets    information|            |
@@ -370,33 +419,36 @@ Internet-Draft            Coding and congestion                July 2020
                       Figure 5: FEC in the transport
 
    Figure 5 presents an architecture where FEC is within the transport.
-   The repair packets are sent within what the congestion window allows,
+   The repair symbols are sent within what the congestion window allows,
    such as in [CTCP].
 
 4.2.  Discussion
 
    The advantage of this approach is that it can enable conjoint
    optimization between the CC and the FEC.  Moreover, the transmission
-   of repair packets does not add congestion in potentially congested
+   of repair symbols does not add congestion in potentially congested
    networks but helps repair lost packets (such as tail losses).
 
-   The drawback of this approach is that it may not result in much gains
-   as opposed to classical retransmission mechanisms and it costs
-   bandwidth that could have been exploited to transmit source packets.
-   The coding ratio needs to be carefully designed.
+   For reliable transfers, including redundancy reduces goodput for
+   large files transfers but can be adapted depending on the congestion
+   window size.  The drawback of this approach is that it may not result
+   in much gains as opposed to classical retransmission mechanisms and
+   it costs bandwidth that could have been exploited to transmit source
+   packets.  The coding ratio needs to be carefully designed.
 
-
-
-
-
-Kuhn, et al.            Expires January 10, 2021                [Page 7]
-
-Internet-Draft            Coding and congestion                July 2020
-
-
-   Examples of the solution would be sending repair packets when there
-   is no more data to transmit or preferably send repair packets instead
+   Examples of the solution would be sending repair symbols when there
+   is no more data to transmit or preferably send repair symbols instead
    of the following packets in the send buffer.
+
+   This discussion section is extended in Section 6.
+
+
+
+
+Kuhn, et al.             Expires April 23, 2021                 [Page 8]
+
+Internet-Draft            Coding and congestion             October 2020
+
 
 5.  FEC below the transport
 
@@ -416,7 +468,7 @@ Internet-Draft            Coding and congestion                July 2020
    | FEC          |source                |  FEC         |
    |              |and/or       signaling|              |
    |              |repair        repaired|              |
-   |              |packets        packets|              |
+   |              |symbols        symbols|              |
    |              |==>                <==|              |
    +--------------+                      +--------------+
 
@@ -425,10 +477,13 @@ Internet-Draft            Coding and congestion                July 2020
                      Figure 6: FEC below the transport
 
    Figure 6 presents an architecture where FEC is below the transport.
-   The repair packets are sent on top of what is allowed by the
+   The repair symbols are sent on top of what is allowed by the
    congestion control.
 
 5.2.  Discussion
+
+   In this case, including redundancy adds congestion without reducing
+   goodput but leads to potential fairness issues.
 
    The advantage of this approach is that it can result in performance
    gains when there are persistent transmission losses along the path.
@@ -438,35 +493,203 @@ Internet-Draft            Coding and congestion                July 2020
    designed.
 
    Examples of the solution could be adding a given percentage of the
-   congestion window as supplementary packets or sending a given amount
-   of repair packets at a given rate.  The redundancy flow can be
+   congestion window as supplementary symbols or sending a given amount
+   of repair symbols at a given rate.  The redundancy flow can be
    decorrelated from the congestion control that manages source packets:
    a secondary congestion control could be introduced underneath the FEC
-
-
-
-Kuhn, et al.            Expires January 10, 2021                [Page 8]
-
-Internet-Draft            Coding and congestion                July 2020
-
-
    layer.  The separate congestion control mechanisms could be made to
+
+
+
+Kuhn, et al.             Expires April 23, 2021                 [Page 9]
+
+Internet-Draft            Coding and congestion             October 2020
+
+
    work together while adhering to priorities, as in coupled congestion
    control for RTP media [I-D.ietf-rmcat-coupled-cc].  Another
    possibility would be to exploit a lower than best-effort congestion
-   control [RFC6297] for repair packets.
+   control [RFC6297] for repair symbols.
 
-6.  Acknowledgements
+   This discussion section is extended in Section 6.
+
+6.  Fairness, redundacy rate and congestion signals
+
+   The objective of this section is to further detail some aspects that
+   have been expressed in previous discussion subsections.
+
+6.1.  Fairness and impact on non-coded flows
+
+   The objective of this section is to further discuss how adding coded
+   flows impacts on non-coded flows when they share the same bottleneck.
+   This section assumes that the non-coded flows respond to congestion
+   signals from the network.
+
+6.1.1.  FEC above the transport
+
+   The addition of coding within the flow do not impact on how the coded
+   and non-coded flows interact.  This interaction would mainly depend
+   on the congestion controls embedded in each host.
+
+6.1.2.  FEC within the transport
+
+   The addition of coding within the flow may impact on the congestion
+   control mechanism and hide congestion losses.  Specific interaction
+   between congestion controls and coding schemes can be proposed (see
+   Section 6.2, Section 6.3 and Section 6.4).  If no specific
+   interaction is introduced, the coding scheme may hide congestion
+   losses to the congestion controller and the description of
+   Section 6.1.3 may apply.
+
+6.1.3.  FEC below the transport
+
+   In this case, the coding scheme may hide congestion losses to the
+   congestion controller.  There are cases where this can reduce
+   drastically the goodput of the non-coded flows.  Depending on the
+   congestion control, it may be possible to indicate that a packet has
+   been recovered, e.g. using ECN flags, to reduce the impact on the
+   non-coded flows (see Section 6.2.3).
+
+
+
+
+
+
+
+
+Kuhn, et al.             Expires April 23, 2021                [Page 10]
+
+Internet-Draft            Coding and congestion             October 2020
+
+
+6.2.  Congestion control and recovered symbols
+
+   The objective of this subsection is to destribe potential
+   interactions between the congestion control and the recovered
+   symbols.
+
+6.2.1.  FEC above the transport
+
+   The congestion control may not be able to differenciate repair
+   symbols from actual source packets.  The relevance of adding coding
+   at the application is related to the needs of the application.  For
+   real-time applications, this approach may reduce the amount of
+   retransmission.  The usage of non reliable transport is more adequate
+   in this case.  For cases where a reliable transport is exploited,
+   there may be inadequacy between the coding scheme and the reliability
+   embedded in the transport layer.
+
+6.2.2.  FEC within the transport
+
+   If the two FEC and CC channels are decoupled, the endpoint may
+   exploit specific protocol for each of the channel.  The channels may
+   be coupled and one single protocol may be exploited.  In both cases,
+   the client can differenciate source packets and repair symbols.  The
+   client may indicate the amount of source packets that have been
+   received and the amount of repaired symbols that were actually useful
+   in the recovery process of packets.
+
+   QUIC may require a specific type of frame to transport such
+   information between client and server.
+
+6.2.3.  FEC below the transport
+
+   The congestion control may not know what is going on in the network
+   underneath and whether a coding scheme is introduced or not.  The
+   congestion control may behave as if no coding sheme is introduced.
+   The only way for a coding channel to indicate that symbols have been
+   recovered is to exploit existing signaling.  An example would be a
+   client to indicate that a packet has been recovered by using ECN
+   signals of TCP.
+
+6.3.  Interactions between congestion control and coding rates
+
+   This section discuss to what extent interaction between the
+   congestion control and the coding rates are possible.
+
+
+
+
+
+
+
+Kuhn, et al.             Expires April 23, 2021                [Page 11]
+
+Internet-Draft            Coding and congestion             October 2020
+
+
+6.3.1.  FEC above the transport
+
+   The coding rate applied at the application mainly depends on the
+   available capacity given by the congestion control underneath.
+   Adapting the coding rate to the minimum required data rate of the
+   application may help in reducing packet losses and improve quality of
+   experience.
+
+6.3.2.  FEC within the transport
+
+   In this case, there is an important flexibility in the trade-off
+   between reducing goodput, helping recovering from transmission and
+   congestion losses, being fair in respect with non-coded flows.  Such
+   as explained in Section 6.2.2, the client may be able to indicate the
+   server the amount of packets that have been received or recovered.
+   The server may exploit this information to tune the coding ratio.  As
+   one example of flexibility of this case, coupling increasing
+   transmission rate with increasing or decreasing coding rate could be
+   envisionned.  A server may use increasing coding rate as a probe to
+   more safely increase transmission rate.
+
+6.3.3.  FEC below the transport
+
+   The coding rate in this case can be tuned depending on the amount of
+   recovered symbols and the rate of which data are transmitted by the
+   server.  The coding scheme is not aware of the congestion control
+   implementation making it hard for the coding scheme to apply the
+   relevant coding rate.
+
+6.4.  On the useless repaired symbols
+
+   There are cases where useless repaired symbols are transmitted and
+   impact on the load on the network and may reduce the goodput of the
+   flow without concrete gains.
+
+6.4.1.  FEC above the transport
+
+   In this case, the discussion depends on application needs.  The only
+   case where adding useless repaired symbols does not result in reduced
+   goodput is when the application needs a limited amount of goodput
+   (e.g.  VoIP traffic).  In this case, the useless repaired symbols
+   would only impact on the amount of data generated in the network.
+
+6.4.2.  FEC within the transport
+
+   The sender may be able to exploit the information given by the client
+   to reduce the amount of useless repair packets and avoid they
+   actually reduces the goodput.
+
+
+
+Kuhn, et al.             Expires April 23, 2021                [Page 12]
+
+Internet-Draft            Coding and congestion             October 2020
+
+
+6.4.3.  FEC below the transport
+
+   In this case, the useless repaired symbols only impact on the load of
+   the network without actual gain for the coded flow.
+
+7.  Acknowledgements
 
    Many thanks to Spencer Dawkins, Dave Oran, Carsten Bormann, Vincent
    Roca and Marie-Jose Montpetit for their useful comments that helped
    improve the document.
 
-7.  IANA Considerations
+8.  IANA Considerations
 
    This memo includes no request to IANA.
 
-8.  Security Considerations
+9.  Security Considerations
 
    FEC and CC schemes can contribute to DoS attacks.  This is not
    specific to this document.
@@ -477,7 +700,7 @@ Internet-Draft            Coding and congestion                July 2020
    application obtaining more than its fair share of the network
    capacity.
 
-9.  Informative References
+10.  Informative References
 
    [CTCP]     Kim (et al.), M., "Network Coded TCP (CTCP)",
               arXiv 1212.2291v3, 2013.
@@ -501,9 +724,10 @@ Internet-Draft            Coding and congestion                July 2020
 
 
 
-Kuhn, et al.            Expires January 10, 2021                [Page 9]
+
+Kuhn, et al.             Expires April 23, 2021                [Page 13]
 
-Internet-Draft            Coding and congestion                July 2020
+Internet-Draft            Coding and congestion             October 2020
 
 
    [RFC5681]  Allman, M., Paxson, V., and E. Blanton, "TCP Congestion
@@ -557,4 +781,4 @@ Authors' Addresses
 
 
 
-Kuhn, et al.            Expires January 10, 2021               [Page 10]
+Kuhn, et al.             Expires April 23, 2021                [Page 14]
