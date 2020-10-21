@@ -122,7 +122,7 @@
         <t><xref target="fig:sep-channel"></xref> presents the notations that will be used in this document and introduces the Congestion Control (CC) and Forward Erasure Correction (FEC) channels. The Congestion Control channel carries source packets from a sender to a receiver, and packets signaling information about the network (number of packets received vs. lost, ECN marks, etc.) from the receiver to the sender. The Forward Erasure Correction channel carries repair symbols (from the sender to the receiver) and potential information signaling which packets have been repaired (from the receiver to the sender). It is worth pointing out that there are cases where these channels are not separated.</t>
         <figure anchor="fig:sep-channel" title="Notations and separate channels">
         <artwork>
- Sender                                Receiver
+ SENDER                                RECEIVER
 
 +------+                               +------+
 |      | <![CDATA[-----]]>    source packets  ---->|      |
@@ -254,7 +254,7 @@
 |             |packets               |             |
 +-------------+==>                   +-------------+
 
-     SERVER                                 CLIENT 
+     SENDER                                 RECEIVER 
 		</artwork>
 		</figure>
 
@@ -290,7 +290,7 @@
 |            |packets    information|            |
 +------------+ ==>               <![CDATA[<]]>==+------------+
 
-    SERVER                              CLIENT 
+    SENDER                              RECEIVER 
         	</artwork>
 		</figure>
 	
@@ -331,7 +331,7 @@
 |              |==>                <![CDATA[<]]>==|              |
 +--------------+                      +--------------+
 
-     SERVER                                 CLIENT 
+     SENDER                                 RECEIVER 
 		</artwork>
 	</figure>
 
