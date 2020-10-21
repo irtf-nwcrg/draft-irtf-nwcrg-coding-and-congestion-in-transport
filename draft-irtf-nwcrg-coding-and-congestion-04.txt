@@ -496,8 +496,8 @@ Internet-Draft            Coding and congestion             October 2020
    congestion window as supplementary symbols or sending a given amount
    of repair symbols at a given rate.  The redundancy flow can be
    decorrelated from the congestion control that manages source packets:
-   a secondary congestion control could be introduced underneath the FEC
-   layer.  The separate congestion control mechanisms could be made to
+   a secondary congestion control could be introduced to manage the
+   amount of repaired packets to transmit on the FEC channel.  The
 
 
 
@@ -506,10 +506,11 @@ Kuhn, et al.             Expires April 24, 2021                 [Page 9]
 Internet-Draft            Coding and congestion             October 2020
 
 
-   work together while adhering to priorities, as in coupled congestion
-   control for RTP media [I-D.ietf-rmcat-coupled-cc].  Another
-   possibility would be to exploit a lower than best-effort congestion
-   control [RFC6297] for repair symbols.
+   separate congestion control mechanisms could be made to work together
+   while adhering to priorities, as in coupled congestion control for
+   RTP media [I-D.ietf-rmcat-coupled-cc].  Another possibility would be
+   to exploit a lower than best-effort congestion control [RFC6297] for
+   repair symbols.
 
    This discussion section is extended in Section 6.
 
@@ -549,7 +550,6 @@ Internet-Draft            Coding and congestion             October 2020
    congestion control, it may be possible to indicate that a packet has
    been recovered, e.g. using ECN flags, to reduce the impact on the
    non-coded flows (see Section 6.2.3).
-
 
 
 
