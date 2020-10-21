@@ -400,17 +400,17 @@
 		</section>
 
 		<section anchor="subsec:cc-useless-interaction" title="On the useless repaired symbols">
-			<t>There are cases where useless repaired symbols are transmitted and impact on the load on the network and may reduce the goodput of the flow without concrete gains.</t>
+			<t>There are cases where useless repaired symbols may be transmitted. These have an impact on the network load and may reduce the goodput of the flow without concrete gains.</t>
 			<section title="FEC above the transport">
-				<t>In this case, the discussion depends on application needs. The only case where adding useless repaired symbols does not result in reduced goodput is when the application needs a limited amount of goodput (e.g. VoIP traffic). In this case, the useless repaired symbols would only impact on the amount of data generated in the network.</t>
+				<t>In this case, the discussion depends on application needs. The only case where adding useless repaired symbols does not result in reduced goodput is when the application needs a limited amount of goodput (e.g. VoIP traffic). In this case, the useless repaired symbols would only have an impact on the amount of data generated in the network.</t>
 			</section>
 
 			<section title="FEC within the transport">
-				<t>The sender may be able to exploit the information given by the receiver to reduce the amount of useless repair packets and avoid they actually reduces the goodput.</t>
+				<t>The sender may be able to exploit the information given by the receiver to reduce the amount of useless repair packets and the resulting goodput reduction.</t>
 			</section>
 
 			<section title="FEC below the transport">
-				<t>In this case, the useless repaired symbols only impact on the load of the network without actual gain for the coded flow.</t>
+				<t>In this case, the useless repaired symbols only have an impact on the load of the network without actual gain for the coded flow.</t>
 			</section>
 		</section>
 
