@@ -262,9 +262,8 @@
 	</section>
 
 	<section anchor="sec:fec-above-discu" title="Discussion">
-		<t>While CC is in principle independent of other transport functions such as connection establishment or reliability, we note that CC can be coupled with a reliable mechanism. This approach may require that the transport protocol does not implement a fully reliable data transfer service (e.g., based on lost packet retransmission), otherwise this could lead to spurious retransmissions. UDP is an example of a protocol for which this approach is relevant.</t>
 		<t>The advantage of this approach is that the FEC does not contribute to adding congestion in the network. When a congestion control is implemented at the transport layer, the repair symbols are sent within what the congestion window allows. This approach can result in improved quality of experience for latency sensitive and non reliable applications.</t>
-		<t>For reliable transfers, including redundancy reduces goodput for large files transfers but can result in reduced transfer time for short files in case of tail losses.</t>	
+		<t>This approach requires that the transport protocol does not implement a reliable data transfer service (e.g., based on lost packet retransmission). UDP is an example of a protocol for which this approach is relevant. For reliable transfers, the CC channel will feature full reliability making that the usage of coding does not guarantee better performance and would mainly reduce goodput for large files transfers.</t>	
 		<t>This discussion section is extended in <xref target="sec:fairness"></xref>.</t>
 	</section>
 
