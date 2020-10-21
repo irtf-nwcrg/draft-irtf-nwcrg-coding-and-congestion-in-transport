@@ -5,12 +5,12 @@
 NWCRG                                                            N. Kuhn
 Internet-Draft                                                      CNES
 Intended status: Informational                                 E. Lochin
-Expires: April 23, 2021                                     ISAE-SUPAERO
+Expires: April 24, 2021                                     ISAE-SUPAERO
                                                                F. Michel
                                                                UCLouvain
                                                                 M. Welzl
                                                       University of Oslo
-                                                        October 20, 2020
+                                                        October 21, 2020
 
 
                Coding and congestion control in transport
@@ -48,12 +48,12 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on April 23, 2021.
+   This Internet-Draft will expire on April 24, 2021.
 
 
 
 
-Kuhn, et al.             Expires April 23, 2021                 [Page 1]
+Kuhn, et al.             Expires April 24, 2021                 [Page 1]
 
 Internet-Draft            Coding and congestion             October 2020
 
@@ -109,7 +109,7 @@ Table of Contents
 
 
 
-Kuhn, et al.             Expires April 23, 2021                 [Page 2]
+Kuhn, et al.             Expires April 24, 2021                 [Page 2]
 
 Internet-Draft            Coding and congestion             October 2020
 
@@ -165,7 +165,7 @@ Internet-Draft            Coding and congestion             October 2020
 
 
 
-Kuhn, et al.             Expires April 23, 2021                 [Page 3]
+Kuhn, et al.             Expires April 24, 2021                 [Page 3]
 
 Internet-Draft            Coding and congestion             October 2020
 
@@ -221,7 +221,7 @@ Internet-Draft            Coding and congestion             October 2020
 
 
 
-Kuhn, et al.             Expires April 23, 2021                 [Page 4]
+Kuhn, et al.             Expires April 24, 2021                 [Page 4]
 
 Internet-Draft            Coding and congestion             October 2020
 
@@ -277,7 +277,7 @@ Internet-Draft            Coding and congestion             October 2020
 
 
 
-Kuhn, et al.             Expires April 23, 2021                 [Page 5]
+Kuhn, et al.             Expires April 24, 2021                 [Page 5]
 
 Internet-Draft            Coding and congestion             October 2020
 
@@ -333,7 +333,7 @@ Internet-Draft            Coding and congestion             October 2020
 
 
 
-Kuhn, et al.             Expires April 23, 2021                 [Page 6]
+Kuhn, et al.             Expires April 24, 2021                 [Page 6]
 
 Internet-Draft            Coding and congestion             October 2020
 
@@ -369,12 +369,12 @@ Internet-Draft            Coding and congestion             October 2020
 3.2.  Discussion
 
    While CC is in principle independent of other transport functions
-   such as reliability, we note that CC is often embedded in reliable
-   transfer protocols (e.g.  TCP).  This approach may require that the
-   transport protocol does not implement a fully reliable data transfer
-   service (e.g., based on lost packet retransmission), otherwise this
-   could lead to spurious retransmissions.  UDP is an example of a
-   protocol for which this approach is relevant.
+   such as connection establishment or reliability, we note that CC can
+   be coupled with a reliable mechanism.  This approach may require that
+   the transport protocol does not implement a fully reliable data
+   transfer service (e.g., based on lost packet retransmission),
+   otherwise this could lead to spurious retransmissions.  UDP is an
+   example of a protocol for which this approach is relevant.
 
    The advantage of this approach is that the FEC does not contribute to
    adding congestion in the network.  When a congestion control is
@@ -389,7 +389,7 @@ Internet-Draft            Coding and congestion             October 2020
 
 
 
-Kuhn, et al.             Expires April 23, 2021                 [Page 7]
+Kuhn, et al.             Expires April 24, 2021                 [Page 7]
 
 Internet-Draft            Coding and congestion             October 2020
 
@@ -445,7 +445,7 @@ Internet-Draft            Coding and congestion             October 2020
 
 
 
-Kuhn, et al.             Expires April 23, 2021                 [Page 8]
+Kuhn, et al.             Expires April 24, 2021                 [Page 8]
 
 Internet-Draft            Coding and congestion             October 2020
 
@@ -501,7 +501,7 @@ Internet-Draft            Coding and congestion             October 2020
 
 
 
-Kuhn, et al.             Expires April 23, 2021                 [Page 9]
+Kuhn, et al.             Expires April 24, 2021                 [Page 9]
 
 Internet-Draft            Coding and congestion             October 2020
 
@@ -557,7 +557,7 @@ Internet-Draft            Coding and congestion             October 2020
 
 
 
-Kuhn, et al.             Expires April 23, 2021                [Page 10]
+Kuhn, et al.             Expires April 24, 2021                [Page 10]
 
 Internet-Draft            Coding and congestion             October 2020
 
@@ -613,7 +613,7 @@ Internet-Draft            Coding and congestion             October 2020
 
 
 
-Kuhn, et al.             Expires April 23, 2021                [Page 11]
+Kuhn, et al.             Expires April 24, 2021                [Page 11]
 
 Internet-Draft            Coding and congestion             October 2020
 
@@ -669,7 +669,7 @@ Internet-Draft            Coding and congestion             October 2020
 
 
 
-Kuhn, et al.             Expires April 23, 2021                [Page 12]
+Kuhn, et al.             Expires April 24, 2021                [Page 12]
 
 Internet-Draft            Coding and congestion             October 2020
 
@@ -725,7 +725,7 @@ Internet-Draft            Coding and congestion             October 2020
 
 
 
-Kuhn, et al.             Expires April 23, 2021                [Page 13]
+Kuhn, et al.             Expires April 24, 2021                [Page 13]
 
 Internet-Draft            Coding and congestion             October 2020
 
@@ -781,4 +781,4 @@ Authors' Addresses
 
 
 
-Kuhn, et al.             Expires April 23, 2021                [Page 14]
+Kuhn, et al.             Expires April 24, 2021                [Page 14]
