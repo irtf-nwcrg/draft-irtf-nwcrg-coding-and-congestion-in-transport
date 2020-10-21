@@ -395,7 +395,7 @@
 			</section>
 
 			<section title="FEC below the transport">
-				<t>The coding rate in this case can be tuned depending on the amount of recovered symbols and the rate of which data are transmitted by the sender. The coding scheme is not aware of the congestion control implementation making it hard for the coding scheme to apply the relevant coding rate.</t>
+				<t>The coding rate in this case can be tuned depending on the amount of recovered symbols and the rate of which data are transmitted by the sender. The coding scheme is not aware of the congestion control implementation, making it hard for the coding scheme to apply the relevant coding rate.</t>
 			</section>
 		</section>
 
