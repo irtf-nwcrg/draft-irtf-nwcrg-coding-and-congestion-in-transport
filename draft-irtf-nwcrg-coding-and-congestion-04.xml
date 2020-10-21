@@ -159,7 +159,7 @@
         </artwork>
         </figure>
 
-    	<figure anchor="fig:sep-entities-clt" title="Separate entities (client-side)">
+    	<figure anchor="fig:sep-entities-clt" title="Separate entities (receiver-side)">
         <artwork>
   |                                 |             
   | source and/or                   | packets      
@@ -375,12 +375,12 @@
 			</section>
 
 			<section anchor="subsec:cc-recov-inter-in" title="FEC within the transport">
-				<t>If the two FEC and CC channels are decoupled, the endpoint may exploit specific protocol for each of the channel. The channels may be coupled and one single protocol may be exploited. In both cases, the client can differenciate source packets and repair symbols. The client may indicate the amount of source packets that have been received and the amount of repaired symbols that were actually useful in the recovery process of packets.</t>
-				<t>QUIC may require a specific type of frame to transport such information between client and server.</t>
+				<t>If the two FEC and CC channels are decoupled, the endpoint may exploit specific protocol for each of the channel. The channels may be coupled and one single protocol may be exploited. In both cases, the receiver can differenciate source packets and repair symbols. The receiver may indicate the amount of source packets that have been received and the amount of repaired symbols that were actually useful in the recovery process of packets.</t>
+				<t>QUIC may require a specific type of frame to transport such information between receiver and sender.</t>
 			</section>
 
 			<section anchor="subsec:cc-recov-inter-below" title="FEC below the transport">
-				<t>The congestion control may not know what is going on in the network underneath and whether a coding scheme is introduced or not. The congestion control may behave as if no coding sheme is introduced. The only way for a coding channel to indicate that symbols have been recovered is to exploit existing signaling. An example would be a client to indicate that a packet has been recovered by using ECN signals of TCP.</t>
+				<t>The congestion control may not know what is going on in the network underneath and whether a coding scheme is introduced or not. The congestion control may behave as if no coding sheme is introduced. The only way for a coding channel to indicate that symbols have been recovered is to exploit existing signaling. An example would be a receiver to indicate that a packet has been recovered by using ECN signals of TCP.</t>
 			</section>
 		</section>
 
@@ -391,11 +391,11 @@
 			</section>
 
 			<section title="FEC within the transport">
-				<t>In this case, there is an important flexibility in the trade-off between reducing goodput, helping recovering from transmission and congestion losses, being fair in respect with non-coded flows. Such as explained in <xref target="subsec:cc-recov-inter-in"></xref>, the client may be able to indicate the server the amount of packets that have been received or recovered. The server may exploit this information to tune the coding ratio. As one example of flexibility of this case, coupling increasing transmission rate with increasing or decreasing coding rate could be envisionned. A server may use increasing coding rate as a probe to more safely increase transmission rate.</t>
+				<t>In this case, there is an important flexibility in the trade-off between reducing goodput, helping recovering from transmission and congestion losses, being fair in respect with non-coded flows. Such as explained in <xref target="subsec:cc-recov-inter-in"></xref>, the receiver may be able to indicate the sender the amount of packets that have been received or recovered. The sender may exploit this information to tune the coding ratio. As one example of flexibility of this case, coupling increasing transmission rate with increasing or decreasing coding rate could be envisionned. A sender may use increasing coding rate as a probe to more safely increase transmission rate.</t>
 			</section>
 
 			<section title="FEC below the transport">
-				<t>The coding rate in this case can be tuned depending on the amount of recovered symbols and the rate of which data are transmitted by the server. The coding scheme is not aware of the congestion control implementation making it hard for the coding scheme to apply the relevant coding rate.</t>
+				<t>The coding rate in this case can be tuned depending on the amount of recovered symbols and the rate of which data are transmitted by the sender. The coding scheme is not aware of the congestion control implementation making it hard for the coding scheme to apply the relevant coding rate.</t>
 			</section>
 		</section>
 
@@ -406,7 +406,7 @@
 			</section>
 
 			<section title="FEC within the transport">
-				<t>The sender may be able to exploit the information given by the client to reduce the amount of useless repair packets and avoid they actually reduces the goodput.</t>
+				<t>The sender may be able to exploit the information given by the receiver to reduce the amount of useless repair packets and avoid they actually reduces the goodput.</t>
 			</section>
 
 			<section title="FEC below the transport">
