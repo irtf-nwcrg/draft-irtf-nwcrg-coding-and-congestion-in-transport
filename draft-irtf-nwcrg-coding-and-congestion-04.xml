@@ -300,8 +300,7 @@
 
 	<section anchor="sec:fec-in-discu" title="Discussion">
 		<t>The advantage of this approach is that it can enable conjoint optimization between the CC and the FEC. Moreover, the transmission of repair symbols does not add congestion in potentially congested networks but helps repair lost packets (such as tail losses).</t>
-		<t>For reliable transfers, including redundancy reduces goodput for large files transfers but can be adapted depending on the congestion window size. The drawback of this approach is that it may not result in much gains as opposed to classical retransmission mechanisms and it costs bandwidth that could have been exploited to transmit source packets. The coding ratio needs to be carefully designed.</t>
-		<t>Examples of the solution would be sending repair symbols when there is no more data to transmit or preferably send repair symbols instead of the following packets in the send buffer.</t>
+		<t>For reliable transfers, including redundancy reduces goodput for large files transfers but the amount of repaired symbols can be adapted depending on the congestion window size. There is an trade-off between the cost in bandwidth that could have been exploited to transmit source packets and the advantages that are brought by transmiting repair symbols (e.g. unlocking the receive buffer if this is limiting). The coding ratio needs to be carefully designed. For small files, sending repair symbols when there is no more data to transmit or preferably send repair symbols instead of the following packets in the send buffer could help in reducing the transfer time.</t>
 		<t>This discussion section is extended in <xref target="sec:fairness"></xref>.</t>
 	</section>
 
