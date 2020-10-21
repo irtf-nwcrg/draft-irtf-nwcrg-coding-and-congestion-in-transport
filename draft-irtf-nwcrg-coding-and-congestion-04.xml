@@ -342,7 +342,7 @@
 		<t>In this case, including redundancy adds congestion without reducing goodput but leads to potential fairness issues. Indeed, the effective bitrate is higher than the CC's computed fair share due to the sending of repair symbols and the losses are hidden to the transport which may cause a problem for loss-based congestion controls, but is not a problem for delay-based ones.</t>	
 		<t>The advantage of this approach is that it can result in performance gains when there are persistent transmission losses along the path.</t>
 		<t>The drawback of this approach is that it can induce congestion in already congested networks. The coding ratio needs to be carefully designed.</t>
-		<t>Examples of the solution could be adding a given percentage of the congestion window as supplementary symbols or sending a given amount of repair symbols at a given rate. The redundancy flow can be decorrelated from the congestion control that manages source packets: a separate congestion control could be introduced to manage the amount of repaired packets to transmit on the FEC channel. The separate congestion control mechanisms could be made to work together while adhering to priorities, as in coupled congestion control for RTP media <xref target="I-D.ietf-rmcat-coupled-cc"/>. Another possibility would be to exploit a lower than best-effort congestion control <xref target="RFC6297"/> for repair symbols.</t>
+		<t>Examples of the solution could be adding a given percentage of the congestion window as supplementary symbols or sending a given amount of repair symbols at a given rate. The redundancy flow can be decorrelated from the congestion control that manages source packets: a separate congestion control could be introduced to manage the amount of repaired packets to transmit on the FEC channel. The separate congestion control instances could be made to work together while adhering to priorities, as in coupled congestion control for RTP media <xref target="RFC8699"/> in case all traffic can be assumed to take the same path, or otherwise with a multipath congestion window coupling mechanism as in Multipath TCP <xref target="RFC6356"/>. Another possibility would be to exploit a lower than best-effort congestion control <xref target="RFC6297"/> for repair symbols.</t>
 		<t>This discussion section is extended in <xref target="sec:fairness"></xref>.</t>
 	</section>
 	</section>
@@ -460,10 +460,12 @@
         <?rfc include="reference.RFC.4340.xml"?>
         <?rfc include="reference.RFC.5681.xml"?>
         <?rfc include="reference.RFC.6297.xml"?>
+        <?rfc include="reference.RFC.6356.xml"?>
         <?rfc include="reference.RFC.8406.xml"?>
+        <?rfc include="reference.RFC.8699.xml"?>
 	<!-- <?rfc include="reference.RFC.7567.xml"?> -->
 	<!-- <?rfc include="reference.RFC.8511.xml"?> -->
-        <?rfc include="reference.I-D.ietf-rmcat-coupled-cc.xml"?>
+	<!-- <?rfc include="reference.I-D.ietf-rmcat-coupled-cc.xml"?> -->
         <!-- <?rfc include="reference.I-D.ietf-tcpm-rto-consider.xml"?> -->
         <!-- <?rfc include="reference.I-D.ietf-tcpm-rack.xml"?> -->
 	<!-- <?rfc include="reference.I-D.swett-nwcrg-coding-for-quic.xml"?> -->
