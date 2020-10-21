@@ -119,7 +119,7 @@
         <!-- New section -->
         <!-- ######################################################-->
         <section anchor="sec:notations" title="Separate channels, separate entities">
-        <t><xref target="fig:sep-channel"></xref> presents the notations that will be used in this document and introduces the Congestion Control (CC) and Forward Erasure Correction (FEC) channels. The Congestion Control channel carries source packets from a sender to a receiver, and packets signaling information about the network (number of packets received vs. lost, ECN marks, etc.) from the receiver to the sender. The Forward Erasure Correction channel carries repair packets (from the sender to the receiver) and potential information signaling which packets have been repaired (from the receiver to the sender). It is worth pointing out that there are cases where these channels are not separated.</t>
+        <t><xref target="fig:sep-channel"></xref> presents the notations that will be used in this document and introduces the Congestion Control (CC) and Forward Erasure Correction (FEC) channels. The Congestion Control channel carries source packets from a sender to a receiver, and packets signaling information about the network (number of packets received vs. lost, ECN marks, etc.) from the receiver to the sender. The Forward Erasure Correction channel carries repair symbols (from the sender to the receiver) and potential information signaling which packets have been repaired (from the receiver to the sender). It is worth pointing out that there are cases where these channels are not separated.</t>
         <figure anchor="fig:sep-channel" title="Notations and separate channels">
         <artwork>
  Sender                                Receiver
@@ -335,7 +335,7 @@
 		</artwork>
 	</figure>
 
-	<t><xref target="fig:fec-below"></xref> presents an architecture where FEC is below the transport. The repair symbols are sent on top of what is allowed by the congestion control.</t>
+	<t><xref target="fig:fec-below"></xref> presents an architecture where FEC is applied end-to-end below the transport layer, but above the link layer. Note that it is common to apply FEC at the link layer, in which it contributes to the total capacity that a link exposes to upper layers. This application of FEC is out of scope of this document. The repair symbols are sent on top of what is allowed by the congestion control.</t>
 	</section>
 
 	<section anchor="sec:fec-below-discu" title="Discussion">
