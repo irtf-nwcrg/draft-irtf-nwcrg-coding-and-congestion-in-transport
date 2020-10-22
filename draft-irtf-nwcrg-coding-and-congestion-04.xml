@@ -371,7 +371,7 @@
 		<section anchor="subsec:cc-recov-interaction" title="Congestion control and recovered symbols">
 			<t>The objective of this subsection is to destribe potential interactions between the congestion control and the recovered symbols.</t>
 			<section title="FEC above the transport">
-				<t>The congestion control may not be able to differenciate repair symbols from actual source packets. The relevance of adding coding at the application is related to the needs of the application. For real-time applications, this approach may reduce the amount of retransmission. The usage of non reliable transport is more adequate in this case. For cases where a reliable transport is exploited, there may be inadequacy between the coding scheme and the reliability embedded in the transport layer.</t>
+				<t>The congestion control may not be able to differentiate repair symbols from actual source packets. The relevance of adding coding at the application layer is related to the needs of the application. For real-time applications, this approach may reduce the amount of retransmission. The usage of a non-reliable transport is more adequate in this case.</t>
 			</section>
 
 			<section anchor="subsec:cc-recov-inter-in" title="FEC within the transport">
