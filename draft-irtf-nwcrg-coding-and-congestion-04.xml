@@ -387,7 +387,7 @@
 		<section anchor="subsec:cc-nc-interaction" title="Interactions between congestion control and coding rates">
 			<t>This section discuss to what extent interaction between the congestion control and the coding rates are possible.</t>
 			<section title="FEC above the transport">
-				<t>The coding rate applied at the application mainly depends on the available capacity given by the congestion control underneath. Adapting the coding rate to the minimum required data rate of the application may help in reducing packet losses and improve quality of experience.</t>
+				<t>The coding rate applied at the application layer mainly depends on the available capacity given by the congestion control underneath. Adapting the coding rate to the minimum required data rate of the application may help to reduce packet losses and improve quality of experience.</t>
 			</section>
 
 			<section title="FEC within the transport">
