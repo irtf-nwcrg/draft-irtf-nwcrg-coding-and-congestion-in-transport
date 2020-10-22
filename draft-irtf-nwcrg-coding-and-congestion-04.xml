@@ -364,7 +364,7 @@
 			</section>
 
 			<section anchor="subsub:fec_below" title="FEC below the transport">
-				<t>In this case, the coding scheme may hide congestion losses to the congestion controller. There are cases where this can reduce drastically the goodput of the non-coded flows. Depending on the congestion control, it may be possible to indicate that a packet has been recovered, e.g. using ECN flags, to reduce the impact on the non-coded flows (see <xref target="subsec:cc-recov-inter-below"></xref>).</t>
+				<t>In this case, the coding scheme may hide congestion losses to the congestion controller. There are cases where this can drastically reduce the goodput of the non-coded flows. Depending on the congestion control, it may be possible to indicate that a packet has been recovered, e.g. using ECN flags, to reduce the impact on the non-coded flows (see <xref target="subsec:cc-recov-inter-below"></xref>).</t>
 			</section>
 		</section>
 
