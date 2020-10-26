@@ -353,8 +353,15 @@
         <!-- ######################################################-->
 	<section anchor="sec:fairness" title="Fairness, redundacy rate and congestion signals">
 		<t>The objective of this section is to further detail some aspects that have been expressed in previous discussion subsections.</t>
+		<section anchor="subsec:def_fairness" title="Fairness, a policy concern">
+			<t>The contract between the client and the operator may guarantee a minimum data-rate (e.g. mobile networks). However for residential accesses, the data-rate can be guaranteed for the customer premises equipment, but not necessarily for the client. The quality of service that guarantees fairness between the different clients can be seen as a policy concern <xref target="I-D.briscoe-tsvarea-fair"></xref>.</t>
+			<t>While the flow level fairness does not embody the actual application level fairness, the bandwidth share between single flows can help in assessing when the one flow starves the other. Clients may share a bottleneck that may not be rules by a quality of service mechanism:<list style="symbols">
+					<t>Mobile network client running several applications;</t>
+					<t>Two clients in a residential access.</t>
+			</list></t>
+			<t>This document considers fairness as how adding coded flows impacts on non-coded flows when they share the same bottleneck. This document does not aim at contributing to the definition of fairness at a wider scale. This document assumes that the non-coded flows respond to congestion signals from the network.</t>
+		</section>
 		<section anchor="subsec:fairness" title="Fairness and impact on non-coded flows">
-			<t>The objective of this section is to further discuss how adding coded flows impacts on non-coded flows when they share the same bottleneck. This section assumes that the non-coded flows respond to congestion signals from the network.</t>
 			<section title="FEC above the transport">
 				<t>The addition of coding within the flow do not impact on how the coded and non-coded flows interact. This interaction would mainly depend on the congestion controls embedded in each host.</t>
 			</section>
@@ -463,6 +470,7 @@
         <?rfc include="reference.RFC.6356.xml"?>
         <?rfc include="reference.RFC.8406.xml"?>
         <?rfc include="reference.RFC.8699.xml"?>
+	<?rfc include="reference.I-D.briscoe-tsvarea-fair.xml"?>
 	<!-- <?rfc include="reference.RFC.7567.xml"?> -->
 	<!-- <?rfc include="reference.RFC.8511.xml"?> -->
 	<!-- <?rfc include="reference.I-D.ietf-rmcat-coupled-cc.xml"?> -->
