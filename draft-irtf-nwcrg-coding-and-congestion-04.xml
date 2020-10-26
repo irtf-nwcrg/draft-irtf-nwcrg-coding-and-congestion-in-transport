@@ -262,7 +262,7 @@
 	</section>
 
 	<section anchor="sec:fec-above-discu" title="Discussion">
-		<t>The advantage of this approach is that the FEC overhead does not contribute to congestion in the network. When congestion control is implemented at the transport layer, the repair symbols are sent within what the congestion window allows. This approach can result in improved quality of experience for latency sensitive and non reliable applications.</t>
+		<t>The advantage of this approach is that the FEC overhead does not contribute to congestion in the network. When congestion control is implemented at the transport layer, the repair symbols are sent within what the congestion window allows. This approach can result in improved quality of experience for latency sensitive applications such as voice-over-ip or Siri.</t>
 		<t>This approach requires that the transport protocol does not implement a reliable data transfer service (e.g., based on lost packet retransmission). UDP is an example of a protocol for which this approach is relevant. For reliable transfers, the usage of coding does not guarantee better performance and would mainly reduce goodput for large files transfers.</t>	
 		<t>This discussion section is extended in <xref target="sec:fairness"></xref>.</t>
 	</section>
