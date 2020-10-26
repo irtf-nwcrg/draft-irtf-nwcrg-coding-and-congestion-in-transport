@@ -262,7 +262,7 @@
 	</section>
 
 	<section anchor="sec:fec-above-discu" title="Discussion">
-		<t>The advantage of this approach is that the FEC overhead does not contribute to congestion in the network. When congestion control is implemented at the transport layer, the repair symbols are sent within what the congestion window allows. This approach can result in improved quality of experience for latency sensitive and non reliable applications.</t>
+		<t>The advantage of this approach is that the FEC overhead does not contribute to congestion in the network. When congestion control is implemented at the transport layer, the repair symbols are sent within what the congestion window allows. This approach can result in improved quality of experience for latency sensitive applications such as VoIP.</t>
 		<t>This approach requires that the transport protocol does not implement a reliable data transfer service (e.g., based on lost packet retransmission). UDP is an example of a protocol for which this approach is relevant. For reliable transfers, the usage of coding does not guarantee better performance and would mainly reduce goodput for large files transfers.</t>	
 		<t>This discussion section is extended in <xref target="sec:fairness"></xref>.</t>
 	</section>
@@ -353,8 +353,15 @@
         <!-- ######################################################-->
 	<section anchor="sec:fairness" title="Fairness, redundacy rate and congestion signals">
 		<t>The objective of this section is to further detail some aspects that have been expressed in previous discussion subsections.</t>
+		<section anchor="subsec:def_fairness" title="Fairness, a policy concern">
+			<t>The contract between the client and the operator may guarantee a minimum data-rate (e.g. mobile networks). However for residential accesses, the data-rate can be guaranteed for the customer premises equipment, but not necessarily for the client. The quality of service that guarantees fairness between the different clients can be seen as a policy concern <xref target="I-D.briscoe-tsvarea-fair"></xref>.</t>
+			<t>While the flow level fairness does not embody the actual application level fairness, the bandwidth share between single flows can help in assessing when the one flow starves the other. Clients may share a bottleneck that may not be rules by a quality of service mechanism:<list style="symbols">
+					<t>Mobile network client running several applications;</t>
+					<t>Two clients in a residential access.</t>
+			</list></t>
+			<t>This document considers fairness as how adding coded flows impacts on non-coded flows when they share the same bottleneck. This document does not aim at contributing to the definition of fairness at a wider scale. This document assumes that the non-coded flows respond to congestion signals from the network.</t>
+		</section>
 		<section anchor="subsec:fairness" title="Fairness and impact on non-coded flows">
-			<t>The objective of this section is to further discuss how adding coded flows impacts on non-coded flows when they share the same bottleneck. This section assumes that the non-coded flows respond to congestion signals from the network.</t>
 			<section title="FEC above the transport">
 				<t>The addition of coding within the flow do not impact on how the coded and non-coded flows interact. This interaction would mainly depend on the congestion controls embedded in each host.</t>
 			</section>
@@ -417,6 +424,34 @@
 	</section>
 
         <!-- ######################################################-->
+        <!-- New section -->
+        <!-- ######################################################-->
+        <section anchor="sec:research" title="Open research questions">
+
+		<t>This section provides a simplified state-of-the art of the activities related to congestion control and coding. The objective is to identify open research questions and contribute to advices when it comes to evaluate coding mechanisms.</t>
+			<section title="Activity related to congestion control and coding">
+				<t>The identification of activities related to congestion control and coding should be mapped with the organization presented in this document:<list style="symbols"> 
+						<t>For the FEC above transport case: TBD</t>	
+						<t>For the FEC within transport case: <xref target="I-D.swett-nwcrg-coding-for-quic"></xref>, <xref target="QUIC-FEC"></xref>, <xref target="RFC5109"></xref>.</t>	
+						<t>For the FEC below transport case: <xref target="NCTCP"></xref>, <xref target="I-D.detchart-nwcrg-tetrys"></xref>.</t>	
+				</list></t>
+			</section>
+
+			<section title="Open research questions">
+				<t>The research questions should be mapped following the oranization of this document. In all these three use-cases, a open questions remains and is inherent to the usage of coding. There is a trade-off between reducing goodput, helping recovering from transmission and congestion losses, being fair in respect with non-coded flows and avoiding transmitting useless repaired symbols.</t>
+				<t>For the FEC above transport case, there is a trade-off between the amount of redundancy to add, as a function of the transport layer protocol and application requirements.</t>
+				<t>For the FEC within transport case, the addition of coding may hide congestion losses and proposing methods to signal such events to end point could be propose.</t>
+				<t>For the FEC below transport case, there are opportunities for introducing interaction between congestion control and coding schemes to improve the quality of experience while guarantee fairness with other flows. An open question also resides on the relevance of the FEC when there are multiple streams that exploit the FEC channel.</t>
+			</section>
+
+			<section title="Advices for evaluating coding mechanisms">
+				<t>The contribution to research questions should be mapped following the oranization of this document. Otherwise, this may lead to wrong assumptions on the validity of the proposal and wrong ideas about the relevance of coding for a given use case.</t>
+				<t>The discussion provided in this document aim at encouraging the research community to also consider congestion control aspects when proposing and comparing FEC coding solutions in communication systems. As one example, this draft proposes discussions on the impact of the proposed FEC solution on the congestion control, especially loss-based congestion control such as CUBIC. </t>
+			</section>
+
+	</section>
+
+        <!-- ######################################################-->
         <!-- ######################################################-->
         <!-- Tail of the document -->
         <!-- ######################################################-->
@@ -458,17 +493,38 @@
         <!-- <?rfc include="reference.RFC.3168.xml"?> -->
         <?rfc include="reference.RFC.3758.xml"?>
         <?rfc include="reference.RFC.4340.xml"?>
+        <?rfc include="reference.RFC.5109.xml"?>
         <?rfc include="reference.RFC.5681.xml"?>
         <?rfc include="reference.RFC.6297.xml"?>
         <?rfc include="reference.RFC.6356.xml"?>
         <?rfc include="reference.RFC.8406.xml"?>
         <?rfc include="reference.RFC.8699.xml"?>
+	<?rfc include="reference.I-D.briscoe-tsvarea-fair.xml"?>
 	<!-- <?rfc include="reference.RFC.7567.xml"?> -->
 	<!-- <?rfc include="reference.RFC.8511.xml"?> -->
 	<!-- <?rfc include="reference.I-D.ietf-rmcat-coupled-cc.xml"?> -->
         <!-- <?rfc include="reference.I-D.ietf-tcpm-rto-consider.xml"?> -->
         <!-- <?rfc include="reference.I-D.ietf-tcpm-rack.xml"?> -->
-	<!-- <?rfc include="reference.I-D.swett-nwcrg-coding-for-quic.xml"?> -->
+	<?rfc include="reference.I-D.swett-nwcrg-coding-for-quic.xml"?>
+	<?rfc include="reference.I-D.detchart-nwcrg-tetrys.xml"?> -->
+        <reference anchor="QUIC-FEC">
+            <front>
+                <title>QUIC-FEC: Bringing the benefits of Forward Erasure Correction to QUIC</title>
+                    <author initials="F" surname="Michel (et al.)">
+                    </author>
+                    <date year="2019"/>
+                </front>
+                <seriesInfo name="IFIP Networking" value="10.23919/IFIPNetworking.2019.8816838"/>
+            </reference>
+	<reference anchor="NCTCP">
+            <front>
+                <title>Network Coding Meets TCP: Theory and Implementation</title>
+                    <author initials="J" surname="Sundararajan (et al.)">
+                    </author>
+                    <date year="2009"/>
+                </front>
+                <seriesInfo name="IEEE INFOCOM" value="10.1109/JPROC.2010.2093850"/>
+            </reference>
         <reference anchor="CTCP">
             <front>
                 <title>Network Coded TCP (CTCP)</title>
