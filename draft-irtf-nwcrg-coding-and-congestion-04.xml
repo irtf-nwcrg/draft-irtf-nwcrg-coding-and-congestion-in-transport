@@ -184,7 +184,7 @@
 
 	<!-- <t><xref target="fig:sep-entities"></xref> provides more details than 
 	<xref target="fig:sep-channel"></xref> by focusing on the server side. -->
-	<t>The inputs to FEC (packets to work upon, and signaling
+	<t>The inputs to FEC (incoming data packets (without repair symbols), and signaling
 	from the receiver about losses and/or repaired symbols)
         are distinct from the inputs to CC. The latter calculates a
         sending rate or window from network information, and it takes
