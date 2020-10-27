@@ -355,7 +355,7 @@
 		<t>The objective of this section is to further detail some aspects that have been expressed in previous discussion subsections.</t>
 		<section anchor="subsec:def_fairness" title="Fairness, a policy concern">
 			<t>The contract between the client and the operator may guarantee a minimum data-rate (e.g. mobile networks). However, for residential accesses, the data-rate can be guaranteed for the customer premises equipment, but not necessarily for the client. The quality of service that guarantees fairness between the different clients can be seen as a policy concern <xref target="I-D.briscoe-tsvarea-fair"></xref>.</t>
-			<t>While the flow level fairness does not embody the actual application level fairness, the bandwidth share between single flows can help assess when one flow starves the other. Clients may share a bottleneck that may not be ruled by a quality of service mechanism:<list style="symbols">
+			<t>While the flow level fairness does not embody the actual application level fairness, the share of available capacity between single flows can help assess when one flow starves the other. Clients may share a bottleneck that may not be ruled by a quality of service mechanism:<list style="symbols">
 					<t>Mobile network client running several applications;</t>
 					<t>Two clients in residential access.</t>
 			</list></t>
