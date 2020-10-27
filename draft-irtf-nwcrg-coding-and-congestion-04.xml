@@ -441,7 +441,7 @@
 				<t>The research questions should be mapped following the organization of this document. In all these three use-cases, open questions remain. There is a general trade-off, inherent to the use of coding, between reducing goodput (helping to recover from /
 					and congestion losses) on the one hand, and avoiding the transmission of useless repaired symbols on the other.</t>
 				<t>For the FEC above transport case, there is a trade-off related to the amount of redundancy to add, as a function of the transport layer protocol and application requirements.</t>
-                <t>For the FEC within transport case, the addition of coding must not hide congestion losses, and hence methods to signal congestion when data were recovered could be proposed.</t>
+                <t>For the FEC within transport case, recovering lost symbols may hide congestion losses to the congestion control. Some existing solutions already propose to disambiguate acked packets from rebuilt packets <xref target="QUIC-FEC"></xref>. New signalling methods and FEC-recovery-aware congestion controls could be proposed.</t>
 				<t>For the FEC below transport case, there are opportunities for introducing interaction between congestion control and coding schemes to improve the quality of experience while guaranteeing fairness with other flows. An open question also resides in the relevance of FEC when there are multiple streams that exploit the FEC channel.</t>
 			</section>
 
