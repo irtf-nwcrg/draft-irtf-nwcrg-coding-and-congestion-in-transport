@@ -354,70 +354,70 @@
 	<section anchor="sec:fairness" title="Fairness, redundacy rate and congestion signals">
 		<t>The objective of this section is to further detail some aspects that have been expressed in previous discussion subsections.</t>
 		<section anchor="subsec:def_fairness" title="Fairness, a policy concern">
-			<t>The contract between the client and the operator may guarantee a minimum data-rate (e.g. mobile networks). However for residential accesses, the data-rate can be guaranteed for the customer premises equipment, but not necessarily for the client. The quality of service that guarantees fairness between the different clients can be seen as a policy concern <xref target="I-D.briscoe-tsvarea-fair"></xref>.</t>
-			<t>While the flow level fairness does not embody the actual application level fairness, the bandwidth share between single flows can help in assessing when the one flow starves the other. Clients may share a bottleneck that may not be rules by a quality of service mechanism:<list style="symbols">
+			<t>The contract between the client and the operator may guarantee a minimum data-rate (e.g. mobile networks). However, for residential accesses, the data-rate can be guaranteed for the customer premises equipment, but not necessarily for the client. The quality of service that guarantees fairness between the different clients can be seen as a policy concern <xref target="I-D.briscoe-tsvarea-fair"></xref>.</t>
+			<t>While the flow level fairness does not embody the actual application level fairness, the bandwidth share between single flows can help assess when one flow starves the other. Clients may share a bottleneck that may not be ruled by a quality of service mechanism:<list style="symbols">
 					<t>Mobile network client running several applications;</t>
-					<t>Two clients in a residential access.</t>
+					<t>Two clients in residential access.</t>
 			</list></t>
-			<t>This document considers fairness as how adding coded flows impacts on non-coded flows when they share the same bottleneck. This document does not aim at contributing to the definition of fairness at a wider scale. This document assumes that the non-coded flows respond to congestion signals from the network.</t>
+			<t>This document considers fairness as an index to quantify the impact of the addition of coded flows on non-coded flows when they share the same bottleneck. This document does not aim at contributing to the definition of fairness at a wider scale. This document assumes that the non-coded flows respond to congestion signals from the network.</t>
 		</section>
 		<section anchor="subsec:fairness" title="Fairness and impact on non-coded flows">
 			<section title="FEC above the transport">
-				<t>The addition of coding within the flow do not impact on how the coded and non-coded flows interact. This interaction would mainly depend on the congestion controls embedded in each host.</t>
+				<t>The addition of coding within the flow does not impact on the interaction between coded and non-coded flows. This interaction would mainly depend on the congestion controls embedded in each host.</t>
 			</section>
 
 			<section title="FEC within the transport">
-				<t>The addition of coding within the flow may impact on the congestion control mechanism and hide congestion losses. Specific interaction between congestion controls and coding schemes can be proposed (see <xref target="subsec:cc-recov-interaction"></xref>, <xref target="subsec:cc-nc-interaction"></xref> and <xref target="subsec:cc-useless-interaction"></xref>). If no specific interaction is introduced, the coding scheme may hide congestion losses to the congestion controller and the description of <xref target="subsub:fec_below"></xref> may apply.</t>
+				<t>The addition of coding within the flow may impact the congestion control mechanism and hide congestion losses. Specific interaction between congestion controls and coding schemes can be proposed (see <xref target="subsec:cc-recov-interaction"></xref>, <xref target="subsec:cc-nc-interaction"></xref> and <xref target="subsec:cc-useless-interaction"></xref>). If no specific interaction is introduced, the coding scheme may hide congestion losses to the congestion controller and the description of <xref target="subsub:fec_below"></xref> may apply.</t>
 			</section>
 
 			<section anchor="subsub:fec_below" title="FEC below the transport">
-				<t>In this case, the coding scheme may hide congestion losses to the congestion controller. There are cases where this can drastically reduce the goodput of the non-coded flows. Depending on the congestion control, it may be possible to indicate that a packet has been recovered, e.g. using ECN flags, to reduce the impact on the non-coded flows (see <xref target="subsec:cc-recov-inter-below"></xref>).</t>
+				<t>In this case, the coding scheme may hide congestion losses to the congestion controller. There are cases where this can drastically reduce the goodput of the non-coded flows. Depending on the congestion control, it may be possible to indicate that a packet has been recovered, e.g. using ECN flag, to reduce the impact on the non-coded flows (see <xref target="subsec:cc-recov-inter-below"></xref>).</t>
 			</section>
 		</section>
 
 		<section anchor="subsec:cc-recov-interaction" title="Congestion control and recovered symbols">
-			<t>The objective of this subsection is to destribe potential interactions between the congestion control and the recovered symbols.</t>
+			<t>The objective of this subsection is to describe potential interactions between the congestion control and the recovered symbols.</t>
 			<section title="FEC above the transport">
-				<t>The congestion control may not be able to differentiate repair symbols from actual source packets. The relevance of adding coding at the application layer is related to the needs of the application. For real-time applications, this approach may reduce the amount of retransmission. The usage of a non-reliable transport is more adequate in this case.</t>
+				<t>The congestion control may not be able to differentiate repair symbols from actual source packets. The relevance of adding coding at the application layer is related to the needs of the application. For real-time applications, this approach may reduce the number of retransmission. The usage of a non-reliable transport is more adequate in this case.</t>
 			</section>
 
 			<section anchor="subsec:cc-recov-inter-in" title="FEC within the transport">
-				<t>If the two FEC and CC channels are decoupled, the endpoint may exploit specific protocol for each of the channel. The channels may be coupled and one single protocol may be exploited. In both cases, the receiver can differenciate source packets and repair symbols. The receiver may indicate the amount of source packets that have been received and the amount of repaired symbols that were actually useful in the recovery process of packets.</t>
+				<t>If the two FEC and CC channels are decoupled, the endpoint may exploit specific protocols for each channel. The channels may be coupled and one single protocol may be exploited. In both cases, the receiver can differentiate source packets and repair symbols. The receiver may indicate both the number of source packets received and repaired symbols that were actually useful in the recovery process of packets.</t>
 				<t>QUIC may require a specific type of frame to transport such information between receiver and sender.</t>
 			</section>
 
 			<section anchor="subsec:cc-recov-inter-below" title="FEC below the transport">
-				<t>The congestion control may not know what is going on in the network underneath and whether a coding scheme is introduced or not. The congestion control may behave as if no coding sheme is introduced. The only way for a coding channel to indicate that symbols have been recovered is to exploit existing signaling. An example would be a receiver to indicate that a packet has been recovered by using ECN signals of TCP.</t>
+				<t>The congestion control may not know what is going on in the network underneath and whether a coding scheme is introduced or not. The congestion control may behave as if no coding scheme is introduced. The only way for a coding channel to indicate that symbols have been recovered is to exploit existing signaling. An example would be a receiver to indicate that a packet has been recovered by using ECN signals of TCP.</t>
 			</section>
 		</section>
 
 		<section anchor="subsec:cc-nc-interaction" title="Interactions between congestion control and coding rates">
-			<t>This section discuss to what extent interaction between the congestion control and the coding rates are possible.</t>
+			<t>This section discusses to what extent the interaction between the congestion control and the coding rates is possible.</t>
 			<section title="FEC above the transport">
-				<t>The coding rate applied at the application layer mainly depends on the available capacity given by the congestion control underneath. Adapting the coding rate to the minimum required data rate of the application may help to reduce packet losses and improve quality of experience.</t>
+				<t>The coding rate applied at the application layer mainly depends on the available capacity given by the congestion control underneath. Adapting the coding rate to the minimum required data rate of the application may reduce packet losses and improve the quality of experience.</t>
 			</section>
 
 			<section title="FEC within the transport">
-				<t>In this case, there is an important flexibility in the trade-off between reducing goodput, helping recovering from transmission and congestion losses, being fair in respect with non-coded flows. Such as explained in <xref target="subsec:cc-recov-inter-in"></xref>, the receiver may be able to indicate the sender the amount of packets that have been received or recovered. The sender may exploit this information to tune the coding ratio. As one example of flexibility of this case, coupling an increasing transmission rate with an increasing or decreasing coding rate could be envisioned. A server may use increasing coding rate as a probe of the channel capacity and adapt the transmission rate of the congestion control.</t>
+				<t>In this case, there is an important flexibility in the trade-off between reducing goodput, helping recovering from transmission and congestion losses, being fair in respect with non-coded flows. Such as explained in <xref target="subsec:cc-recov-inter-in"></xref>, the receiver may indicate the sender the number of packets that have been received or recovered. The sender may exploit this information to tune the coding ratio. As one example of flexibility of this case, coupling an increased transmission rate with an increasing or decreasing coding rate could be envisioned. A server may use increasing coding rate as a probe of the channel capacity and adapt the congestion control transmission rate.</t>
 			</section>
 
 			<section title="FEC below the transport">
-				<t>The coding rate in this case can be tuned depending on the amount of recovered symbols and the rate of which data are transmitted by the sender. The coding scheme is not aware of the congestion control implementation, making it hard for the coding scheme to apply the relevant coding rate.</t>
+				<t>In this case, the coding rate can be tuned depending on the number of recovered symbols and the rate at which the sender transmits data. The coding scheme is not aware of the congestion control implementation, making it hard for the coding scheme to apply the relevant coding rate.</t>
 			</section>
 		</section>
 
 		<section anchor="subsec:cc-useless-interaction" title="On the useless repaired symbols">
-			<t>There are cases where useless repaired symbols may be transmitted. These have an impact on the network load and may reduce the goodput of the flow without concrete gains.</t>
+			<t>There are cases where useless repaired symbols may be transmitted. These impact on the network load and may reduce the goodput of the flow without concrete gains.</t>
 			<section title="FEC above the transport">
-				<t>In this case, the discussion depends on application needs. The only case where adding useless repaired symbols does not result in reduced goodput is when the application needs a limited amount of goodput (e.g. VoIP traffic). In this case, the useless repaired symbols would only have an impact on the amount of data generated in the network.</t>
+				<t>In this case, the discussion depends on application needs. The only case where adding useless repaired symbols does not result in reduced goodput is when the application needs a limited amount of goodput (e.g., VoIP traffic). In this case, the useless repaired symbols would only impact the amount of data generated in the network.</t>
 			</section>
 
 			<section title="FEC within the transport">
-				<t>The sender may be able to exploit the information given by the receiver to reduce the amount of useless repair packets and the resulting goodput reduction.</t>
+				<t>The sender may exploit the information given by the receiver to reduce the number of useless repair packets and the resulting goodput reduction.</t>
 			</section>
 
 			<section title="FEC below the transport">
-				<t>In this case, the useless repaired symbols only have an impact on the load of the network without actual gain for the coded flow.</t>
+				<t>In this case, the useless repaired symbols only impact the load of the network without actual gain for the coded flow.</t>
 			</section>
 		</section>
 
@@ -428,7 +428,7 @@
         <!-- ######################################################-->
         <section anchor="sec:research" title="Open research questions">
 
-		<t>This section provides a simplified state-of-the art of the activities related to congestion control and coding. The objective is to identify open research questions and contribute to advices when it comes to evaluate coding mechanisms.</t>
+		<t>This section provides a simplified state-of-the art of the activities related to congestion control and coding. The objective is to identify open research questions and contribute to advice when evaluating coding mechanisms.</t>
 			<section title="Activity related to congestion control and coding">
 				<t>The identification of activities related to congestion control and coding should be mapped with the organization presented in this document:<list style="symbols"> 
 						<t>For the FEC above transport case: TBD</t>	
@@ -438,7 +438,8 @@
 			</section>
 
 			<section title="Open research questions">
-				<t>The research questions should be mapped following the oranization of this document. In all these three use-cases, a open questions remains and is inherent to the usage of coding. There is a trade-off between reducing goodput, helping recovering from transmission and congestion losses, being fair in respect with non-coded flows and avoiding transmitting useless repaired symbols.</t>
+				<t>The research questions should be mapped following the oranization of this document. In all these three use-cases, a open questions remains and is inherent to the usage of coding. There is a trade-off between reducing goodput, helping to recover from /
+					and congestion losses, being fair in respect with non-coded flows and avoiding transmitting useless repaired symbols.</t>
 				<t>For the FEC above transport case, there is a trade-off between the amount of redundancy to add, as a function of the transport layer protocol and application requirements.</t>
 				<t>For the FEC within transport case, the addition of coding may hide congestion losses and proposing methods to signal such events to end point could be propose.</t>
 				<t>For the FEC below transport case, there are opportunities for introducing interaction between congestion control and coding schemes to improve the quality of experience while guarantee fairness with other flows. An open question also resides on the relevance of the FEC when there are multiple streams that exploit the FEC channel.</t>
