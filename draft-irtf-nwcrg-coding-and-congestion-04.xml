@@ -371,7 +371,7 @@
 			</section>
 
 			<section anchor="subsub:fec_below" title="FEC below the transport">
-				<t>In this case, the coding scheme may hide congestion losses from the congestion controller. There are cases where this can drastically reduce the goodput of non-coded flows. Depending on the congestion control, it may be possible to signal to the congestion control mechanism that there was congestion (loss) even when a packet has been recovered, e.g. using ECN, to reduce the impact on the non-coded flows (see <xref target="subsec:cc-recov-inter-below"></xref>).</t>
+				<t>In this case, the coding scheme may hide congestion losses from the congestion controller. There are cases where this can drastically reduce the goodput of non-coded flows. Depending on the congestion control, it may be possible to signal to the congestion control mechanism that there was congestion (loss) even when a packet has been recovered, e.g. using ECN, to reduce the impact on the non-coded flows (see <xref target="subsec:cc-recov-inter-below"></xref> and <xref target="TENTET"></xref>).</t>
 			</section>
 		</section>
 
@@ -387,7 +387,7 @@
 			</section>
 
 			<section anchor="subsec:cc-recov-inter-below" title="FEC below the transport">
-				<t>The congestion control may not know what is going on in the network underneath and whether a coding scheme is introduced or not. The congestion control may behave as if no coding scheme is introduced. The only way for a coding channel to indicate that symbols have been recovered is to exploit existing signaling that is understood by the congestion control mechanism. An example would be to indicate to a TCP sender that a packet has been recovered (i.e., congestion has occurred), by using ECN signaling.</t>
+				<t>The congestion control may not know what is going on in the network underneath and whether a coding scheme is introduced or not. The congestion control may behave as if no coding scheme is introduced. The only way for a coding channel to indicate that symbols have been recovered is to exploit existing signaling that is understood by the congestion control mechanism. An example would be to indicate to a TCP sender that a packet has been recovered (i.e., congestion has occurred), by using ECN signaling <xref target="TENTET"></xref>.</t>
 			</section>
 		</section>
 
@@ -509,7 +509,16 @@
         <!-- <?rfc include="reference.I-D.ietf-tcpm-rack.xml"?> -->
 	<?rfc include="reference.I-D.swett-nwcrg-coding-for-quic.xml"?>
 	<?rfc include="reference.I-D.detchart-nwcrg-tetrys.xml"?> -->
-        <reference anchor="QUIC-FEC">
+        <reference anchor="TENTET">
+            <front>
+                <title>On the joint use of TCP and Network Coding</title>
+                    <author initials="E" surname="Lochin">
+                    </author>
+                    <date year="2017"/>
+                </front>
+                <seriesInfo name="NWCRG session" value="IETF 100"/>
+            </reference>
+	<reference anchor="QUIC-FEC">
             <front>
                 <title>QUIC-FEC: Bringing the benefits of Forward Erasure Correction to QUIC</title>
                     <author initials="F" surname="Michel (et al.)">
