@@ -441,13 +441,13 @@
 				<t>The research questions should be mapped following the oranization of this document. In all these three use-cases, a open questions remains and is inherent to the usage of coding. There is a trade-off between reducing goodput, helping to recover from /
 					and congestion losses, being fair in respect with non-coded flows and avoiding transmitting useless repaired symbols.</t>
 				<t>For the FEC above transport case, there is a trade-off between the amount of redundancy to add, as a function of the transport layer protocol and application requirements.</t>
-				<t>For the FEC within transport case, the addition of coding may hide congestion losses and proposing methods to signal such events to end point could be propose.</t>
+				<t>For the FEC within transport case, recovering lost symbols may hide congestion losses to the congestion control. Some existing solutions already propose to disambiguate acked packets from rebuilt packets <xref target="QUIC-FEC"></xref>. New signalling methods and FEC-recovery-aware congestion controls could be proposed.</t>
 				<t>For the FEC below transport case, there are opportunities for introducing interaction between congestion control and coding schemes to improve the quality of experience while guarantee fairness with other flows. An open question also resides on the relevance of the FEC when there are multiple streams that exploit the FEC channel.</t>
 			</section>
 
 			<section title="Advices for evaluating coding mechanisms">
 				<t>The contribution to research questions should be mapped following the oranization of this document. Otherwise, this may lead to wrong assumptions on the validity of the proposal and wrong ideas about the relevance of coding for a given use case.</t>
-				<t>The discussion provided in this document aim at encouraging the research community to also consider congestion control aspects when proposing and comparing FEC coding solutions in communication systems. As one example, this draft proposes discussions on the impact of the proposed FEC solution on the congestion control, especially loss-based congestion control such as CUBIC. </t>
+				<t>The discussion provided in this document aim at encouraging the research community to also consider congestion control aspects when proposing and comparing FEC coding solutions in communication systems. As one example, this draft proposes discussions on the impact of the proposed FEC solution on the congestion control, especially loss-based congestion control such as CUBIC. When a research work aims at improving the throughput by hiding the packet loss signal from the congestion control, the authors should 1) discuss the advantages of using the proposed FEC solution compared to replacing the congestion control by one that ignores a portion of the encountered losses, 2) critically discuss the impact of hiding packet loss from the congestion control mechanism. </t>
 			</section>
 
 	</section>
