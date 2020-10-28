@@ -438,7 +438,7 @@
 			</section>
 
 			<section title="Open research questions">
-				<t>The research questions should be mapped following the organization of this document. In all these three use-cases, open questions remain. There is a general trade-off, inherent to the use of coding, between reducing goodput (helping to recover from /
+				<t>The research questions should be mapped following the organization of this document. In all these three use-cases, open questions remain. There is a general trade-off, inherent to the use of coding, between (1) reducing goodput when useless repair symbols are transmitted and (2) helping to recover from transmission and congestion losses.</t>
 					and congestion losses) on the one hand, and avoiding the transmission of useless repaired symbols on the other.</t>
 				<t>For the FEC above transport case, there is a trade-off related to the amount of redundancy to add, as a function of the transport layer protocol and application requirements.</t>
                                 <t>For the FEC within transport case, recovering lost symbols may hide congestion losses to the congestion control. Some existing solutions already propose to disambiguate acked packets from rebuilt packets <xref target="QUIC-FEC"></xref>. New signalling methods and FEC-recovery-aware congestion controls could be proposed.</t>
