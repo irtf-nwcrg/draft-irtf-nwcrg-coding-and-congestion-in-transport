@@ -398,7 +398,7 @@
 			</section>
 
 			<section title="FEC within the transport">
-				<t>In this case, there is an important flexibility in the trade-off between reducing goodput (helping to recover from transmission and congestion losses) and avoiding the transmission of useless replaired symbols. As explained in <xref target="subsec:cc-recov-inter-in"></xref>, the receiver may indicate to the sender the number of packets that have been received or recovered. The sender may exploit this information to tune the coding ratio. As one example of flexibility of this case, coupling an increased transmission rate with an increasing or decreasing coding rate could be envisioned. A server may use an increasing coding rate as a probe of the channel capacity and adapt the congestion control transmission rate.</t>
+				<t>In this case, there is an important flexibility in the trade-off, inherent to the use of coding, between (1) reducing goodput when useless repair symbols are transmitted and (2) helping to recover sooner from transmission and congestion losses. As explained in <xref target="subsec:cc-recov-inter-in"></xref>, the receiver may indicate to the sender the number of packets that have been received or recovered. The sender may exploit this information to tune the coding ratio. As one example of flexibility of this case, coupling an increased transmission rate with an increasing or decreasing coding rate could be envisioned. A server may use an increasing coding rate as a probe of the channel capacity and adapt the congestion control transmission rate.</t>
 			</section>
 
 			<section title="FEC below the transport">
