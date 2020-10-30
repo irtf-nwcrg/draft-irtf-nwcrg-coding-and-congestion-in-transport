@@ -202,7 +202,7 @@
 	    to blocks of data, and these priorities can be honored by a CC mechanism. --> </t> 
 
     <t>The choice of the adequate transport layer may be related to application requirements:<list style="symbols"> 
-		    <t>In the case of an unreliable data transfer, the transport layer may implement a non-reliable transport layer (e.g. UDP or DCCP <xref target="RFC4340"></xref> or a partially reliable transport protocol such as SCTP with partial reliability <xref target="RFC3758"></xref>). Depending on the amount of redundancy and network conditions, there could be cases where it becomes impossible to carry traffic.</t>
+		    <t>In the case of an unreliable data transfer, the transport layer may provide a non-reliable transport service (e.g. UDP or DCCP <xref target="RFC4340"></xref> or a partially reliable transport protocol such as SCTP with partial reliability <xref target="RFC3758"></xref>). Depending on the amount of redundancy and network conditions, there could be cases where it becomes impossible to carry traffic.</t>
 	<t>In the case of a reliable data transfer, the transport layer may implement a retransmission mechanism to guarantee the reliability of the file transfer (e.g. TCP). Depending on how the FEC and CC functions are scheduled (FEC above CC, FEC in CC, FEC below CC), the impact of reliable transport on the FEC reliability mechanisms is different.</t></list></t>	
     </section>
 
@@ -299,7 +299,7 @@
 
 	<section anchor="sec:fec-in-discu" title="Discussion">
 		<t>The advantage of this approach allows a joint optimization between the CC and the FEC. Moreover, the transmission of repair symbols does not add congestion in potentially congested networks but helps repair lost packets (such as tail losses).</t>
-		<t>For reliable transfers, including redundancy reduces goodput for large file transfers but the amount of repaired symbols can be adapted, e.g. depending on the congestion window size. There is a trade-off between the cost in capacity used to transmit source packets and the benefits brought out by transmitting repair symbols (e.g. unlocking the receive buffer if this is limiting). The coding ratio needs to be carefully designed. For small files, sending repair symbols when there is no more data to transmit could help to reduce the transfer time. In general, sending repair symbols could avoid a silent period between the transmission of the last packet in the send buffer and 1) firing the retransmission of lost packets, or 2) the transmission of new packets.</t>
+		<t>For reliable transfers, including redundancy reduces goodput for large file transfers but the amount of repair symbols can be adapted, e.g. depending on the congestion window size. There is a trade-off between the cost in capacity used to transmit source packets and the benefits brought out by transmitting repair symbols (e.g. unlocking the receive buffer if this is limiting). The coding ratio needs to be carefully designed. For small files, sending repair symbols when there is no more data to transmit could help to reduce the transfer time. In general, sending repair symbols could avoid a silent period between the transmission of the last packet in the send buffer and 1) firing the retransmission of lost packets, or 2) the transmission of new packets.</t>
 		<t>This discussion section is extended in <xref target="sec:fairness"></xref>.</t>
 	</section>
 
@@ -382,8 +382,7 @@
 			</section>
 
 			<section anchor="subsec:cc-recov-inter-in" title="FEC within the transport">
-				<t>If the two FEC and CC channels are decoupled, the endpoint may exploit different protocols for each channel. The channels may be coupled and one single protocol may be exploited. In both cases, the receiver can differentiate source packets and repair symbols. The receiver may indicate both the number of source packets received and repaired symbols that were actually useful in the recovery process of packets.</t>
-				<t>QUIC may require a specific type of frame to transport such information between receiver and sender.</t>
+				<t>If the two FEC and CC channels are decoupled, the endpoint may exploit different protocols for each channel. The channels may be coupled and one single protocol may be exploited. In both cases, the receiver can differentiate source packets and repair symbols. The receiver may indicate both the number of source packets received and repair symbols that were actually useful in the recovery process of packets.</t>
 			</section>
 
 			<section anchor="subsec:cc-recov-inter-below" title="FEC below the transport">
@@ -406,18 +405,18 @@
 			</section>
 		</section>
 
-		<section anchor="subsec:cc-useless-interaction" title="On the useless repaired symbols">
-			<t>There are cases where useless repaired symbols may be transmitted. These impact on the network load and may reduce the goodput of the flow without concrete gains.</t>
+		<section anchor="subsec:cc-useless-interaction" title="On the useless repair symbols">
+			<t>There are cases where useless repair symbols may be transmitted. These impact on the network load and may reduce the goodput of the flow without concrete gains.</t>
 			<section title="FEC above the transport">
-				<t>In this case, the discussion depends on application needs. The only case where adding useless repaired symbols does not result in reduced goodput is when the application needs a limited amount of goodput (e.g., VoIP traffic). In this case, the useless repaired symbols would only impact the amount of data generated in the network.</t>
+				<t>In this case, the discussion depends on application needs. The only case where adding useless repair symbols does not result in reduced goodput is when the application needs a limited amount of goodput (e.g., VoIP traffic). In this case, the useless repair symbols would only impact the amount of data generated in the network.</t>
 			</section>
 
 			<section title="FEC within the transport">
-				<t>The sender may exploit the information given by the receiver to reduce the number of useless repaired symbols and the resulting goodput reduction.</t>
+				<t>The sender may exploit the information given by the receiver to reduce the number of useless repair symbols and the resulting goodput reduction.</t>
 			</section>
 
 			<section title="FEC below the transport">
-				<t>In this case, the useless repaired symbols only impact the load of the network without actual gain for the coded flow.</t>
+				<t>In this case, the useless repair symbols only impact the load of the network without actual gain for the coded flow.</t>
 			</section>
 		</section>
 
