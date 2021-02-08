@@ -263,7 +263,7 @@
 
 	<section anchor="sec:fec-above-discu" title="Discussion">
 		<t>The advantage of this approach is that the FEC overhead does not contribute to congestion in the network. When congestion control is implemented at the transport layer, the repair symbols are sent following the congestion window. This approach can result in improved quality of experience for latency sensitive applications such as VoIP or any not-fully reliable services.</t>
-		<t>This approach requires that the transport protocol does not implement a fully reliable data transfer service (e.g., based on lost packet retransmission). UDP is an example of a protocol for which this approach is relevant. In cases where UDP traffic is blocked and a fallback to TCP mechanism is proposed, there is a risk for bad interactions between the TCP reliable mechanisms and coding schemes. For reliable transfers, coding usage does not guarantee better performance and would mainly reduce goodput for large file transfers. Moreover, the recovered symbols may not be known to the transport.</t>
+		<t>This approach requires that the transport protocol does not implement a fully reliable data transfer service (e.g., based on lost packet retransmission). QUIC with unreliable datagram extension <xref target="I-D.ietf-quic-datagram"></xref> is an example of a protocol for which this approach is relevant. In cases where QUIC traffic is blocked and a fallback to TCP mechanism is proposed, there is a risk for bad interactions between the TCP reliable mechanisms and coding schemes. For reliable transfers, coding usage does not guarantee better performance and would mainly reduce goodput for large file transfers. Moreover, the recovered symbols may not be known to the transport.</t>
 		<t>This discussion section is extended in <xref target="sec:fairness"></xref>.</t>
 	</section>
 
@@ -507,6 +507,7 @@
         <!-- <?rfc include="reference.I-D.ietf-tcpm-rto-consider.xml"?> -->
         <!-- <?rfc include="reference.I-D.ietf-tcpm-rack.xml"?> -->
 	<?rfc include="reference.I-D.swett-nwcrg-coding-for-quic.xml"?>
+	<?rfc include="reference.I-D.ietf-quic-datagram.xml"?>
 	<?rfc include="reference.I-D.detchart-nwcrg-tetrys.xml"?> -->
         <reference anchor="TENTET">
             <front>
