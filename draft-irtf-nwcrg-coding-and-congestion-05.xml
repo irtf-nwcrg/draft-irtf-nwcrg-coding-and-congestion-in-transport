@@ -416,7 +416,7 @@
 			</section>
 
 			<section title="FEC below the transport">
-				<t>In this case, the useless repair symbols only impact the load of the network without actual gain for the coded flow.</t>
+				<t>In this case, the useless repair symbols only impact the load of the network without actual gain for the coded flow. Taht being said, using a feedback signalling, FEC mechanisms can measure the actually used symbols and tune the amount of useless repair symbols.</t>
 			</section>
 		</section>
 
