@@ -55,7 +55,7 @@
       </address>
     </author>
       
-    <date year="2020" />
+    <date year="2021"/>
 
     <!-- If the month and year are both specified and are the current ones, xml2rfc will fill
          in the current day for you. If only the current year is specified, xml2rfc will fill
@@ -355,7 +355,7 @@
 		<t>The objective of this section is to further detail some aspects that have been expressed in previous discussion subsections.</t>
 		<section anchor="subsec:def_fairness" title="Fairness, a policy concern">
 			<t>The contract between the client and the operator may guarantee a minimum data-rate (e.g. mobile networks). However, for residential accesses, the data-rate can be guaranteed for the customer premises equipment, but not necessarily for the client. The quality of service that guarantees fairness between the different clients can be seen as a policy concern <xref target="I-D.briscoe-tsvarea-fair"></xref>.</t>
-			<t>While flow level fairness does not embody the actual application level fairness, the share of available capacity between single flows can help assess when one flow starves the other. Clients may share a bottleneck that may not be ruled by a quality of service mechanism, e.g. in case of:<list style="symbols">
+			<t>While flow level fairness does not embody the actual application level fairness, the share of available capacity between single flows can help assess when one flow starves the other. While past efforts have focused on achieving fairness, quantifying and limiting harm caused by new algorithm (or algorithms with coding) is more practical <xref target="BEYONDJAIN"></xref>. Clients may share a bottleneck that may not be ruled by a quality of service mechanism, e.g. in case of:<list style="symbols">
 					<t>a mobile network client running several applications;</t>
 					<t>two clients on a residential access.</t>
 			</list></t>
@@ -543,6 +543,15 @@
                     <date year="2013"/>
                 </front>
                 <seriesInfo name="arXiv" value="1212.2291v3"/>
+            </reference>
+	<reference anchor="BEYONDJAIN">
+            <front>
+                <title>Beyond Jain's Fairness Index: Setting the Bar For The Deployment of Congestion Control Algorithms</title>
+                    <author initials="R" surname="Ware (et al.)">
+                    </author>
+                    <date year="2019"/>
+                </front>
+                <seriesInfo name="HotNets '19" value="10.1145/3365609.3365855"/>
             </reference>
            </references>
     </back>
