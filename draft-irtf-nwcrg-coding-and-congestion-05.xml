@@ -101,7 +101,7 @@
 	<t>Coding is a reliability mechanism that is distinct and separate from the loss detection of congestion controls. <xref target="RFC5681"/> defines TCP as a loss-based congestion control; since FEC coding repairs such losses, blindly applying it may easily lead to an implementation that also hides a congestion signal from the sender. It is important to ensure that such information hiding does not occur.</t>
 	<t>FEC coding and congestion control can be seen as two separate channels. In practice, implementations may mix the signals that are exchanged on these channels. This memo offers a discussion of how FEC coding and congestion control coexist. Another objective is to encourage the research community also to consider congestion control aspects when proposing and comparing FEC coding solutions in communication systems. This document does not aim at proposing guidelines for characterizing
         FEC coding solutions.</t>
-	<t>We consider an end-to-end unicast data transfer with FEC coding at the application (above the transport), within the transport or directly below the transport. The typical application scenario considered in the current version of the document is a client browsing the web or watching a live video. This memo may be extended to cases with multiple paths.</t>
+	<t>We consider an end-to-end unicast data transfer with FEC coding at the application (above the transport), within the transport or directly below the transport. The typical application scenario considered in the current version of the document is a client browsing the web or watching a live video.</t>
 	<t>This document represents the collaborative work and consensus of the Coding for Efficient Network Communications Research Group (NWCRG); it is not an IETF product and is not a standard. The document follows the terminology proposed in the taxonomy document <xref target="RFC8406"></xref>.</t>
     </section>
 
@@ -207,7 +207,9 @@
 
     <t>The choice of the adequate transport layer may be related to application requirements and the services offered by a transport protocol <xref target="RFC8095"></xref>:<list style="symbols"> 
 		    <t>In the case of an unreliable data transfer, the transport layer may provide a non-reliable transport service (e.g. UDP or DCCP <xref target="RFC4340"></xref> or a partially reliable transport protocol such as SCTP with partial reliability <xref target="RFC3758"></xref>) or QUIC with the unreliable datagram extension <xref target="I-D.ietf-quic-datagram"></xref>. Depending on the amount of redundancy and network conditions, there could be cases where it becomes impossible to carry traffic.</t>
-	<t>In the case of a reliable data transfer, the transport layer may implement a retransmission mechanism to guarantee the reliability of the file transfer (e.g. TCP). Depending on how the FEC and CC functions are scheduled (FEC above CC, FEC in CC, FEC below CC), the impact of reliable transport on the FEC reliability mechanisms is different.</t></list></t>	
+	<t>In the case of a reliable data transfer, the transport layer may implement a retransmission mechanism to guarantee the reliability of the file transfer (e.g. TCP). Depending on how the FEC and CC functions are scheduled (FEC above CC, FEC in CC, FEC below CC), the impact of reliable transport on the FEC reliability mechanisms is different.</t></list></t>
+	<t>The document considers one application layer stream as input packets. The application layer may exploit several paths above both the FEC and transport layers that are described in the document : this case is not further described in the document.</t>
+
 	</section>
 
 	<section anchor="subsec:def_fairness" title="Fairness, a policy concern">
@@ -300,6 +302,10 @@
 				<t>The application may require partial reliability only. In this case, the coding rates of the FEC mechanisms could be adapted accordingly based on inputs of the application and the trade-off between latency and packet loss.</t>
 		</section>
 
+		<section anchor="subsec:multipath_above" title="On transport multipath">
+				<t>Whether the transport protocole exploits multiple paths or not, this does not have an impact of the FEC mechanism.</t>
+		</section>
+
 	</section>
 
 	<!-- ######################################################-->
@@ -354,6 +360,13 @@
 		<section anchor="subsec:parial_rel_in" title="On partial reliability">
 				<t>The application may require partial reliability. In this case, the transport and FEC mechanisms could be conjointly designed. As one example, the reliability offered by FEC may be sufficient and no retransmission required. This depends on application requirements and the trade-off between latency and loss.</t>
 		</section>
+
+		<section anchor="subsec:multipath_in" title="On transport multipath">
+				<t>The sender may adapt the coding rate of each of the single subpaths, whether the congestion control is coupled or not. There is an important flexibility on how the coding rate is tuned depending on the characteristics of each subpath.</t>
+		</section>
+
+
+
 	</section>
 
 
@@ -415,6 +428,11 @@
 		<section anchor="subsec:parial_rel_below" title="On partial reliability">
 				<t>The transport or application layer above the FEC channel may require partial reliability only. In this case, FEC may provide an unnecessary service if it is not aware of the reliability requirements.</t>
 		</section>
+
+		<section anchor="subsec:multipath_below" title="On transport multipath">
+				<t>The transport may exploit multiple path without the FEC channel to be aware of it. This depends on whether the FEC is applied to all subflows or each of the subflows individually. When the FEC is applied to all the flows, there is a risk for the coding rate to be inadequate to each path characteristics.</t>
+		</section>
+
 
 	</section>
 
