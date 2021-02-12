@@ -303,7 +303,7 @@
 		</section>
 
 		<section anchor="subsec:multipath_above" title="On multipath transport ">
-				<t>Whether the transport protocole exploits multiple paths or not, this does not have an impact of the FEC mechanism.</t>
+				<t>Whether the transport protocol exploits multiple paths or not does not have an impact on the FEC mechanism.</t>
 		</section>
 
 	</section>
