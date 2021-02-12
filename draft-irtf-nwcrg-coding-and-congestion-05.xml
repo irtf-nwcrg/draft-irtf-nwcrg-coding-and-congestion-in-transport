@@ -302,7 +302,7 @@
 				<t>The application may require partial reliability only. In this case, the coding rates of the FEC mechanisms could be adapted accordingly based on inputs of the application and the trade-off between latency and packet loss.</t>
 		</section>
 
-		<section anchor="subsec:multipath_above" title="On transport multipath">
+		<section anchor="subsec:multipath_above" title="On multipath transport ">
 				<t>Whether the transport protocole exploits multiple paths or not, this does not have an impact of the FEC mechanism.</t>
 		</section>
 
