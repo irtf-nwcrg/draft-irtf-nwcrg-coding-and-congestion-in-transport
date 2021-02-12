@@ -430,7 +430,7 @@
 		</section>
 
 		<section anchor="subsec:multipath_below" title="On transport multipath">
-				<t>The transport may exploit multiple path without the FEC channel to be aware of it. This depends on whether the FEC is applied to all subflows or each of the subflows individually. When the FEC is applied to all the flows, there is a risk for the coding rate to be inadequate to each path characteristics.</t>
+				<t>The transport may exploit multiple paths without the FEC channel being aware of it. This depends on whether FEC is applied to all subflows or each of the subflows individually. When FEC is applied to all the flows, there is a risk for the coding rate to be inadequate for the characteristics of the individual paths.</t>
 		</section>
 
 
