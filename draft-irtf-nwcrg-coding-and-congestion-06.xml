@@ -513,7 +513,7 @@
         <?rfc include="reference.RFC.6297.xml"?>
         <?rfc include="reference.RFC.6356.xml"?>
         <?rfc include="reference.RFC.8095.xml"?>
-        <?rfc include="reference.RFC.84.xml"?>
+        <?rfc include="reference.RFC.8406.xml"?>
         <?rfc include="reference.RFC.8680.xml"?>
         <?rfc include="reference.RFC.8699.xml"?>
 	<?rfc include="reference.I-D.briscoe-tsvarea-fair.xml"?>
