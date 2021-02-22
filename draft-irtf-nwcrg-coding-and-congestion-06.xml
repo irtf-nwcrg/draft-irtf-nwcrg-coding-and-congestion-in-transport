@@ -102,7 +102,7 @@
 	<t>FEC coding and congestion control can be seen as two separate channels. In practice, implementations may mix the signals that are exchanged on these channels. This memo offers a discussion of how FEC coding and congestion control coexist. Another objective is to encourage the research community also to consider congestion control aspects when proposing and comparing FEC coding solutions in communication systems. This document does not aim at proposing guidelines for characterizing
         FEC coding solutions.</t>
 	<t>We consider an end-to-end unicast data transfer with FEC coding at the application (above the transport), within the transport or directly below the transport. The typical application scenario considered in the current version of the document is a client browsing the web or watching a live video.</t>
-	<t>This document represents the collaborative work and consensus of the Coding for Efficient Network Communications Research Group (NWCRG); it is not an IETF product and is not a standard. The document follows the terminology proposed in the taxonomy document <xref target="RFC84"></xref>.</t>
+	<t>This document represents the collaborative work and consensus of the Coding for Efficient Network Communications Research Group (NWCRG); it is not an IETF product and is not a standard. The document follows the terminology proposed in the taxonomy document <xref target="RFC8406"></xref>.</t>
     </section>
 
         <!-- ######################################################-->
