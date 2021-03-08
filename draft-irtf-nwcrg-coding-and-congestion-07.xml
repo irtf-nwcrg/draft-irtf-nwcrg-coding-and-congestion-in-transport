@@ -179,7 +179,7 @@
 		<t>'requirements' (input control plane for the transport including CC): refers to application requirements such as upper/lower rate bounds, periods of quiescence, or a priority.</t>
 		<t>'sending rate (or window)' (output control plane for the transport including CC): refers to the rate at which a congestion control decides to transmit packets based on 'network information'.</t>
 		<t>'signaling repaired symbols' (input control plane for the FEC): refers to the information a FEC sender can obtain from a FEC receiver about the performance of the FEC solution as seen by the receiver.</t>
-		<t>'coding rate' (output control plane for the FEC): refers to the coding rate that is used by the FEC solutioni (i.e.  proportion of transmitted symbols that carry useful data).</t>	
+		<t>'coding rate' (output control plane for the FEC): refers to the coding rate that is used by the FEC solution (i.e.  proportion of transmitted symbols that carry useful data).</t>	
 		<t>'source and/or repair symbols' (data plane for both the FEC and the CC): refers to the data that is transmitted. The sender can decide to send source symbols only (meaning that the coding rate is 0), repair symbols only (if the solution decides not to send the original source packets) or a mix of both.</t>	
 	</list></t>
 
