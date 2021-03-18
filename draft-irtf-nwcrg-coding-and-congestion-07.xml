@@ -207,7 +207,10 @@
 
     <t>The choice of the adequate transport layer may be related to application requirements and the services offered by a transport protocol <xref target="RFC8095"></xref>:<list style="symbols"> 
 		    <t>The transport layer may provide an unreliable transport service (e.g. UDP or DCCP <xref target="RFC4340"></xref>) or a partially reliable transport service (e.g. SCTP with the partial reliability extension <xref target="RFC3758"></xref> or QUIC with the unreliable datagram extension <xref target="I-D.ietf-quic-datagram"></xref>). Depending on the amount of redundancy and network conditions, there could be cases where it becomes impossible to carry traffic.</t>
-            <t>The transport layer may implement a retransmission mechanism to guarantee the reliability of a data transfer (e.g. TCP). Depending on how the FEC and CC functions are scheduled (FEC above CC, FEC in CC, FEC below CC), the impact of reliable transport on the FEC reliability mechanisms is different.</t></list></t>
+		    <t>The transport layer may implement a retransmission mechanism to guarantee the reliability of a data transfer (e.g. TCP). Depending on how the FEC and CC functions are scheduled (FEC above CC, FEC in CC, FEC below CC), the impact of reliable transport on the FEC reliability mechanisms is different.</t></list></t>
+	</section>
+	
+	<section title="Transport multipath">
 	<t>The application layer may be composed of several streams above FEC and transport layers instances. The different streams could exploit different paths between the sender and the receiver or not. The document considers one application layer stream as input packets above a combination of FEC and transport layers. In <xref target="fig:multi-scope"></xref>, each of stream 1 and stream 2 are considered in the scope of the document but a combination of stream 1 and stream 2 is not. The case of multiple application level streams above multiple FEC and transport layers instances is out of the scope of the document and not further described.</t>
 
     	<figure anchor="fig:multi-scope" title="Scope of the transport multipath">
@@ -234,6 +237,12 @@
         </artwork>
         </figure>
 		
+	</section>
+
+	<section anchor="subsec:def_code" title="Types of FEC">
+
+	<t> TBD </t>
+
 	</section>
 
 	<section anchor="subsec:def_fairness" title="Fairness, a policy concern">
@@ -320,7 +329,7 @@
 		</section>
 
 		<section anchor="subsec:partial_rel_above" title="On partial reliability">
-				<t>The application may require partial reliability. In this case, the coding rate of a FEC mechanism could be adapted based on inputs from the application and the trade-off between latency and packet loss. Partial reliability impacts the type of FEC and type of codec that can be used. </t>
+			<t>The application may require partial reliability. In this case, the coding rate of a FEC mechanism could be adapted based on inputs from the application and the trade-off between latency and packet loss. Partial reliability impacts the type of FEC and type of codec that can be used, such as discussed in <xref target="subsec:def_code"></xref>. </t>
 		</section>
 
 		<section anchor="subsec:multipath_above" title="On multipath transport ">
@@ -380,7 +389,7 @@
 		</section>
 
 		<section anchor="subsec:partial_rel_in" title="On partial reliability">
-				<t>The application may require partial reliability. In this case, the transport and FEC mechanisms could be conjointly designed. As one example, the reliability offered by FEC may be sufficient, with no retransmission required. This depends on application needs and the trade-off between latency and loss. Partial reliability impacts the type of FEC and type of codec that can be used.</t>
+				<t>The application may require partial reliability. In this case, the transport and FEC mechanisms could be conjointly designed. As one example, the reliability offered by FEC may be sufficient, with no retransmission required. This depends on application needs and the trade-off between latency and loss. Partial reliability impacts the type of FEC and type of codec that can be used, such as discussed in <xref target="subsec:def_code"></xref>.</t>
 		</section>
 
 		<section anchor="subsec:multipath_in" title="On transport multipath">
@@ -448,7 +457,7 @@
 		</section>
 
 		<section anchor="subsec:partial_rel_below" title="On partial reliability">
-				<t>The transport or application layer above the FEC channel may require partial reliability only. In this case, FEC may provide an unnecessary service if it is not aware of the reliability requirements. Partial reliability impacts the type of FEC and type of codec that can be used.</t>
+				<t>The transport or application layer above the FEC channel may require partial reliability only. In this case, FEC may provide an unnecessary service if it is not aware of the reliability requirements. Partial reliability impacts the type of FEC and type of codec that can be used, such as discussed in <xref target="subsec:def_code"></xref>.</t>
 		</section>
 
 		<section anchor="subsec:multipath_below" title="On transport multipath">
