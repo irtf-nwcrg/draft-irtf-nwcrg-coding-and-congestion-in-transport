@@ -239,10 +239,18 @@
 		
 	</section>
 
-	<section anchor="subsec:def_code" title="Types of FEC">
+	<section anchor="subsec:def_code" title="Types of coding">
 
-	<t> TBD </t>
+	<t><xref target="RFC8406"></xref> summarizes recommended terminology for Network Coding conceps and constructs. In particular, the document identifies the following coding types (among many ohters): <list style="symbols">
+			<t>Block Coding: Coding technique where the input Flow(s) must first be segmented into a sequence of blocks; FEC encoding and decoding are performed independently on a per-block basis;</t>	
+			<t>Sliding Window Coding: general class of coding techniques that rely on a sliding encoding window.</t>	
+	</list></t>
 
+	<t>Depending on the type of coding, full reliability and partial reliability are possible <list style="symbols">
+			<t>Full reliability: If the codec does not enable a subset of the linear system to be inverted, the receiver would have to wait for the minimum amount of repair packets and then be able to recover all the source packets. </t>
+			<t>Partial reliability with Block Coding: depending on the size of the blocks and the distribution of erasure in the transmission channel, the decoding scheme may not be able to decode all the symbols of the block. In this case, the block would be lost and the service would not be reliable. If the blocks are large, the chances of recovering the erased symbols would increase but also impact on memory requirements and the cost of encoding and decoding processes. The size of the blocks would characterize the amount of symbols that can be recovered.</t>
+			<t>Partial reliability with Sliding Window Coding: depending on the size of the encoding window and the distribution of erasure in the transmission channel, the decoding scheme may not be able to recover erased symbols. Thus, the coding rate and the size of the encoding window would characterize the amount of symbols that can be recovered.</t>
+	</list></t>
 	</section>
 
 	<section anchor="subsec:def_fairness" title="Fairness, a policy concern">
