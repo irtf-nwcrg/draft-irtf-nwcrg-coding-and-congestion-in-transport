@@ -500,7 +500,7 @@
 				</section>
 
 				<section title="New signaling methods and fairness">
-					<t>Recovering lost symbols may hide congestion losses from the congestion control. Disambiguate acked packets from rebuilt packets would help the sender adapts its sending rate accordingly. There are opportunities for introducing interaction between congestion control and coding schemes to improve the quality of experience while guaranteeing fairness with other flows.</t>
+					<t>Recovering lost symbols may hide congestion losses from the congestion control. Disambiguating acked packets from rebuilt packets would help the sender adapts its sending rate accordingly. There are opportunities for introducing interaction between congestion control and coding schemes to improve the quality of experience while guaranteeing fairness with other flows.</t>
 					<t>As one example, a sender may adapt different reduction multiplier for recovered packets and lost packets, such as proposed for ECN-marked packets and lost packets in <xref target="RFC8511"></xref>.</t>
 					<t>Some existing solutions already propose to disambiguate acked packets from rebuilt packets <xref target="QUIC-FEC"></xref>. New signaling methods and FEC-recovery-aware congestion controls could be proposed.</t>
 					<t>An open question also resides in the relevance of FEC when there are multiple streams that exploit the FEC channel.</t>
