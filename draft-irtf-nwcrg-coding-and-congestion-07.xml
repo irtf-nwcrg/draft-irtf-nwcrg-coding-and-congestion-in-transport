@@ -491,11 +491,23 @@
 
 			<section title="Open research questions">
 
-				<t>There is a general trade-off, inherent to the use of coding, between (1) reducing goodput when useless repair symbols are transmitted and (2) helping to recover from transmission and congestion losses. Appendix C of <xref target="RFC8681"></xref> describes different possible parameter derivation on how to tune the parameters for target use-case.</t>
-					
-				<t>For the FEC above transport case, there is a trade-off related to the amount of redundancy to add, as a function of the transport layer protocol and application requirements.</t>
-                                <t>For the FEC within transport case, recovering lost symbols may hide congestion losses from the congestion control. Some existing solutions already propose to disambiguate acked packets from rebuilt packets <xref target="QUIC-FEC"></xref>. New signaling methods and FEC-recovery-aware congestion controls could be proposed.</t>
-				<t>For the FEC below transport case, there are opportunities for introducing interaction between congestion control and coding schemes to improve the quality of experience while guaranteeing fairness with other flows. New signaling methods and FEC-recovery-aware congestion controls could be proposed. An open question also resides in the relevance of FEC when there are multiple streams that exploit the FEC channel.</t>
+				<t>There is a general trade-off, inherent to the use of coding, between (1) reducing goodput when useless repair symbols are transmitted and (2) helping to recover from transmission and congestion losses.</t>
+
+				<section title="Parameter derivation">
+				<t>There is a trade-off related to the amount of redundancy to add, as a function of the transport layer protocol and application requirements.</t>
+				<t><xref target="RFC8095"></xref> describes the mechanisms provided by existing IETF protocols such as TCP, SCTP or RTP. <xref target="RFC8406"></xref> describes the variety of coding techniques. The important level of combinations makes the determination of an optimum parameters derivation very complex. This depends a lot on application requirements and deployment context. This is the subject of research questions.</t>
+				<t>Appendix C of <xref target="RFC8681"></xref> describes different possible parameter derivation on how to tune the parameters for target use-case. However, this discussion does not integrate congestion-controlled end points.</t>
+				</section>
+
+				<section title="New signaling methods and fairness">
+					<t>Recovering lost symbols may hide congestion losses from the congestion control. Disambiguate acked packets from rebuilt packets would help the sender adapts its sending rate accordingly. There are opportunities for introducing interaction between congestion control and coding schemes to improve the quality of experience while guaranteeing fairness with other flows.</t>
+					<t>As one example, a sender may adapt different reduction multiplier for recovered packets and lost packets, such as proposed for ECN-marked packets and lost packets in <xref target="RFC8511"></xref>.</t>
+					<t>Some existing solutions already propose to disambiguate acked packets from rebuilt packets <xref target="QUIC-FEC"></xref>. New signaling methods and FEC-recovery-aware congestion controls could be proposed.</t>
+					<t>An open question also resides in the relevance of FEC when there are multiple streams that exploit the FEC channel.</t>
+				</section>
+
+				<section title="Fairness">
+				</section>
 			</section>
 
 			<section title="Advice for evaluating coding mechanisms">
@@ -558,7 +570,7 @@
         <?rfc include="reference.RFC.8699.xml"?>
 	<?rfc include="reference.I-D.briscoe-tsvarea-fair.xml"?>
 	<!-- <?rfc include="reference.RFC.7567.xml"?> -->
-	<!-- <?rfc include="reference.RFC.8511.xml"?> -->
+	<?rfc include="reference.RFC.8511.xml"?>
 	<!-- <?rfc include="reference.I-D.ietf-rmcat-coupled-cc.xml"?> -->
         <!-- <?rfc include="reference.I-D.ietf-tcpm-rto-consider.xml"?> -->
         <!-- <?rfc include="reference.I-D.ietf-tcpm-rack.xml"?> -->
