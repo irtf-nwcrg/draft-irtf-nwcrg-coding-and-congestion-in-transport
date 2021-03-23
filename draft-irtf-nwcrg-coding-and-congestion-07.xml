@@ -247,8 +247,8 @@
 	</list></t>
 
 	<t>The decoding scheme may not be able to decode all the symbols. The chance of decoding the erased packets depends on the size of the encoding window, the coding rate and the distribution of erasure in the transmission channel. The FEC channel may enable the transmission of information related to the need of supplementary symbols to adapt the level of reliability. Partial and full reliability could be envisioned.<list style="symbols">
-			<t>Full reliability: The receiver may hold symbols until the decoding of source packets is possible. In particular, if the codec does not enable a subset of the linear system to be inverted, the receiver would have to wait for the minimum amount of repair packets and then be able to recover all the source packets.</t>
-			<t>Partial reliability: The receiver may deliver the packets that could have been decoded to the upper layer. Source packets that could not be decoded would be lost. If the size of the encoding window (for Sliding Window Coding) and the size of the blocks (for Block Coding) are large, the chances of recovering the erased symbols would increase. However, this would impact on memory requirements and the cost of encoding and decoding processes.</t>
+			<t>Full reliability: The receiver may hold symbols until the decoding of source packets is possible. In particular, if the codec does not enable a subset of the linear system to be inverted, the receiver would have to wait for a certain minimum amount of repair packets before it can recover all the source packets.</t>
+			<t>Partial reliability: The receiver cannot deliver source packets that could not have been decoded to the upper layer. If the size of the encoding window (for Sliding Window Coding) and the size of the blocks (for Block Coding) are large, the chances of recovering the erased symbols would increase. However, this would impact on memory requirements and the cost of encoding and decoding processes.</t>
 	</list></t>
 	</section>
 
@@ -495,19 +495,16 @@
 
 				<section title="Parameter derivation">
 				<t>There is a trade-off related to the amount of redundancy to add, as a function of the transport layer protocol and application requirements.</t>
-				<t><xref target="RFC8095"></xref> describes the mechanisms provided by existing IETF protocols such as TCP, SCTP or RTP. <xref target="RFC8406"></xref> describes the variety of coding techniques. The important level of combinations makes the determination of an optimum parameters derivation very complex. This depends a lot on application requirements and deployment context. This is the subject of research questions.</t>
+				<t><xref target="RFC8095"></xref> describes the mechanisms provided by existing IETF protocols such as TCP, SCTP or RTP. <xref target="RFC8406"></xref> describes the variety of coding techniques. The important level of combinations makes the determination of an optimum parameters derivation very complex. This depends on application requirements and deployment context. This is the subject of research questions.</t>
 				<t>Appendix C of <xref target="RFC8681"></xref> describes how to tune the parameters for target use-case. However, this discussion does not integrate congestion-controlled end points.</t>
 				</section>
 
 				<section title="New signaling methods and fairness">
 					<t>Recovering lost symbols may hide congestion losses from the congestion control. Disambiguating acked packets from rebuilt packets would help the sender adapts its sending rate accordingly. There are opportunities for introducing interaction between congestion control and coding schemes to improve the quality of experience while guaranteeing fairness with other flows.</t>
-					<t>As one example, a sender may adapt different reduction multiplier for recovered packets and lost packets, such as proposed for ECN-marked packets and lost packets in <xref target="RFC8511"></xref>.</t>
 					<t>Some existing solutions already propose to disambiguate acked packets from rebuilt packets <xref target="QUIC-FEC"></xref>. New signaling methods and FEC-recovery-aware congestion controls could be proposed.</t>
 					<t>An open question also resides in the relevance of FEC when there are multiple streams that exploit the FEC channel.</t>
 				</section>
 
-				<section title="Fairness">
-				</section>
 			</section>
 
 			<section title="Advice for evaluating coding mechanisms">
@@ -570,7 +567,7 @@
         <?rfc include="reference.RFC.8699.xml"?>
 	<?rfc include="reference.I-D.briscoe-tsvarea-fair.xml"?>
 	<!-- <?rfc include="reference.RFC.7567.xml"?> -->
-	<?rfc include="reference.RFC.8511.xml"?>
+	<!-- <?rfc include="reference.RFC.8511.xml"?> -->
 	<!-- <?rfc include="reference.I-D.ietf-rmcat-coupled-cc.xml"?> -->
         <!-- <?rfc include="reference.I-D.ietf-tcpm-rto-consider.xml"?> -->
         <!-- <?rfc include="reference.I-D.ietf-tcpm-rack.xml"?> -->
