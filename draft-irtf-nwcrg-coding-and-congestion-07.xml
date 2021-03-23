@@ -495,14 +495,18 @@
 
 				<section title="Parameter derivation">
 				<t>There is a trade-off related to the amount of redundancy to add, as a function of the transport layer protocol and application requirements.</t>
-				<t><xref target="RFC8095"></xref> describes the mechanisms provided by existing IETF protocols such as TCP, SCTP or RTP. <xref target="RFC8406"></xref> describes the variety of coding techniques. The important level of combinations makes the determination of an optimum parameters derivation very complex. This depends on application requirements and deployment context. This is the subject of research questions.</t>
+				<t><xref target="RFC8095"></xref> describes the mechanisms provided by existing IETF protocols such as TCP, SCTP or RTP. <xref target="RFC8406"></xref> describes the variety of coding techniques. The important level of combinations makes the determination of an optimum parameters derivation very complex. This depends on application requirements and deployment context.</t>
 				<t>Appendix C of <xref target="RFC8681"></xref> describes how to tune the parameters for target use-case. However, this discussion does not integrate congestion-controlled end points.</t>
+				<t>Research question 1 : "Is there a way to dynamically adjust the codec characteristics depending on the transmission channel, the transport protocol and application requirements ?"</t>
+				<t>Research question 2 : "Should we apply specific per-stream FEC mechanisms when multiple streams with different reliability needs are carried out ?"</t>
 				</section>
 
 				<section title="New signaling methods and fairness">
 					<t>Recovering lost symbols may hide congestion losses from the congestion control. Disambiguating acked packets from rebuilt packets would help the sender adapts its sending rate accordingly. There are opportunities for introducing interaction between congestion control and coding schemes to improve the quality of experience while guaranteeing fairness with other flows.</t>
 					<t>Some existing solutions already propose to disambiguate acked packets from rebuilt packets <xref target="QUIC-FEC"></xref>. New signaling methods and FEC-recovery-aware congestion controls could be proposed.</t>
-					<t>An open question also resides in the relevance of FEC when there are multiple streams that exploit the FEC channel.</t>
+				<t>Research question 3 : "Should we quantify the harm that a coded flow would induce on a non-coded flow ? How can this be reduced while still benefitting from advantages brought by FEC ?"</t>
+				<t>Research question 4 : "If transport and FEC senders are not collocated, if the FEC is applied only on the last mile, would this raise fairness issues ?"</t>
+				<t>Research question 5 : "Should we propose a generic API to allow dynamic interactions between a transport protocol and a coding scheme ? This should consider existing APIs between application and transport layers."</t>
 				</section>
 
 			</section>
