@@ -207,7 +207,10 @@
 
     <t>The choice of the adequate transport layer may be related to application requirements and the services offered by a transport protocol <xref target="RFC8095"></xref>:<list style="symbols"> 
 		    <t>The transport layer may provide an unreliable transport service (e.g. UDP or DCCP <xref target="RFC4340"></xref>) or a partially reliable transport service (e.g. SCTP with the partial reliability extension <xref target="RFC3758"></xref> or QUIC with the unreliable datagram extension <xref target="I-D.ietf-quic-datagram"></xref>). Depending on the amount of redundancy and network conditions, there could be cases where it becomes impossible to carry traffic.</t>
-            <t>The transport layer may implement a retransmission mechanism to guarantee the reliability of a data transfer (e.g. TCP). Depending on how the FEC and CC functions are scheduled (FEC above CC, FEC in CC, FEC below CC), the impact of reliable transport on the FEC reliability mechanisms is different.</t></list></t>
+		    <t>The transport layer may implement a retransmission mechanism to guarantee the reliability of a data transfer (e.g. TCP). Depending on how the FEC and CC functions are scheduled (FEC above CC, FEC in CC, FEC below CC), the impact of reliable transport on the FEC reliability mechanisms is different.</t></list></t>
+	</section>
+	
+	<section title="Transport multipath">
 	<t>The application layer may be composed of several streams above FEC and transport layers instances. The different streams could exploit different paths between the sender and the receiver or not. The document considers one application layer stream as input packets above a combination of FEC and transport layers. In <xref target="fig:multi-scope"></xref>, each of stream 1 and stream 2 are considered in the scope of the document but a combination of stream 1 and stream 2 is not. The case of multiple application level streams above multiple FEC and transport layers instances is out of the scope of the document and not further described.</t>
 
     	<figure anchor="fig:multi-scope" title="Scope of the transport multipath">
@@ -234,6 +237,19 @@
         </artwork>
         </figure>
 		
+	</section>
+
+	<section anchor="subsec:def_code" title="Types of coding">
+
+	<t><xref target="RFC8406"></xref> summarizes recommended terminology for Network Coding conceps and constructs. In particular, the document identifies the following coding types (among many others): <list style="symbols">
+			<t>Block Coding: Coding technique where the input Flow must first be segmented into a sequence of blocks; FEC encoding and decoding are performed independently on a per-block basis.</t>	
+			<t>Sliding Window Coding: general class of coding techniques that rely on a sliding encoding window.</t>	
+	</list></t>
+
+	<t>The decoding scheme may not be able to decode all the symbols. The chance of decoding the erased packets depends on the size of the encoding window, the coding rate and the distribution of erasure in the transmission channel. The FEC channel may enable the transmission of information related to the need of supplementary symbols to adapt the level of reliability. Partial and full reliability could be envisioned.<list style="symbols">
+			<t>Full reliability: The receiver may hold symbols until the decoding of source packets is possible. In particular, if the codec does not enable a subset of the linear system to be inverted, the receiver would have to wait for a certain minimum amount of repair packets before it can recover all the source packets.</t>
+			<t>Partial reliability: The receiver cannot deliver source packets that could not have been decoded to the upper layer. If the size of the encoding window (for Sliding Window Coding) and the size of the blocks (for Block Coding) are large, the chances of recovering the erased symbols would increase. However, this would impact on memory requirements and the cost of encoding and decoding processes.</t>
+	</list></t>
 	</section>
 
 	<section anchor="subsec:def_fairness" title="Fairness, a policy concern">
@@ -320,7 +336,7 @@
 		</section>
 
 		<section anchor="subsec:partial_rel_above" title="On partial reliability">
-				<t>The application may require partial reliability. In this case, the coding rate of a FEC mechanism could be adapted based on inputs from the application and the trade-off between latency and packet loss. Partial reliability impacts the type of FEC and type of codec that can be used. </t>
+			<t>The application may require partial reliability. In this case, the coding rate of a FEC mechanism could be adapted based on inputs from the application and the trade-off between latency and packet loss. Partial reliability impacts the type of FEC and type of codec that can be used, such as discussed in <xref target="subsec:def_code"></xref>. </t>
 		</section>
 
 		<section anchor="subsec:multipath_above" title="On multipath transport ">
@@ -380,7 +396,7 @@
 		</section>
 
 		<section anchor="subsec:partial_rel_in" title="On partial reliability">
-				<t>The application may require partial reliability. In this case, the transport and FEC mechanisms could be conjointly designed. As one example, the reliability offered by FEC may be sufficient, with no retransmission required. This depends on application needs and the trade-off between latency and loss. Partial reliability impacts the type of FEC and type of codec that can be used.</t>
+				<t>The application may require partial reliability. In this case, the transport and FEC mechanisms could be conjointly designed. As one example, the reliability offered by FEC may be sufficient, with no retransmission required. This depends on application needs and the trade-off between latency and loss. Partial reliability impacts the type of FEC and type of codec that can be used, such as discussed in <xref target="subsec:def_code"></xref>.</t>
 		</section>
 
 		<section anchor="subsec:multipath_in" title="On transport multipath">
@@ -448,7 +464,7 @@
 		</section>
 
 		<section anchor="subsec:partial_rel_below" title="On partial reliability">
-				<t>The transport or application layer above the FEC channel may require partial reliability only. In this case, FEC may provide an unnecessary service if it is not aware of the reliability requirements. Partial reliability impacts the type of FEC and type of codec that can be used.</t>
+				<t>The transport or application layer above the FEC channel may require partial reliability only. In this case, FEC may provide an unnecessary service if it is not aware of the reliability requirements. Partial reliability impacts the type of FEC and type of codec that can be used, such as discussed in <xref target="subsec:def_code"></xref>.</t>
 		</section>
 
 		<section anchor="subsec:multipath_below" title="On transport multipath">
@@ -476,10 +492,23 @@
 			<section title="Open research questions">
 
 				<t>There is a general trade-off, inherent to the use of coding, between (1) reducing goodput when useless repair symbols are transmitted and (2) helping to recover from transmission and congestion losses.</t>
-					
-				<t>For the FEC above transport case, there is a trade-off related to the amount of redundancy to add, as a function of the transport layer protocol and application requirements.</t>
-                                <t>For the FEC within transport case, recovering lost symbols may hide congestion losses from the congestion control. Some existing solutions already propose to disambiguate acked packets from rebuilt packets <xref target="QUIC-FEC"></xref>. New signaling methods and FEC-recovery-aware congestion controls could be proposed.</t>
-				<t>For the FEC below transport case, there are opportunities for introducing interaction between congestion control and coding schemes to improve the quality of experience while guaranteeing fairness with other flows. New signaling methods and FEC-recovery-aware congestion controls could be proposed. An open question also resides in the relevance of FEC when there are multiple streams that exploit the FEC channel.</t>
+
+				<section title="Parameter derivation">
+				<t>There is a trade-off related to the amount of redundancy to add, as a function of the transport layer protocol and application requirements.</t>
+				<t><xref target="RFC8095"></xref> describes the mechanisms provided by existing IETF protocols such as TCP, SCTP or RTP. <xref target="RFC8406"></xref> describes the variety of coding techniques. The important level of combinations makes the determination of an optimum parameters derivation very complex. This depends on application requirements and deployment context.</t>
+				<t>Appendix C of <xref target="RFC8681"></xref> describes how to tune the parameters for target use-case. However, this discussion does not integrate congestion-controlled end points.</t>
+				<t>Research question 1 : "Is there a way to dynamically adjust the codec characteristics depending on the transmission channel, the transport protocol and application requirements ?"</t>
+				<t>Research question 2 : "Should we apply specific per-stream FEC mechanisms when multiple streams with different reliability needs are carried out ?"</t>
+				</section>
+
+				<section title="New signaling methods and fairness">
+					<t>Recovering lost symbols may hide congestion losses from the congestion control. Disambiguating acked packets from rebuilt packets would help the sender adapts its sending rate accordingly. There are opportunities for introducing interaction between congestion control and coding schemes to improve the quality of experience while guaranteeing fairness with other flows.</t>
+					<t>Some existing solutions already propose to disambiguate acked packets from rebuilt packets <xref target="QUIC-FEC"></xref>. New signaling methods and FEC-recovery-aware congestion controls could be proposed.</t>
+				<t>Research question 3 : "Should we quantify the harm that a coded flow would induce on a non-coded flow ? How can this be reduced while still benefitting from advantages brought by FEC ?"</t>
+				<t>Research question 4 : "If transport and FEC senders are not collocated, if the FEC is applied only on the last mile, would this raise fairness issues ?"</t>
+				<t>Research question 5 : "Should we propose a generic API to allow dynamic interactions between a transport protocol and a coding scheme ? This should consider existing APIs between application and transport layers."</t>
+				</section>
+
 			</section>
 
 			<section title="Advice for evaluating coding mechanisms">
@@ -538,6 +567,7 @@
         <?rfc include="reference.RFC.8095.xml"?>
         <?rfc include="reference.RFC.8406.xml"?>
         <?rfc include="reference.RFC.8680.xml"?>
+        <?rfc include="reference.RFC.8681.xml"?>
         <?rfc include="reference.RFC.8699.xml"?>
 	<?rfc include="reference.I-D.briscoe-tsvarea-fair.xml"?>
 	<!-- <?rfc include="reference.RFC.7567.xml"?> -->
