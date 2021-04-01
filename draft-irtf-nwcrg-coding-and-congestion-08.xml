@@ -436,7 +436,7 @@
 		</artwork>
 	</figure>
 
-	<t><xref target="fig:fec-below"></xref> presents an architecture where FEC is applied end-to-end below the transport layer, but above the link layer. Note that it is common to apply FEC at the link layer, where it contributes to the total capacity that a link exposes to upper layers. This application of FEC is out of scope of this document. In the scenario considered here, the repair symbols are sent on top of what is allowed by the congestion control.</t>
+	<t><xref target="fig:fec-below"></xref> presents an architecture where FEC is applied end-to-end below the transport layer, but above the link layer. Note that it is common to apply FEC at the link layer, where it contributes to the total capacity that a link exposes to upper layers. This application of FEC is out of scope of this document. This includes the use of FEC on top of a link layer in scenarios where the link is known by configuration. In the scenario considered here, the repair symbols are sent on top of what is allowed by the congestion control.</t>
 
 		<t>Including redundancy adds traffic without reducing goodput but incurs potential fairness issues. The effective bitrate is higher than the CC's computed fair share due to the transmission of repair symbols, and losses are hidden from the transport. This may cause a problem for loss-based congestion detection, but it is not a problem for delay-based congestion detection.</t>
 		<t>The advantage of this approach is that it can result in performance gains when there are persistent transmission losses along the path.</t>
@@ -478,7 +478,7 @@
         <!-- ######################################################-->
         <!-- New section -->
         <!-- ######################################################-->
-        <section anchor="sec:research" title="Research considerations">
+        <section anchor="sec:research" title="Research recommandations and questions">
 
 		<t>This section provides a short state-of-the art overview of activities related to congestion control and coding. The objective is to identify open research questions and contribute to advice when evaluating coding mechanisms.</t>
 			<section title="Activities related to congestion control and coding">
@@ -503,17 +503,18 @@
 
 				<section title="New signaling methods and fairness">
 					<t>Recovering lost symbols may hide congestion losses from the congestion control. Disambiguating acked packets from rebuilt packets would help the sender adapt its sending rate accordingly. There are opportunities for introducing interaction between congestion control and coding schemes to improve the quality of experience while guaranteeing fairness with other flows.</t>
-					<t>Some existing solutions already propose to disambiguate acked packets from rebuilt packets <xref target="QUIC-FEC"></xref>. New signaling methods and FEC-recovery-aware congestion controls could be proposed.</t>
+					<t>Some existing solutions already propose to disambiguate acked packets from rebuilt packets <xref target="QUIC-FEC"></xref>. New signaling methods and FEC-recovery-aware congestion controls could be proposed. This would allow the design of adaptive coding rates.</t>
 				<t>Research question 3 : "Should we quantify the harm that a coded flow would induce on a non-coded flow ? How can this be reduced while still benefiting from advantages brought by FEC ?"</t>
-				<t>Research question 4 : "If transport and FEC senders are not collocated, if the FEC is applied only on the last mile, would this raise fairness issues ?"</t>
+				<t>Research question 4 : "If transport and FEC senders are collocated and close to the client and applied only on the last mile, e.g. on a poor wireless link, would this raise fairness issues ?"</t>
 				<t>Research question 5 : "Should we propose a generic API to allow dynamic interactions between a transport protocol and a coding scheme ? This should consider existing APIs between application and transport layers."</t>
 				</section>
 
 			</section>
 
-			<section title="Advice for evaluating coding mechanisms">
-				<t>Our advice is that new research contributions should be mapped following the organization of this document. Otherwise, this may lead to wrong assumptions on the validity of the proposal and wrong ideas about the relevance of coding for a given use case.</t>
-				<t>The discussion provided in this document aims to encourage the research community to also consider congestion control aspects when proposing and comparing FEC coding solutions in communication systems. As one example, this draft proposes discussions on the impact of the proposed FEC solution on congestion control, especially loss-based congestion control mechanisms. When a research work aims at improving throughput by hiding the packet loss signal from congestion control, the authors should 1) discuss the advantages of using the proposed FEC solution compared to replacing the congestion control by one that ignores a portion of the encountered losses, 2) critically discuss the impact of hiding packet loss from the congestion control mechanism.</t>
+			<section title="Recommandations and advice for evaluating coding mechanisms">
+				<t>Research Recommandation 1: From a congestion control point-of-view, a repaired packet must be considered as a lost packet. This does not apply to the usage of FEC on a path that is known to be lossy.</t>
+				<t>Research Recommandation 2: New research contributions should be mapped following the organization of this document (above, below, in the congestion control) and should consider congestion control aspects when proposing and comparing FEC coding solutions in communication systems.</t>
+				<t>Research Recommandation 3: When a research work aims at improving throughput by hiding the packet loss signal from congestion control, the authors should 1) discuss the advantages of using the proposed FEC solution compared to replacing the congestion control by one that ignores a portion of the encountered losses, 2) critically discuss the impact of hiding packet loss from the congestion control mechanism. </t>
 			</section>
 
 	</section>
