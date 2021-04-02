@@ -478,7 +478,7 @@
         <!-- ######################################################-->
         <!-- New section -->
         <!-- ######################################################-->
-        <section anchor="sec:research" title="Research recommandations and questions">
+        <section anchor="sec:research" title="Research recommendations and questions">
 
 		<t>This section provides a short state-of-the art overview of activities related to congestion control and coding. The objective is to identify open research questions and contribute to advice when evaluating coding mechanisms.</t>
 			<section title="Activities related to congestion control and coding">
