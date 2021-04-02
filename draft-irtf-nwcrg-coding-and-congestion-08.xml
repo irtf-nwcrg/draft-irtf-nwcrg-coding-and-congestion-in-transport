@@ -505,7 +505,7 @@
 					<t>Recovering lost symbols may hide congestion losses from the congestion control. Disambiguating acked packets from rebuilt packets would help the sender adapt its sending rate accordingly. There are opportunities for introducing interaction between congestion control and coding schemes to improve the quality of experience while guaranteeing fairness with other flows.</t>
 					<t>Some existing solutions already propose to disambiguate acked packets from rebuilt packets <xref target="QUIC-FEC"></xref>. New signaling methods and FEC-recovery-aware congestion controls could be proposed. This would allow the design of adaptive coding rates.</t>
 				<t>Research question 3 : "Should we quantify the harm that a coded flow would induce on a non-coded flow ? How can this be reduced while still benefiting from advantages brought by FEC ?"</t>
-				<t>Research question 4 : "If transport and FEC senders are collocated and close to the client and applied only on the last mile, e.g. on a poor wireless link, would this raise fairness issues ?"</t>
+				<t>Research question 4 : "If transport and FEC senders are collocated and close to the client, and FEC is applied only on the last mile, e.g. to ignore losses on a noisy wireless link, would this raise fairness issues ?"</t>
 				<t>Research question 5 : "Should we propose a generic API to allow dynamic interactions between a transport protocol and a coding scheme ? This should consider existing APIs between application and transport layers."</t>
 				</section>
 
