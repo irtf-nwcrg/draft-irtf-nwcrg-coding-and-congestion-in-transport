@@ -120,18 +120,19 @@
         <!-- ######################################################-->
         <section anchor="sec:notations" title="Context">
         <section title="Separate channels, separate entities">
-        <t><xref target="fig:sep-channel"></xref> presents the notations that will be used in this document and introduces the Congestion Control (CC) and Forward Erasure Correction (FEC) channels. The Congestion Control channel carries source packets from a sender to a receiver, and packets signaling information about the network (number of packets received vs. lost, Explicit Congestion Notification (ECN) marks, etc.) from the receiver to the sender. The Forward Erasure Correction channel carries repair symbols (from the sender to the receiver) and information from the receiver to the sender (e.g. signaling which packets have been repaired, loss rate prior and/or after decoding, etc.).</t>
+		<t><xref target="fig:sep-channel"></xref> presents the notations that will be used in this document and introduces the Forward Erasure Correction (FEC) and Congestion Control (CC) channels. The Forward Erasure Correction channel carries repair symbols (from the sender to the receiver) and information from the receiver to the sender (e.g. signaling which packets have been repaired, loss rate prior and/or after decoding, etc.). The Congestion Control channel carries network packets from a sender to a receiver, and packets signaling information about the network (number of packets received vs. lost, Explicit Congestion Notification (ECN) marks, etc.) from the receiver to the sender. The network packets that are sent by the Congestion Control channel may be composed of source packets and/or repair symbols.</t>
         <figure anchor="fig:sep-channel" title="Notations and separate channels">
         <artwork>
  SENDER                                RECEIVER
 
 +------+                               +------+
-|      | <![CDATA[-----]]>    source packets  ---->|      |
+|      | <![CDATA[-----]]>   network packets  ---->|      |
 |  CC  |                               |  CC  |
 |      | <![CDATA[<---]]>  network information  ---|      |
 +------+                               +------+
 
 +------+                               +------+
+|      |           source and/or  ---->|      |
 |      | <![CDATA[-----]]>    repair symbols  ---->|      |
 | FEC  |                               | FEC  |
 |      | <![CDATA[<---]]> info: repaired symbols --|      |
@@ -150,7 +151,7 @@
   v            |             v             | window)
 +---------------+source     +-----------------+
 |    FEC        |and/or     |    CC           |
-|               |repair     |                 |source 
+|               |repair     |                 |network 
 |               |symbols    |                 |packets
 +---------------+==>        +-----------------+==>
   ^                                       ^
@@ -163,8 +164,8 @@
     	<figure anchor="fig:sep-entities-clt" title="Separate entities (receiver-side)">
         <artwork>
   |                                 |             
-  | source and/or                   | packets      
-  | repair symbols                  |             
+  | source and/or                   | network      
+  | repair symbols                  | packets            
   v                                 v             
 +---------------+              +-----------------+
 |    FEC        |signaling     |    CC           |
@@ -180,7 +181,8 @@
 		<t>'sending rate (or window)' (output control plane for the transport including CC): refers to the rate at which a congestion control decides to transmit packets based on 'network information'.</t>
 		<t>'signaling repaired symbols' (input control plane for the FEC): refers to the information a FEC sender can obtain from a FEC receiver about the performance of the FEC solution as seen by the receiver.</t>
 		<t>'coding rate' (output control plane for the FEC): refers to the coding rate that is used by the FEC solution (i.e.  proportion of transmitted symbols that carry useful data).</t>	
-		<t>'source and/or repair symbols' (data plane for both the FEC and the CC): refers to the data that is transmitted. The sender can decide to send source symbols only (meaning that the coding rate is 0), repair symbols only (if the solution decides not to send the original source packets) or a mix of both.</t>	
+		<t>'network packets' (output data plane for the CC): refers to the data that is transmitted by a CC sender to a CC receiver. The network packets may contain source and/or repair symbols.</t>	
+		<t>'source and/or repair symbols' (data plane for the FEC): refers to the data that is transmitted by a FEC sender to a FEC receiver. The sender can decide to send source symbols only (meaning that the coding rate is 0), repair symbols only (if the solution decides not to send the original source symbols) or a mix of both.</t>	
 	</list></t>
 
 	<!-- <t><xref target="fig:sep-entities"></xref> provides more details than 
@@ -264,8 +266,8 @@
 	</list></t>
 
 	<t>The decoding scheme may not be able to decode all the symbols. The chance of decoding the erased packets depends on the size of the encoding window, the coding rate and the distribution of erasure in the transmission channel. The FEC channel may let the client transmit information related to the need of supplementary symbols to adapt the level of reliability. Partial and full reliability could be envisioned.<list style="symbols">
-			<t>Full reliability: The receiver may hold symbols until the decoding of source packets is possible. In particular, if the codec does not enable a subset of the linear system to be inverted, the receiver would have to wait for a certain minimum amount of repair packets before it can recover all the source packets.</t>
-			<t>Partial reliability: The receiver cannot deliver source packets that could not have been decoded to the upper layer. If the size of the encoding window (for Sliding Window Coding) and the size of the blocks (for Block Coding) are large, the chances of recovering the erased symbols would increase. However, this would impact on memory requirements and the cost of encoding and decoding processes.</t>
+			<t>Full reliability: The receiver may hold symbols until the decoding of source symbols is possible. In particular, if the codec does not enable a subset of the linear system to be inverted, the receiver would have to wait for a certain minimum amount of repair packets before it can recover all the source symbols.</t>
+			<t>Partial reliability: The receiver cannot deliver source symbols that could not have been decoded to the upper layer. If the size of the encoding window (for Sliding Window Coding) and the size of the blocks (for Block Coding) are large, the chances of recovering the erased symbols would increase. However, this would impact on memory requirements and the cost of encoding and decoding processes.</t>
 	</list></t>
 	</section>
 
@@ -317,9 +319,9 @@
  | symbols | (or window)                | symbols
  v         |                            |
 +-------------+                      +-------------+
-|Transport    |source         network|Transport    |
-|(incl. CC)   |and/or     information|             |
-|             |repair             <![CDATA[<]]>==|             |
+|Transport    |               network|Transport    |
+|(incl. CC)   |           information|             |
+|             |network            <![CDATA[<]]>==|             |
 |             |packets               |             |
 +-------------+==>                   +-------------+
 
@@ -337,7 +339,7 @@
 		</section>
 
 		<section anchor="subsec:cc-recov-interaction_above" title="Congestion control and recovered symbols">
-				<t>The congestion control mechanism may not be able to differentiate repair symbols from actual source packets. The relevance of adding coding at the application layer is related to the needs of the application. For real-time applications using an unreliable or partially reliable transport, this approach may reduce the number of losses perceived by the application.</t>
+				<t>The congestion control mechanism receives network packets and may not be able to differentiate repair symbols from actual source ones. The relevance of adding coding at the application layer is related to the needs of the application. For real-time applications using an unreliable or partially reliable transport, this approach may reduce the number of losses perceived by the application.</t>
 		</section>
 
 		<section anchor="subsec:cc-nc-interaction_above" title="Interactions between congestion control and coding rates">
@@ -376,9 +378,9 @@
 |            |                      |            |
 | +---+ +--+ |             signaling| +---+ +--+ |
 | |FEC| |CC| |              repaired| |FEC| |CC| |
-| +---+ +--+ |source         symbols| +---+ +--+ |
-|            |and/or             <![CDATA[<]]>==|            |
-|            |repair         network|            |
+| +---+ +--+ |               symbols| +---+ +--+ |
+|            |                   <![CDATA[<]]>==|            |
+|            |network        network|            |
 |            |packets    information|            |
 +------------+ ==>               <![CDATA[<]]>==+------------+
 
@@ -439,7 +441,7 @@
 |(including CC)|           information|              |
 |              |                   <![CDATA[<]]>==|              |
 +--------------+                      +--------------+
- | source packets                       ^ source packets
+ | network packets                      ^ network packets
  v                                      |
 +--------------+                      +--------------+ 
 | FEC          |source                |  FEC         |
