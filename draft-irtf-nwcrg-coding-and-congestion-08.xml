@@ -370,9 +370,9 @@
 	<section anchor="sec:fec-in" title="FEC within the transport">
 	<figure anchor="fig:fec-in" title="FEC in the transport">
         	<artwork>
- | source  | sending                    ^ source 
- | packets | rate                       | packets
- v         v                            | 
+ | source                               ^ source 
+ | packets                              | packets
+ v                                      | 
 +------------+                      +------------+ 
 | Transport  |                      | Transport  |
 |            |                      |            |
