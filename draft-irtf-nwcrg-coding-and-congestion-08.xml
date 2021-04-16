@@ -210,30 +210,47 @@
 		    <t>The transport layer may implement a retransmission mechanism to guarantee the reliability of a data transfer (e.g. TCP). Depending on how the FEC and CC functions are scheduled (FEC above CC, FEC in CC, FEC below CC), the impact of reliable transport on the FEC reliability mechanisms is different.</t></list></t>
 	</section>
 	
-	<section title="Transport multipath">
-	<t>The application layer may be composed of several streams above FEC and transport layers instances. The different streams could exploit different paths between the sender and the receiver or not. The document considers one application layer stream as input packets above a combination of FEC and transport layers. In <xref target="fig:multi-scope"></xref>, each of stream 1 and stream 2 are considered in the scope of the document but a combination of stream 1 and stream 2 is not. The case of multiple application level streams above multiple FEC and transport layers instances is out of the scope of the document and not further described.</t>
+	<section title="Scope of the document concerning transport multipath and multi-streams applications">
+		<t>The application layer may be composed of several streams above FEC and transport layers instances. The transport layer may exploit a multipath mechanism. The different streams could exploit different paths between the sender and the receiver or not. This section describes what is in the scope of this document in regards with multi-streams applications and multipath transport protocols.</t>
+		<t>The different combinations between multi-stream applications and multipath transport are the following: (1) one application layer stream as input packets above a combination of FEC and multipath (Mpath) transport layers (<xref target="fig:multi-scope-single-stream"></xref>), and (2) multiple application layer streams as input packets above a combination of FEC and multipath (Mpath) or single path (Spath) transport layers (<xref target="fig:multi-scope-multi-stream"></xref>). In <xref target="fig:multi-scope-single-stream"></xref>, each of stream 1 and stream 2 are considered in the scope of the document. In <xref target="fig:multi-scope-multi-stream"></xref>, the case with single path transport is considered in the scope of this document but the cases with mutipath transport is not. The case of multiple application level streams above multiple transport layers instances is out of the scope of the document and not further described.</t>
 
-    	<figure anchor="fig:multi-scope" title="Scope of the transport multipath">
+    	<figure anchor="fig:multi-scope-single-stream" title="Transport multipath and single stream applications">
         <artwork>
-  +-----------------------------------------------+
-  |                   Application                 |
-  |                                               | 
-  |  +-------------------+ +-------------------+  |
-  |  |      Stream 1     | |      Stream 2     |  |
-  |  +-------------------+ +-------------------+  |
-  |                                               |
-  |  +-------------------+ +-------------------+  |
-  |  |        FEC        | |Multipath Transport|  |
-  |  +-------------------+ +-------------------+  |
-  |                                               |
-  |  +-------------------+ +-----+       +-----+  |
-  |  |Multipath Transport| |Flow1|  ...  |FlowM|  |
-  |  +-------------------+ +-----+       +-----+  |
-  |                                               |
-  |  +-----+       +-----+ +-----+       +-----+  |
-  |  |Flow1|  ...  |FlowM| | FEC |  ...  | FEC |  |
-  |  +-----+       +-----+ +-----+       +-----+  | 
-  +-----------------------------------------------+ 
+ +---------------+  +---------------+ 
+ |    Stream 1   |  |    Stream 2   | 
+ +---------------+  +---------------+ 
+                                      
+ +---------------+  +---------------+ 
+ |      FEC      |  |Mpath Transport| 
+ +---------------+  +---------------+ 
+                                      
+ +---------------+  +-----+   +-----+ 
+ |Mpath Transport|  |Flow1|...|FlowM| 
+ +---------------+  +-----+   +-----+ 
+                                      
+ +-----+   +-----+  +-----+   +-----+ 
+ |Flow1|...|FlowM|  | FEC |...| FEC | 
+ +-----+   +-----+  +-----+   +-----+  
+        </artwork>
+	</figure>
+
+    	<figure anchor="fig:multi-scope-multi-stream" title="Transport single path, transport multipath and multi-stream applications">
+        <artwork>
++-------+   +-------+  +-------+   +-------+  +-------+   +-------+ 
+|Stream1|...|StreamM|  |Stream1|...|StreamM|  |Stream1|...|StreamM|
++-------+   +-------+  +-------+   +-------+  +-------+   +-------+
+                                                               
++-------------------+  +-------------------+  +-------------------+
+|                   |  |        FEC        |  |  Mpath Transport  |
+|        FEC        |  +-------------------+  +-------------------+
+|  above/in/below   |
+|  Spath Transport  |  +-------------------+  +-------------------+
+|                   |  |  Mpath Transport  |  |        FEC        |
++-------------------+  +-------------------+  +-------------------+
+                                                                
++-------------------+  +-----+       +-----+  +-----+       +-----+ 
+|        Flow       |  |Flow1|  ...  |FlowM|  |Flow1|  ...  |FlowM| 
++-------------------+  +-----+       +-----+  +-----+       +-----+ 
         </artwork>
         </figure>
 		
