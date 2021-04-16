@@ -267,7 +267,7 @@
 
 	<t>The decoding scheme may not be able to decode all the symbols. The chance of decoding the erased packets depends on the size of the encoding window, the coding rate and the distribution of erasure in the transmission channel. The FEC channel may let the client transmit information related to the need of supplementary symbols to adapt the level of reliability. Partial and full reliability could be envisioned.<list style="symbols">
 			<t>Full reliability: The receiver may hold symbols until the decoding of source symbols is possible. In particular, if the codec does not enable a subset of the system to be inverted, the receiver would have to wait for a certain minimum amount of repair packets before it can recover all the source symbols.</t>
-			<t>Partial reliability: The receiver cannot deliver source symbols that could not have been decoded to the upper layer. If the size of the encoding window (for Sliding Window Coding) and the size of the blocks (for Block Coding) are large, the chances of recovering the erased symbols would increase. However, this would impact on memory requirements and the cost of encoding and decoding processes.</t>
+			<t>Partial reliability: The receiver cannot deliver source symbols that could not have been decoded to the upper layer. Increasing the amount of repair symbols would increase (1) the size of the encoding window (for Sliding Window Coding) or of the blocks (for Block Coding) and (2) the chances of recovering the erased symbols. However, this would impact on memory requirements and the cost of encoding and decoding processes.</t>
 	</list></t>
 	</section>
 
