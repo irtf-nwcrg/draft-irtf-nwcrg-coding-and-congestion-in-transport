@@ -433,9 +433,9 @@
         <section anchor="sec:fec-below" title="FEC below the transport">
             <figure anchor="fig:fec-below" title="FEC below the transport">
         	<artwork>
- | source  | sending rate               ^ source 
- | packets | (or window)                | packets
- v         v                            | 
+ | source                               ^ source 
+ | packets                              | packets
+ v                                      | 
 +--------------+                      +--------------+
 |Transport     |               network|Transport     |
 |(including CC)|           information|              |
