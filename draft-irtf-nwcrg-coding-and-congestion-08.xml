@@ -415,7 +415,7 @@
 		</section>
 
 		<section anchor="subsec:partial_rel_in" title="On partial reliability">
-				<t>The application may require partial reliability. In this case, the transport and FEC mechanisms could be conjointly designed. As one example, the reliability offered by FEC may be sufficient, with no retransmission required. This depends on application needs and the trade-off between latency and loss. Partial reliability impacts the type of FEC and type of codec that can be used, such as discussed in <xref target="subsec:def_code"></xref>.</t>
+				<t>The application may require partial reliability. The reliability offered by FEC may be sufficient, with no retransmission required. This depends on application needs and the trade-off between latency and loss. Partial reliability impacts the type of FEC and type of codec that can be used, such as discussed in <xref target="subsec:def_code"></xref>.</t>
 		</section>
 
 		<section anchor="subsec:multipath_in" title="On transport multipath">
