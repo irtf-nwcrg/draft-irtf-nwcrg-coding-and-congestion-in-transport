@@ -120,18 +120,19 @@
         <!-- ######################################################-->
         <section anchor="sec:notations" title="Context">
         <section title="Separate channels, separate entities">
-        <t><xref target="fig:sep-channel"></xref> presents the notations that will be used in this document and introduces the Congestion Control (CC) and Forward Erasure Correction (FEC) channels. The Congestion Control channel carries source packets from a sender to a receiver, and packets signaling information about the network (number of packets received vs. lost, Explicit Congestion Notification (ECN) marks, etc.) from the receiver to the sender. The Forward Erasure Correction channel carries repair symbols (from the sender to the receiver) and information from the receiver to the sender (e.g. signaling which packets have been repaired, loss rate prior and/or after decoding, etc.).</t>
+		<t><xref target="fig:sep-channel"></xref> presents the notations that will be used in this document and introduces the Forward Erasure Correction (FEC) and Congestion Control (CC) channels. The Forward Erasure Correction channel carries repair symbols (from the sender to the receiver) and information from the receiver to the sender (e.g. signaling which packets have been repaired, loss rate prior and/or after decoding, etc.). The Congestion Control channel carries network packets from a sender to a receiver, and packets signaling information about the network (number of packets received vs. lost, Explicit Congestion Notification (ECN) marks, etc.) from the receiver to the sender. The network packets that are sent by the Congestion Control channel may be composed of source packets and/or repair symbols.</t>
         <figure anchor="fig:sep-channel" title="Notations and separate channels">
         <artwork>
  SENDER                                RECEIVER
 
 +------+                               +------+
-|      | <![CDATA[-----]]>    source packets  ---->|      |
+|      | <![CDATA[-----]]>   network packets  ---->|      |
 |  CC  |                               |  CC  |
 |      | <![CDATA[<---]]>  network information  ---|      |
 +------+                               +------+
 
 +------+                               +------+
+|      |           source and/or  ---->|      |
 |      | <![CDATA[-----]]>    repair symbols  ---->|      |
 | FEC  |                               | FEC  |
 |      | <![CDATA[<---]]> info: repaired symbols --|      |
@@ -150,7 +151,7 @@
   v            |             v             | window)
 +---------------+source     +-----------------+
 |    FEC        |and/or     |    CC           |
-|               |repair     |                 |source 
+|               |repair     |                 |network 
 |               |symbols    |                 |packets
 +---------------+==>        +-----------------+==>
   ^                                       ^
@@ -163,8 +164,8 @@
     	<figure anchor="fig:sep-entities-clt" title="Separate entities (receiver-side)">
         <artwork>
   |                                 |             
-  | source and/or                   | packets      
-  | repair symbols                  |             
+  | source and/or                   | network      
+  | repair symbols                  | packets            
   v                                 v             
 +---------------+              +-----------------+
 |    FEC        |signaling     |    CC           |
@@ -180,7 +181,8 @@
 		<t>'sending rate (or window)' (output control plane for the transport including CC): refers to the rate at which a congestion control decides to transmit packets based on 'network information'.</t>
 		<t>'signaling repaired symbols' (input control plane for the FEC): refers to the information a FEC sender can obtain from a FEC receiver about the performance of the FEC solution as seen by the receiver.</t>
 		<t>'coding rate' (output control plane for the FEC): refers to the coding rate that is used by the FEC solution (i.e.  proportion of transmitted symbols that carry useful data).</t>	
-		<t>'source and/or repair symbols' (data plane for both the FEC and the CC): refers to the data that is transmitted. The sender can decide to send source symbols only (meaning that the coding rate is 0), repair symbols only (if the solution decides not to send the original source packets) or a mix of both.</t>	
+		<t>'network packets' (output data plane for the CC): refers to the data that is transmitted by a CC sender to a CC receiver. The network packets may contain source and/or repair symbols.</t>	
+		<t>'source and/or repair symbols' (data plane for the FEC): refers to the data that is transmitted by a FEC sender to a FEC receiver. The sender can decide to send source symbols only (meaning that the coding rate is 0), repair symbols only (if the solution decides not to send the original source symbols) or a mix of both.</t>	
 	</list></t>
 
 	<!-- <t><xref target="fig:sep-entities"></xref> provides more details than 
@@ -210,30 +212,47 @@
 		    <t>The transport layer may implement a retransmission mechanism to guarantee the reliability of a data transfer (e.g. TCP). Depending on how the FEC and CC functions are scheduled (FEC above CC, FEC in CC, FEC below CC), the impact of reliable transport on the FEC reliability mechanisms is different.</t></list></t>
 	</section>
 	
-	<section title="Transport multipath">
-	<t>The application layer may be composed of several streams above FEC and transport layers instances. The different streams could exploit different paths between the sender and the receiver or not. The document considers one application layer stream as input packets above a combination of FEC and transport layers. In <xref target="fig:multi-scope"></xref>, each of stream 1 and stream 2 are considered in the scope of the document but a combination of stream 1 and stream 2 is not. The case of multiple application level streams above multiple FEC and transport layers instances is out of the scope of the document and not further described.</t>
+	<section title="Scope of the document concerning transport multipath and multi-streams applications">
+		<t>The application layer may be composed of several streams above FEC and transport layers instances. The transport layer may exploit a multipath mechanism. The different streams could exploit different paths between the sender and the receiver or not. This section describes what is in the scope of this document in regards with multi-streams applications and multipath transport protocols.</t>
+		<t>The different combinations between multi-stream applications and multipath transport are the following: (1) one application layer stream as input packets above a combination of FEC and multipath (Mpath) transport layers (<xref target="fig:multi-scope-single-stream"></xref>), and (2) multiple application layer streams as input packets above a combination of FEC and multipath (Mpath) or single path (Spath) transport layers (<xref target="fig:multi-scope-multi-stream"></xref>). In <xref target="fig:multi-scope-single-stream"></xref>, each of stream 1 and stream 2 are considered in the scope of the document. In <xref target="fig:multi-scope-multi-stream"></xref>, the case with single path transport is considered in the scope of this document but the cases with mutipath transport is not. The case of multiple application level streams above multiple transport layers instances is out of the scope of the document and not further described.</t>
 
-    	<figure anchor="fig:multi-scope" title="Scope of the transport multipath">
+    	<figure anchor="fig:multi-scope-single-stream" title="Transport multipath and single stream applications">
         <artwork>
-  +-----------------------------------------------+
-  |                   Application                 |
-  |                                               | 
-  |  +-------------------+ +-------------------+  |
-  |  |      Stream 1     | |      Stream 2     |  |
-  |  +-------------------+ +-------------------+  |
-  |                                               |
-  |  +-------------------+ +-------------------+  |
-  |  |        FEC        | |Multipath Transport|  |
-  |  +-------------------+ +-------------------+  |
-  |                                               |
-  |  +-------------------+ +-----+       +-----+  |
-  |  |Multipath Transport| |Flow1|  ...  |FlowM|  |
-  |  +-------------------+ +-----+       +-----+  |
-  |                                               |
-  |  +-----+       +-----+ +-----+       +-----+  |
-  |  |Flow1|  ...  |FlowM| | FEC |  ...  | FEC |  |
-  |  +-----+       +-----+ +-----+       +-----+  | 
-  +-----------------------------------------------+ 
+ +---------------+  +---------------+ 
+ |    Stream 1   |  |    Stream 2   | 
+ +---------------+  +---------------+ 
+                                      
+ +---------------+  +---------------+ 
+ |      FEC      |  |Mpath Transport| 
+ +---------------+  +---------------+ 
+                                      
+ +---------------+  +-----+   +-----+ 
+ |Mpath Transport|  |Flow1|...|FlowM| 
+ +---------------+  +-----+   +-----+ 
+                                      
+ +-----+   +-----+  +-----+   +-----+ 
+ |Flow1|...|FlowM|  | FEC |...| FEC | 
+ +-----+   +-----+  +-----+   +-----+  
+        </artwork>
+	</figure>
+
+    	<figure anchor="fig:multi-scope-multi-stream" title="Transport single path, transport multipath and multi-stream applications">
+        <artwork>
++-------+   +-------+  +-------+   +-------+  +-------+   +-------+ 
+|Stream1|...|StreamM|  |Stream1|...|StreamM|  |Stream1|...|StreamM|
++-------+   +-------+  +-------+   +-------+  +-------+   +-------+
+                                                               
++-------------------+  +-------------------+  +-------------------+
+|                   |  |        FEC        |  |  Mpath Transport  |
+|        FEC        |  +-------------------+  +-------------------+
+|  above/in/below   |
+|  Spath Transport  |  +-------------------+  +-------------------+
+|                   |  |  Mpath Transport  |  |        FEC        |
++-------------------+  +-------------------+  +-------------------+
+                                                                
++-------------------+  +-----+       +-----+  +-----+       +-----+ 
+|        Flow       |  |Flow1|  ...  |FlowM|  |Flow1|  ...  |FlowM| 
++-------------------+  +-----+       +-----+  +-----+       +-----+ 
         </artwork>
         </figure>
 		
@@ -247,8 +266,8 @@
 	</list></t>
 
 	<t>The decoding scheme may not be able to decode all the symbols. The chance of decoding the erased packets depends on the size of the encoding window, the coding rate and the distribution of erasure in the transmission channel. The FEC channel may let the client transmit information related to the need of supplementary symbols to adapt the level of reliability. Partial and full reliability could be envisioned.<list style="symbols">
-			<t>Full reliability: The receiver may hold symbols until the decoding of source packets is possible. In particular, if the codec does not enable a subset of the linear system to be inverted, the receiver would have to wait for a certain minimum amount of repair packets before it can recover all the source packets.</t>
-			<t>Partial reliability: The receiver cannot deliver source packets that could not have been decoded to the upper layer. If the size of the encoding window (for Sliding Window Coding) and the size of the blocks (for Block Coding) are large, the chances of recovering the erased symbols would increase. However, this would impact on memory requirements and the cost of encoding and decoding processes.</t>
+			<t>Full reliability: The receiver may hold symbols until the decoding of source symbols is possible. In particular, if the codec does not enable a subset of the system to be inverted, the receiver would have to wait for a certain minimum amount of repair packets before it can recover all the source symbols.</t>
+			<t>Partial reliability: The receiver cannot deliver source symbols that could not have been decoded to the upper layer. For a fixed size of encoding window (for Sliding Window Coding) or of blocks (for Block Coding) containing the source symbols, increasing the amount of repair symbols would increase the chances of recovering the erased symbols. However, this would impact on memory requirements, on the cost of encoding and decoding processes and on the network overhead.</t>
 	</list></t>
 	</section>
 
@@ -300,9 +319,9 @@
  | symbols | (or window)                | symbols
  v         |                            |
 +-------------+                      +-------------+
-|Transport    |source         network|Transport    |
-|(incl. CC)   |and/or     information|             |
-|             |repair             <![CDATA[<]]>==|             |
+|Transport    |               network|Transport    |
+|(incl. CC)   |           information|             |
+|             |network            <![CDATA[<]]>==|             |
 |             |packets               |             |
 +-------------+==>                   +-------------+
 
@@ -313,14 +332,14 @@
 		<t><xref target="fig:fec-above"></xref> presents an architecture where FEC operates on top of the transport.</t>
 
 		<t>The advantage of this approach is that the FEC overhead does not contribute to congestion in the network. When congestion control is implemented at the transport layer, the repair symbols are sent following the congestion window or rate determined by the CC mechanism. This can result in improved quality of experience for latency sensitive applications such as VoIP or any not-fully reliable services.</t>
-		<t>This approach requires that the transport protocol does not implement a fully reliable data transfer service (e.g., based on lost packet retransmission). QUIC with unreliable datagram extension <xref target="I-D.ietf-quic-datagram"></xref> is an example of a protocol for which this is relevant. In cases where QUIC traffic is blocked and a fall-back to TCP is proposed, there is a risk for bad interactions between TCP's full reliability and coding schemes. For reliable transfers, coding usage does not guarantee better performance; instead, it would mainly reduce goodput.</t>
+		<t>This approach requires that the transport protocol does not implement a fully reliable in-order data transfer service (e.g., like TCP). QUIC with unreliable datagram extension <xref target="I-D.ietf-quic-datagram"></xref> is an example of a protocol for which this is relevant. In cases where QUIC traffic is blocked and a fall-back to TCP is proposed, there is a risk for bad interactions between TCP's full reliability and coding schemes. For reliable transfers, coding usage does not guarantee better performance; instead, it would mainly reduce goodput.</t>
 
 		<section anchor="subsec:fairness_above" title="Fairness and impact on non-coded flows">
 				<t>The addition of coding within the flow does not influence the interaction between coded and non-coded flows. This interaction would mainly depend on the congestion controls associated with each flow.</t>
 		</section>
 
 		<section anchor="subsec:cc-recov-interaction_above" title="Congestion control and recovered symbols">
-				<t>The congestion control mechanism may not be able to differentiate repair symbols from actual source packets. The relevance of adding coding at the application layer is related to the needs of the application. For real-time applications using an unreliable or partially reliable transport, this approach may reduce the number of losses perceived by the application.</t>
+				<t>The congestion control mechanism receives network packets and may not be able to differentiate repair symbols from actual source ones. The relevance of adding coding at the application layer is related to the needs of the application. For real-time applications using an unreliable or partially reliable transport, this approach may reduce the number of losses perceived by the application.</t>
 		</section>
 
 		<section anchor="subsec:cc-nc-interaction_above" title="Interactions between congestion control and coding rates">
@@ -351,17 +370,17 @@
 	<section anchor="sec:fec-in" title="FEC within the transport">
 	<figure anchor="fig:fec-in" title="FEC in the transport">
         	<artwork>
- | source  | sending                    ^ source 
- | packets | rate                       | packets
- v         v                            | 
+ | source                               ^ source 
+ | packets                              | packets
+ v                                      | 
 +------------+                      +------------+ 
 | Transport  |                      | Transport  |
 |            |                      |            |
 | +---+ +--+ |             signaling| +---+ +--+ |
 | |FEC| |CC| |              repaired| |FEC| |CC| |
-| +---+ +--+ |source         symbols| +---+ +--+ |
-|            |and/or             <![CDATA[<]]>==|            |
-|            |repair         network|            |
+| +---+ +--+ |               symbols| +---+ +--+ |
+|            |                   <![CDATA[<]]>==|            |
+|            |network        network|            |
 |            |packets    information|            |
 +------------+ ==>               <![CDATA[<]]>==+------------+
 
@@ -396,7 +415,7 @@
 		</section>
 
 		<section anchor="subsec:partial_rel_in" title="On partial reliability">
-				<t>The application may require partial reliability. In this case, the transport and FEC mechanisms could be conjointly designed. As one example, the reliability offered by FEC may be sufficient, with no retransmission required. This depends on application needs and the trade-off between latency and loss. Partial reliability impacts the type of FEC and type of codec that can be used, such as discussed in <xref target="subsec:def_code"></xref>.</t>
+				<t>The application may require partial reliability. The reliability offered by FEC may be sufficient, with no retransmission required. This depends on application needs and the trade-off between latency and loss. Partial reliability impacts the type of FEC and type of codec that can be used, such as discussed in <xref target="subsec:def_code"></xref>.</t>
 		</section>
 
 		<section anchor="subsec:multipath_in" title="On transport multipath">
@@ -414,15 +433,15 @@
         <section anchor="sec:fec-below" title="FEC below the transport">
             <figure anchor="fig:fec-below" title="FEC below the transport">
         	<artwork>
- | source  | sending rate               ^ source 
- | packets | (or window)                | packets
- v         v                            | 
+ | source                               ^ source 
+ | packets                              | packets
+ v                                      | 
 +--------------+                      +--------------+
 |Transport     |               network|Transport     |
 |(including CC)|           information|              |
 |              |                   <![CDATA[<]]>==|              |
 +--------------+                      +--------------+
- | source packets                       ^ source packets
+ | network packets                      ^ network packets
  v                                      |
 +--------------+                      +--------------+ 
 | FEC          |source                |  FEC         |
