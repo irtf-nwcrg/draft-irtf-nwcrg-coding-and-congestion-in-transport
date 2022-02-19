@@ -98,10 +98,15 @@
 
    <section anchor="sec:introduction" title="Introduction">
 	<t>There are cases where deploying FEC coding improves the performance of a transmission. As an example, it may take time for a sender to detect transfer tail losses (losses that occur at the end of a transfer, where, e.g., TCP obtains no more ACKs that would enable it to quickly repair the loss via retransmission). Allowing the receiver to recover such losses instead of having to rely on a retransmission could improve the experience of applications using short flows. Another example is a network where non-congestion losses are persistent and prevent a sender from exploiting the link capacity.</t>
-	<t>Coding is a reliability mechanism that is distinct and separate from the loss detection of congestion controls. <xref target="RFC5681"/> defines the loss-based congestion control of TCP; since FEC coding repairs such losses, blindly applying it may easily lead to an implementation that also hides a congestion signal from the sender. It is important to ensure that such information hiding does not occur.</t>
+	<t>Coding and the loss detection of congestion controls are two distinct and separate reliability mechanisms that is distinct and separate from the loss detection of congestion controls.  Since FEC coding repairs losses, blindly applying FEC may easily lead to an implementation that also hides a congestion signal from the sender.  It is important to ensure that such information hiding does not occur, because loss may be the only congestion signal available to the sender (e.g. TCP <xref target="RFC5681"/>).</t>
 	<t>FEC coding and congestion control can be seen as two separate channels. In practice, implementations may mix the signals that are exchanged on these channels. This memo offers a discussion of how FEC coding and congestion control coexist. Another objective is to encourage the research community also to consider congestion control aspects when proposing and comparing FEC coding solutions in communication systems. This document does not aim at proposing guidelines for characterizing
         FEC coding solutions.</t>
-	<t>We consider an end-to-end unicast data transfer with FEC coding in the application (above the transport), within the transport or directly below the transport. A typical scenario for the considerations in this document is a client browsing the web or watching a live video.</t>
+	<t>We consider three architecture for end-to-end unicast data transfer:<list style="symbols">
+		<t>with FEC coding in the application (above the transport) (<xref target="sec:fec-above"/>),</t>
+		<t>within the transport (<xref target="sec:fec-in"/>), or</t>
+		<t>directly below the transport (<xref target="sec:fec-below"/>).</t>
+	</list></t>
+	<t>A typical scenario for the considerations in this document is a client browsing the web or watching a live video.</t>
 	<t>This document represents the collaborative work and consensus of the Coding for Efficient Network Communications Research Group (NWCRG); it is not an IETF product and is not a standard. The document follows the terminology proposed in the taxonomy document <xref target="RFC8406"></xref>.</t>
     </section>
 
@@ -118,10 +123,18 @@
         <!-- ######################################################-->
         <!-- New section -->
         <!-- ######################################################-->
-        <section anchor="sec:notations" title="Context">
+    <section anchor="sec:notations" title="Context">
+
+	<section anchor="subsec:def_fairness" title="Fairness, Quantifying and Limiting Harm, and Policy Concerns">
+			<t>Traffic from or to different end users may share various types of bottlenecks. When such a shared bottleneck does not implement some form of flow protection, the share of the available capacity between single flows can help assess when one flow starves the other.</t>
+			<t>As one example, for residential accesses, the data rate can be guaranteed for the customer premises equipment, but not necessarily for the end user. The quality of service that guarantees fairness between the different clients can be seen as a policy concern <xref target="I-D.briscoe-tsvarea-fair"></xref>.</t>
+			<t>While past efforts have focused on achieving fairness, quantifying and limiting harm caused by new algorithms (or algorithms with coding) is more practical <xref target="BEYONDJAIN"></xref>. This document considers fairness as the impact of the addition of coded flows on non-coded flows when they share the same bottleneck. It is assumed that the non-coded flows respond to congestion signals from the network. This document does not contribute to the definition of fairness at a wider scale.</t>
+		</section>
+
         <section title="Separate channels, separate entities">
-		<t><xref target="fig:sep-channel"></xref> presents the notations that will be used in this document and introduces the Forward Erasure Correction (FEC) and Congestion Control (CC) channels. The Forward Erasure Correction channel carries repair symbols (from the sender to the receiver) and information from the receiver to the sender (e.g. signaling which symbols have been recovered, loss rate prior and/or after decoding, etc.). The Congestion Control channel carries network packets from a sender to a receiver, and packets signaling information about the network (number of packets received vs. lost, Explicit Congestion Notification (ECN) marks, etc.) from the receiver to the sender. The network packets that are sent by the Congestion Control channel may be composed of source packets and/or repair symbols.</t>
-        <figure anchor="fig:sep-channel" title="Notations and separate channels">
+		<t><xref target="fig:sep-channel-cc"></xref> and <xref target="fig:sep-channel-fec"></xref> present the notations that will be used in this document and introduces the Forward Erasure Correction (FEC) and Congestion Control (CC) channels. The Forward Erasure Correction channel carries repair symbols (from the sender to the receiver) and information from the receiver to the sender (e.g. signaling which symbols have been recovered, loss rate prior and/or after decoding, etc.). The Congestion Control channel carries network packets from a sender to a receiver, and packets signaling information about the network (number of packets received vs. lost, Explicit Congestion Notification (ECN) <xref target="RFC3168"/> marks, etc.) from the receiver to the sender. The network packets that are sent by the Congestion Control channel may be composed of source packets and/or repair symbols.</t>
+	
+        <figure anchor="fig:sep-channel-cc" title="Congestion Control (CC) channel">
         <artwork>
  SENDER                                RECEIVER
 
@@ -130,6 +143,12 @@
 |  CC  |                               |  CC  |
 |      | <![CDATA[<---]]>  network information  ---|      |
 +------+                               +------+
+        </artwork>
+        </figure>
+        
+	<figure anchor="fig:sep-channel-fec" title="Forward Erasure Correction (FEC) channel">
+        <artwork>
+ SENDER                                RECEIVER
 
 +------+                               +------+
 |      |           source and/or       |      |
@@ -175,8 +194,8 @@
         </artwork>
         </figure>
 
-	<t><xref target="fig:sep-entities-srv"></xref> and <xref target="fig:sep-entities-clt"></xref> provide more details than <xref target="fig:sep-channel"></xref>. Some elements are introduced:<list style="symbols">
-		<t>'network information' (input control plane for the transport including CC): refers not only to the network information that is explicitly signaled from the receiver, but all the information a congestion control obtains from a network (e.g., TCP can estimate the latency and the available capacity at the bottleneck).</t>
+	<t><xref target="fig:sep-entities-srv"></xref> and <xref target="fig:sep-entities-clt"></xref> provide more details than <xref target="fig:sep-channel-cc"></xref> and <xref target="fig:sep-channel-fec"></xref>. Some elements are introduced:<list style="symbols">
+		<t>'network information' (input control plane for the transport including CC): refers not only to the network information that is explicitly signaled from the receiver.</t>
 		<t>'requirements' (input control plane for the transport including CC): refers to application requirements such as upper/lower rate bounds, periods of quiescence, or a priority.</t>
 		<t>'sending rate (or window)' (output control plane for the transport including CC): refers to the rate at which a congestion control decides to transmit packets based on 'network information'.</t>
 		<t>'signaling recovered symbols' (input control plane for the FEC): refers to the information a FEC sender can obtain from a FEC receiver about the performance of the FEC solution as seen by the receiver.</t>
@@ -208,8 +227,8 @@
 	<section title="Relation between transport layer and application requirements">
 
     <t>The choice of the adequate transport layer may be related to application requirements and the services offered by a transport protocol <xref target="RFC8095"></xref>:<list style="symbols"> 
-		    <t>The transport layer may provide an unreliable transport service (e.g. UDP or DCCP <xref target="RFC4340"></xref>) or a partially reliable transport service (e.g. SCTP with the partial reliability extension <xref target="RFC3758"></xref> or QUIC with the unreliable datagram extension <xref target="I-D.ietf-quic-datagram"></xref>). Depending on the amount of redundancy and network conditions, there could be cases where it becomes impossible to carry traffic.</t>
-		    <t>The transport layer may implement a retransmission mechanism to guarantee the reliability of a data transfer (e.g. TCP). Depending on how the FEC and CC functions are scheduled (FEC above CC, FEC in CC, FEC below CC), the impact of reliable transport on the FEC reliability mechanisms is different.</t></list></t>
+		    <t>The transport layer may implement a retransmission mechanism to guarantee the reliability of a data transfer (e.g. TCP). Depending on how the FEC and CC functions are scheduled (FEC above CC (<xref target="sec:fec-above"/>), FEC in CC (<xref target="sec:fec-in"/>), FEC below CC (<xref target="sec:fec-below"/>)), the impact of reliable transport on the FEC reliability mechanisms is different.</t></list></t>
+    <t>The transport layer may provide an unreliable transport service (e.g. UDP or DCCP <xref target="RFC4340"></xref>) or a partially reliable transport service (e.g. SCTP with the partial reliability extension <xref target="RFC3758"></xref> or QUIC with the unreliable datagram extension <xref target="I-D.ietf-quic-datagram"></xref>). Depending on the amount of redundancy and network conditions, there could be cases where it becomes impossible to carry traffic. This is further discussed in <xref target="sec:fec-above"/> where "FEC above CC" case is assessed and in <xref target="sec:fec-in"/> nor in <xref target="sec:fec-below"/> where "FEC in CC"  and "FEC below CC" are assessed.</t>
 	</section>
 	
 	<section title="Scope of the document concerning transport multipath and multi-streams applications">
@@ -273,11 +292,7 @@
 	</list></t>
 	</section>
 
-	<section anchor="subsec:def_fairness" title="Fairness, a policy concern">
-			<t>Traffic from or to different end users may share various types of bottlenecks. When such a shared bottleneck does not implement some form of flow protection, the share of the available capacity between single flows can help assess when one flow starves the other.</t>
-			<t>As one example, for residential accesses, the data rate can be guaranteed for the customer premises equipment, but not necessarily for the end user. The quality of service that guarantees fairness between the different clients can be seen as a policy concern <xref target="I-D.briscoe-tsvarea-fair"></xref>.</t>
-			<t>While past efforts have focused on achieving fairness, quantifying and limiting harm caused by new algorithms (or algorithms with coding) is more practical <xref target="BEYONDJAIN"></xref>. This document considers fairness as the impact of the addition of coded flows on non-coded flows when they share the same bottleneck. It is assumed that the non-coded flows respond to congestion signals from the network. This document does not contribute to the definition of fairness at a wider scale.</t>
-		</section>
+
     </section>
 
         <!-- ######################################################-->
@@ -333,8 +348,8 @@
 
 		<t><xref target="fig:fec-above"></xref> presents an architecture where FEC operates on top of the transport.</t>
 
-		<t>The advantage of this approach is that the FEC overhead does not contribute to congestion in the network. When congestion control is implemented at the transport layer, the repair symbols are sent following the congestion window or rate determined by the CC mechanism. This can result in improved quality of experience for latency sensitive applications such as VoIP or any not-fully reliable services.</t>
-		<t>This approach requires that the transport protocol does not implement a fully reliable in-order data transfer service (e.g., like TCP). QUIC with unreliable datagram extension <xref target="I-D.ietf-quic-datagram"></xref> is an example of a protocol for which this is relevant. In cases where QUIC traffic is blocked and a fall-back to TCP is proposed, there is a risk for bad interactions between TCP's full reliability and coding schemes. For reliable transfers, coding usage does not guarantee better performance; instead, it would mainly reduce goodput.</t>
+		<t>The advantage of this approach is that the FEC overhead does not contribute to congestion in the network when congestion control is implemented at the transport layer, because the repair symbols are sent following the congestion window or rate determined by the CC mechanism. This can result in improved quality of experience for latency sensitive applications such as Voice over IP (VoIP) or any not-fully reliable services.</t>
+		<t>This approach requires that the transport protocol does not implement a fully reliable in-order data transfer service (e.g., like TCP). QUIC with unreliable datagram extension <xref target="I-D.ietf-quic-datagram"/> is an example of a protocol for which this is relevant. In cases where the partially reliable transport is blocked and a fall-back to a reliable transport is proposed, there is a risk for bad interactions between reliability at the transport level and coding schemes. For reliable transfers, coding usage does not guarantee better performance; instead, it would mainly reduce goodput.</t>
 
 		<section anchor="subsec:fairness_above" title="Fairness and impact on non-coded flows">
 				<t>The addition of coding within the flow does not influence the interaction between coded and non-coded flows. This interaction would mainly depend on the congestion controls associated with each flow.</t>
@@ -580,7 +595,7 @@
     </references> -->
 
     <references title="Informative References">
-        <!-- <?rfc include="reference.RFC.3168.xml"?> -->
+        <?rfc include="reference.RFC.3168.xml"?>
         <?rfc include="reference.RFC.3758.xml"?>
         <?rfc include="reference.RFC.4340.xml"?>
         <?rfc include="reference.RFC.5109.xml"?>
