@@ -30,7 +30,7 @@
     <author fullname="Nicolas Kuhn" initials="N" surname="Kuhn">
       <organization>CNES</organization>
       <address>
-      <email>nicolas.kuhn@ietf.gmail.com</email>
+      <email>nicolas.kuhn.ietf@gmail.com</email>
       </address>
     </author>
       
@@ -356,7 +356,7 @@
 		</section>
 
 		<section anchor="subsec:cc-recov-interaction_above" title="Congestion control and recovered symbols">
-				<t>The congestion control mechanism receives network packets and may not be able to differentiate repair symbols from actual source ones. The relevance of adding coding at the application layer is related to the needs of the application. For real-time applications using an unreliable or partially reliable transport, this approach may reduce the number of losses perceived by the application.</t>
+			<t>The congestion control mechanism receives network packets and may not be able to differentiate repair symbols from actual source ones. This differentiation requires a transport protocol providing more than the services described in <xref target="RFC8095"/>, in particular specifically indicating what information has been repaired. The relevance of adding coding at the application layer is related to the needs of the application. For real-time applications using an unreliable or partially reliable transport, this approach may reduce the number of losses perceived by the application.</t>
 		</section>
 
 		<section anchor="subsec:cc-nc-interaction_above" title="Interactions between congestion control and coding rates">
@@ -364,7 +364,7 @@
 		</section>
 
 		<section anchor="subsec:cc-useless-interaction_above" title="On useless repair symbols">
-				<t>The discussion depends on application needs. The only case where adding useless repair symbols does not obviously result in reduced goodput is when the application rate is limited (e.g., VoIP traffic). In this case, useless repair symbols would only impact the amount of data generated in the network. Extra data in the network can, however, increase the likelihood of increasing delay and/or packet loss, which could provoke a congestion control reaction that would degrade goodput.</t>
+				<t>The only case where adding useless repair symbols does not obviously result in reduced goodput is when the application rate is limited (e.g., VoIP traffic). In this case, useless repair symbols would only impact the amount of data generated in the network. Extra data in the network can, however, increase the likelihood of increasing delay and/or packet loss, which could provoke a congestion control reaction that would degrade goodput.</t>
 		</section>
 
 		<section anchor="subsec:partial_order_above" title="On partial ordering">
