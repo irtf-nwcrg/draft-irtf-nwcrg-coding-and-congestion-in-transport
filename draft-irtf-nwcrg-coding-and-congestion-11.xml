@@ -367,15 +367,15 @@
 				<t>The only case where adding useless repair symbols does not obviously result in reduced goodput is when the application rate is limited (e.g., VoIP traffic). In this case, useless repair symbols would only impact the amount of data generated in the network. Extra data in the network can, however, increase the likelihood of increasing delay and/or packet loss, which could provoke a congestion control reaction that would degrade goodput.</t>
 		</section>
 
-		<section anchor="subsec:partial_order_above" title="On partial ordering">
+		<section anchor="subsec:partial_order_above" title="On partial ordering at FEC level">
 				<t>Irrespective of the transport protocol, a FEC mechanism does not require to implement a reordering mechanism if the application does not need it. However, if the application needs in-order delivery of packets, a reordering mechanism at the receiver is required.</t>
 		</section>
 
-		<section anchor="subsec:partial_rel_above" title="On partial reliability">
+		<section anchor="subsec:partial_rel_above" title="On partial reliability at FEC level">
 			<t>The application may require partial reliability. In this case, the coding rate of a FEC mechanism could be adapted based on inputs from the application and the trade-off between latency and packet loss. Partial reliability impacts the type of FEC and type of codec that can be used, such as discussed in <xref target="subsec:def_code"></xref>. </t>
 		</section>
 
-		<section anchor="subsec:multipath_above" title="On multipath transport ">
+		<section anchor="subsec:multipath_above" title="On multipath transport and FEC mechanism">
 				<t>Whether the transport protocol exploits multiple paths or not does not have an impact on the FEC mechanism.</t>
 		</section>
 
@@ -409,10 +409,12 @@
 
 		<t>The advantage of this approach is that it allows a joint optimization of CC and FEC. Moreover, the transmission of repair symbols does not add congestion in potentially congested networks but helps repair lost packets (such as tail losses). This joint optimization is the key to prevent flows to consume the whole available capacity. The amount of repair traffic injected should not lead to congestion. As denoted in <xref target="I-D.singh-rmcat-adaptive-fec" />, an increase of the repair ratio should be done conjointly with a decrease of the source sending rate.</t>
 
+		<t>The drawback of this approach is that it may require specific signaling and transport services that may not be described in <xref target="RFC8095"/>. Therefore, development and maintenance may require specific efforts at both transport and coding level and the design of the solution may end up being complexed to suit different deployment needs.</t>
+
 		<t>For reliable transfers, including redundancy reduces goodput for long transfers but the amount of repair symbols can be adapted, e.g. depending on the congestion window size. There is a trade-off between 1) the capacity that could have been exploited by application data instead of transmitting source packets, and 2) the benefits derived from transmitting repair symbols (e.g. unlocking the receive buffer if it is limiting). The coding ratio needs to be carefully designed. For small files, sending repair symbols when there is no more data to transmit could help to reduce the transfer time. Sending repair symbols can avoid the silence period between the transmission of the last packet in the send buffer and 1) firing a retransmission of lost packets, or 2) the transmission of new packets.</t>
 
 		<section anchor="subsec:fairness_in" title="Fairness and impact on non-coded flows">
-				<t>The addition of coding within the transport may impact the congestion control mechanism and hide congestion losses. Specific interaction between congestion controls and coding schemes can be proposed (see <xref target="subsec:cc-recov-interaction_in"></xref>, <xref target="subsec:cc-nc-interaction_in"></xref> and <xref target="subsec:cc-useless-interaction_in"></xref>). If no specific interaction is introduced, the coding scheme may hide congestion losses from the congestion controller and the description of <xref target="sec:fec-below"></xref> may apply.</t>
+				<t>Specific interaction between congestion controls and coding schemes can be proposed (see <xref target="subsec:cc-recov-interaction_in"></xref>, <xref target="subsec:cc-nc-interaction_in"></xref> and <xref target="subsec:cc-useless-interaction_in"></xref>). If no specific interaction is introduced, the coding scheme may hide congestion losses from the congestion controller and the description of <xref target="sec:fec-below"></xref> may apply.</t>
 		</section>
 
 		<section anchor="subsec:cc-recov-interaction_in" title="Congestion control and recovered symbols">
@@ -428,15 +430,15 @@
 				<t>The sender may exploit the information given by the receiver to reduce the number of useless repair symbols and the resulting goodput reduction.</t>
 		</section>
 
-		<section anchor="subsec:partial_order_in" title="On partial ordering">
+		<section anchor="subsec:partial_order_in" title="On partial ordering at FEC and/or transport level">
 				<t>The application may require in-order delivery of packets. In this case, both FEC and transport layer mechanisms should guarantee that packets are delivered in order. If partial ordering is requested by the application, both the FEC and transport could relax the constraints related to in-order delivery: reordering mechanisms at the receiver may not be necessary.</t>
 		</section>
 
-		<section anchor="subsec:partial_rel_in" title="On partial reliability">
+		<section anchor="subsec:partial_rel_in" title="On partial reliability at FEC level">
 				<t>The application may require partial reliability. The reliability offered by FEC may be sufficient, with no retransmission required. This depends on application needs and the trade-off between latency and loss. Partial reliability impacts the type of FEC and type of codec that can be used, such as discussed in <xref target="subsec:def_code"></xref>.</t>
 		</section>
 
-		<section anchor="subsec:multipath_in" title="On transport multipath">
+		<section anchor="subsec:multipath_in" title="On transport multipath and subpath FEC coding rate">
 				<t>The sender may adapt the coding rate of each of the single subpaths, whether the congestion control is coupled or not. There is an important flexibility on how the coding rate is tuned depending on the characteristics of each subpath.</t>
 		</section>
 
@@ -496,15 +498,15 @@
 				<t>Useless repair symbols only impact the load on the network without actual gain for the coded flow. Using feedback signaling, FEC mechanisms can measure the ratio between actually used and useless symbols, and adjust the coding rate.</t>
 		</section>
 
-		<section anchor="subsec:partial_order_below" title="On partial ordering">
+		<section anchor="subsec:partial_order_below" title="On partial ordering at FEC level with in-order delivery transport">
 				<t>The transport above the FEC channel may support out-of-order delivery of packets: reordering mechanisms at the receiver may not be necessary. In cases where the transport requires in-order delivery, the FEC channel may need to implement a reordering mechanism. Otherwise, spurious retransmissions may occur at the transport level.</t>
 		</section>
 
-		<section anchor="subsec:partial_rel_below" title="On partial reliability">
+		<section anchor="subsec:partial_rel_below" title="On partial reliability at FEC level">
 				<t>The transport or application layer above the FEC channel may require partial reliability only. In this case, FEC may provide an unnecessary service if it is not aware of the reliability requirements. Partial reliability impacts the type of FEC and type of codec that can be used, such as discussed in <xref target="subsec:def_code"></xref>.</t>
 		</section>
 
-		<section anchor="subsec:multipath_below" title="On transport multipath">
+		<section anchor="subsec:multipath_below" title="FEC not aware of transport multipath">
 				<t>The transport may exploit multiple paths without the FEC channel being aware of it. This depends on whether FEC is applied to all subflows or each of the subflows individually. When FEC is applied to all the flows, there is a risk for the coding rate to be inadequate for the characteristics of the individual paths.</t>
 		</section>
 
