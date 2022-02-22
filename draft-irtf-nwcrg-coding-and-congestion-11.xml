@@ -413,25 +413,23 @@
 
 		<t>For reliable transfers, including redundancy reduces goodput for long transfers but the amount of repair symbols can be adapted, e.g. depending on the congestion window size. There is a trade-off between 1) the capacity that could have been exploited by application data instead of transmitting source packets, and 2) the benefits derived from transmitting repair symbols (e.g. unlocking the receive buffer if it is limiting). The coding ratio needs to be carefully designed. For small files, sending repair symbols when there is no more data to transmit could help to reduce the transfer time. Sending repair symbols can avoid the silence period between the transmission of the last packet in the send buffer and 1) firing a retransmission of lost packets, or 2) the transmission of new packets.</t>
 
+		<t>Examples of the solution could be to add a given percentage of the congestion window or rate as supplementary symbols, or to send a fixed amount of repair symbols at a fixed rate. The redundancy flow can be decorrelated from the congestion control that manages source packets: a separate congestion control entity could be introduced to manage the amount of recovered symbols to transmit on the FEC channel. The separate congestion control instances could be made to work together while adhering to priorities, as in coupled congestion control for RTP media <xref target="RFC8699"/> in case all traffic can be assumed to take the same path, or otherwise with a multipath congestion window coupling mechanism as in Multipath TCP <xref target="RFC6356"/>. Another possibility would be to exploit a lower than best-effort congestion control <xref target="RFC6297"/> for repair symbols.</t>
+
 		<section anchor="subsec:fairness_in" title="Fairness and impact on non-coded flows">
 				<t>Specific interaction between congestion controls and coding schemes can be proposed (see <xref target="subsec:cc-recov-interaction_in"></xref>, <xref target="subsec:cc-nc-interaction_in"></xref> and <xref target="subsec:cc-useless-interaction_in"></xref>). If no specific interaction is introduced, the coding scheme may hide congestion losses from the congestion controller and the description of <xref target="sec:fec-below"></xref> may apply.</t>
 		</section>
 
-		<section anchor="subsec:cc-recov-interaction_in" title="Congestion control and recovered symbols">
-				<!-- <t>If the FEC and CC channels are decoupled, the endpoint may exploit different protocols for each channel. The channels may be coupled and one single protocol may be exploited. In both cases --> 
-				<t>The receiver can differentiate between source packets and repair symbols. The receiver may indicate both the number of source packets received and repair symbols that were actually useful in the recovery process of packets.</t>
-		</section>
-
 		<section anchor="subsec:cc-nc-interaction_in" title="Interactions between congestion control and coding rates">
+				<t>The receiver can differentiate between source packets and repair symbols. The receiver may indicate both the number of source packets received and repair symbols that were actually useful in the recovery process of packets. The congestion control at the sender can then exploit this information to tune congestion control behavior.</t>
 				<t>There is an important flexibility in the trade-off, inherent to the use of coding, between (1) reducing goodput when useless repair symbols are transmitted and (2) helping to recover from losses earlier than with retransmissions. The receiver may indicate to the sender the number of packets that have been received or recovered. The sender may use this information to tune the coding ratio. For example, coupling an increased transmission rate with an increasing or decreasing coding rate could be envisioned. A server may use a decreasing coding rate as a probe of the channel capacity and adapt the congestion control transmission rate.</t>
 		</section>
 
 		<section anchor="subsec:cc-useless-interaction_in" title="On useless repair symbols">
-				<t>The sender may exploit the information given by the receiver to reduce the number of useless repair symbols and the resulting goodput reduction.</t>
+				<t>The sender may exploit the information given by the receiver to reduce the number of useless repair symbols, and improve goodput.</t>
 		</section>
 
 		<section anchor="subsec:partial_order_in" title="On partial ordering at FEC and/or transport level">
-				<t>The application may require in-order delivery of packets. In this case, both FEC and transport layer mechanisms should guarantee that packets are delivered in order. If partial ordering is requested by the application, both the FEC and transport could relax the constraints related to in-order delivery: reordering mechanisms at the receiver may not be necessary.</t>
+			<t>The application may require in-order delivery of packets. In this case, both FEC and transport layer mechanisms should guarantee that packets are delivered in order. If partial ordering is requested by the application, both the FEC and transport could relax the constraints related to in-order delivery: partial ordering impacts both the congestion control and the type of FEC and type of codec that can be used, mostly at the receiver that may need to implement partial reordering.</t>
 		</section>
 
 		<section anchor="subsec:partial_rel_in" title="On partial reliability at FEC level">
@@ -475,8 +473,7 @@
 		</artwork>
 	</figure>
 
-	<t><xref target="fig:fec-below"></xref> presents an architecture where FEC is applied end-to-end below the transport layer, but above the link layer. Note that it is common to apply FEC at the link layer, where it contributes to the total capacity that a link exposes to upper layers. This application of FEC is out of scope of this document. This includes the use of FEC on top of a link layer in scenarios where the link is known by configuration. In the scenario considered here, the repair symbols are sent on top of what is allowed by the congestion control.</t>
-
+		<t><xref target="fig-fec-below"/> presents an architecture where FEC is applied end-to-end below the transport layer, but above the link layer.  Note that it is common to apply FEC at the link layer on one or more of the links that make up the end-to-end path. The application of FEC at the link layer contributes to the total capacity that a link exposes to upper layers, but may not be visible to either the end-to-end sender or receiver, if the end-to-end sender and receiver are separated by more than one link, and therefore is out of scope for this document. This includes the use of FEC on top of a link layer in scenarios where the link is known by configuration. In the scenario considered here, the repair symbols are not visible to the end-to-end congestion controller and may be sent on top of what is allowed by the congestion control.</t>
 		<t>Including redundancy adds traffic without reducing goodput but incurs potential fairness issues. The effective bit-rate is higher than the CC's computed fair share due to the transmission of repair symbols, and losses are hidden from the transport. This may cause a problem for loss-based congestion detection, but it is not a problem for delay-based congestion detection.</t>
 		<t>The advantage of this approach is that it can result in performance gains when there are persistent transmission losses along the path.</t>
 		<t>The drawback of this approach is that it can induce congestion in already congested networks. The coding ratio needs to be carefully designed.</t>
@@ -495,7 +492,7 @@
 		</section>
 
 		<section anchor="subsec:cc-useless-interaction_below" title="On useless repair symbols">
-				<t>Useless repair symbols only impact the load on the network without actual gain for the coded flow. Using feedback signaling, FEC mechanisms can measure the ratio between actually used and useless symbols, and adjust the coding rate.</t>
+			<t>Useless repair symbols only impact the load on the network without actual gain for the coded flow.  Using feedback signaling, FEC mechanisms can measure the ratio between the number of symbols that were actually used and the number of symbols that useless, and adjust the coding rate.</t>
 		</section>
 
 		<section anchor="subsec:partial_order_below" title="On partial ordering at FEC level with in-order delivery transport">
@@ -503,11 +500,11 @@
 		</section>
 
 		<section anchor="subsec:partial_rel_below" title="On partial reliability at FEC level">
-				<t>The transport or application layer above the FEC channel may require partial reliability only. In this case, FEC may provide an unnecessary service if it is not aware of the reliability requirements. Partial reliability impacts the type of FEC and type of codec that can be used, such as discussed in <xref target="subsec:def_code"></xref>.</t>
+				<t>The transport or application layer above the FEC channel may require partial reliability only. FEC may provide an unnecessary service unless it is aware of the reliability requirements.  Partial reliability impacts the type of FEC and type of codec that can be used, such as discussed in <xref target="subsec:def_code"/>.</t>
 		</section>
 
 		<section anchor="subsec:multipath_below" title="FEC not aware of transport multipath">
-				<t>The transport may exploit multiple paths without the FEC channel being aware of it. This depends on whether FEC is applied to all subflows or each of the subflows individually. When FEC is applied to all the flows, there is a risk for the coding rate to be inadequate for the characteristics of the individual paths.</t>
+			<t>The transport may exploit multiple paths without the FEC channel being aware of it. If FEC is aware that multiple paths are in use, FEC can be applied to all subflows as an aggregate, or to each of the subflows individually. If FEC is not aware that multiple paths are in use, FEC can only be applied to each subflow individually. When FEC is applied to all the flows as an aggregate, the varying characteristics of the individual paths may lead to a risk for the coding rate to be inadequate for the characteristics of the individual paths.</t>
 		</section>
 
 
@@ -534,7 +531,7 @@
 
 				<section title="Parameter derivation">
 				<t>There is a trade-off related to the amount of redundancy to add, as a function of the transport layer protocol and application requirements.</t>
-				<t><xref target="RFC8095"></xref> describes the mechanisms provided by existing IETF protocols such as TCP, SCTP or RTP. <xref target="RFC8406"></xref> describes the variety of coding techniques. The important level of combinations makes the determination of an optimum parameters derivation very complex. This depends on application requirements and deployment context.</t>
+				<t><xref target="RFC8095"></xref> describes the mechanisms provided by existing IETF protocols such as TCP, SCTP or RTP. <xref target="RFC8406"></xref> describes the variety of coding techniques. The number of combinations makes the determination of an optimum parameters derivation very complex. This depends on application requirements and deployment context.</t>
 				<t>Appendix C of <xref target="RFC8681"></xref> describes how to tune the parameters for target use-case. However, this discussion does not integrate congestion-controlled end points.</t>
 				<t>Research question 1 : "Is there a way to dynamically adjust the codec characteristics depending on the transmission channel, the transport protocol and application requirements ?"</t>
 				<t>Research question 2 : "Should we apply specific per-stream FEC mechanisms when multiple streams with different reliability needs are carried out ?"</t>
